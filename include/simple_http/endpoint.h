@@ -1,8 +1,8 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#ifndef SIMPLEHTTP_CLIENT_H
-#define SIMPLEHTTP_CLIENT_H
+#ifndef SIMPLEHTTP_ENDPOINT_H
+#define SIMPLEHTTP_ENDPOINT_H
 
 #include <stdexcept>
 #include <netdb.h>
@@ -33,10 +33,10 @@ namespace simplehttp {
     struct InvalidAddress : public std::runtime_error {
         InvalidAddress()
             : std::runtime_error(
-                  "Failed to initialize an endpoint. Check your hostname and "
-                  "ensure the port you're requesting is free."
-              ) {}
+                "Failed to initialize an endpoint. Check your hostname and "
+                "ensure the port you're requesting is free."
+            ) {}
     };
 }
 
-#endif  // SIMPLEHTTP_CLIENT_H
+#endif  // SIMPLEHTTP_ENDPOINT_H

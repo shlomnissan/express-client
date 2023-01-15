@@ -9,3 +9,4 @@ endfunction()
 
 simple_http_test(client_test)
 simple_http_test(endpoint_test)
+simple_http_test(socket_test)

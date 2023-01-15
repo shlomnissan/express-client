@@ -9,7 +9,7 @@
 using namespace simplehttp;
 
 TEST(endpoint_test, basic_test) {
-    Endpoint endpoint("example.com", "80");
+    Endpoint endpoint {"example.com", "80"};
 
     EXPECT_EQ(endpoint.getFamily(), AF_INET);
     EXPECT_EQ(endpoint.getSocketType(), SOCK_STREAM);
@@ -18,7 +18,7 @@ TEST(endpoint_test, basic_test) {
     EXPECT_TRUE(endpoint.getAddress() != nullptr);
 }
 
-TEST(endpoint_test, throws_if_fails_to_init) {
+TEST(endpoint_test, throws_initialization_error) {
     EXPECT_THROW({
         Endpoint endpoint("invalid-address", "80");
     }, InvalidAddress);

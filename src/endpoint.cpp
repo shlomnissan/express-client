@@ -7,8 +7,6 @@
 #include <netdb.h>
 #include <sys/socket.h>
 
-#include <iostream>
-
 namespace simplehttp {
     Endpoint::Endpoint(std::string_view host, std::string_view port) {
         struct addrinfo hints;
@@ -25,4 +23,3 @@ namespace simplehttp {
         }
     }
 }
-
