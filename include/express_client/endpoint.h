@@ -1,14 +1,14 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#ifndef SIMPLEHTTP_ENDPOINT_H
-#define SIMPLEHTTP_ENDPOINT_H
+#ifndef EXPRESS_ENDPOINT_H
+#define EXPRESS_ENDPOINT_H
 
 #include <stdexcept>
 #include <netdb.h>
 #include <string_view>
 
-namespace simplehttp {
+namespace EXPRESS {
     class Endpoint {
     public:
         Endpoint(std::string_view host, std::string_view port);
@@ -39,4 +39,4 @@ namespace simplehttp {
     };
 }
 
-#endif  // SIMPLEHTTP_ENDPOINT_H
+#endif  // EXPRESS_ENDPOINT_H

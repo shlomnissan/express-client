@@ -1,13 +1,13 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#ifndef SIMPLEHTTP_SOCKET_H
-#define SIMPLEHTTP_SOCKET_H
+#ifndef EXPRESS_SOCKET_H
+#define EXPRESS_SOCKET_H
 
-#include <simple_http/endpoint.h>
+#include <express_client/endpoint.h>
 #include <stdexcept>
 
-namespace simplehttp {
+namespace EXPRESS {
     class Socket {
     public:
         explicit Socket(const Endpoint& endpoint);
@@ -45,4 +45,4 @@ namespace simplehttp {
     };
 }
 
-#endif  // SIMPLEHTTP_SOCKET_H
+#endif  // EXPRESS_SOCKET_H

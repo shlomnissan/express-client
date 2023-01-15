@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 
-project(simple_http VERSION 0.1)
+project(express_client VERSION 0.1)
 
 set(CMAKE_CXX_STANDARD 20)
 

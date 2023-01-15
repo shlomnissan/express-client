@@ -3,9 +3,9 @@
 
 #include <gtest/gtest.h>
 
-#include <simple_http/client.h>
+#include <express_client/client.h>
 
 TEST(client_test, get) {
-    simplehttp::Client client;
+    EXPRESS::Client client;
     EXPECT_EQ(client.get(), 12);
 }

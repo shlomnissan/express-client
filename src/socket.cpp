@@ -1,12 +1,12 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <simple_http/socket.h>
+#include <express_client/socket.h>
 
 #include <sys/socket.h>
 #include <unistd.h>
 
-namespace simplehttp {
+namespace EXPRESS {
     Socket::Socket(const Endpoint& endpoint)
         : address_len(endpoint.getAddressLength()),
           address(endpoint.getAddress()) {

@@ -3,10 +3,10 @@
 
 #include <gtest/gtest.h>
 
-#include <simple_http/socket.h>
-#include <simple_http/endpoint.h>
+#include <express_client/socket.h>
+#include <express_client/endpoint.h>
 
-using namespace simplehttp;
+using namespace EXPRESS;
 
 TEST(socket_test, basic_test) {
     // TODO: figure out how to test this
