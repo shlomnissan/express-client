@@ -6,7 +6,7 @@
 #include <express_client/endpoint.h>
 #include <sys/socket.h>
 
-using namespace EXPRESS;
+using namespace Express::Net;
 
 TEST(endpoint_test, basic_test) {
     Endpoint endpoint {"example.com", "80"};

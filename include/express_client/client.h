@@ -4,7 +4,7 @@
 #ifndef EXPRESS_CLIENT_H
 #define EXPRESS_CLIENT_H
 
-namespace EXPRESS {
+namespace Express {
     class Client {
     public:
         auto get() const -> int;

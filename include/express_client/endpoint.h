@@ -8,7 +8,7 @@
 #include <netdb.h>
 #include <string_view>
 
-namespace EXPRESS {
+namespace Express::Net {
     class Endpoint {
     public:
         Endpoint(std::string_view host, std::string_view port);

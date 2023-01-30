@@ -6,16 +6,16 @@
 #include <express_client/socket.h>
 #include <express_client/endpoint.h>
 
-using namespace EXPRESS;
+using namespace Express::Net;
 
 TEST(socket_test, basic_test) {
-    // TODO: figure out how to test this
+    // TODO: impl. 
 }
 
 TEST(socket_test, throws_initialization_error) {
-    // TODO: figure out how to test this
+    // TODO: impl.
 }
 
-TEST(socket_Test, throws_connection_error) {
-    // TODO: figure out how to test this
+TEST(socket_test, throws_connection_error) {
+    // TODO: impl.
 }

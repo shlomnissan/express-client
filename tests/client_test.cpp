@@ -6,6 +6,6 @@
 #include <express_client/client.h>
 
 TEST(client_test, get) {
-    EXPRESS::Client client;
+    Express::Client client;
     EXPECT_EQ(client.get(), 12);
 }

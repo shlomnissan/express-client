@@ -5,9 +5,11 @@
 #define EXPRESS_SOCKET_H
 
 #include <express_client/endpoint.h>
+
+#include <string_view>
 #include <stdexcept>
 
-namespace EXPRESS {
+namespace Express::Net {
     class Socket {
     public:
         explicit Socket(const Endpoint& endpoint);
@@ -19,6 +21,8 @@ namespace EXPRESS {
         auto operator=(Socket&& rhs) -> Socket& = delete;
 
         auto connect() const -> void;
+        auto send(std::string_view buffer) const -> long;
+        auto recv(char* buffer) const -> long;
 
         ~Socket();
 
