@@ -1,8 +1,7 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#ifndef EXPRESS_SOCKET_H
-#define EXPRESS_SOCKET_H
+#pragma once
 
 #include <express_client/endpoint.h>
 
@@ -48,5 +47,3 @@ namespace Express::Net {
             ) {}
     };
 }
-
-#endif  // EXPRESS_SOCKET_H

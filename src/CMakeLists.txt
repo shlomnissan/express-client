@@ -1,6 +1,16 @@
 cmake_minimum_required(VERSION 3.25)
 
-file(GLOB SOURCE_FILES "*.cpp")
+file (GLOB HTTP_SOURCE_FILES "http/*.cpp")
+file (GLOB NET_SOURCE_FILES "net/*.cpp")
+file (GLOB CLIENT_SOURCE_FILES "*.cpp")
+
+set(SOURCE_FILES
+    ${HTTP_SOURCE_FILES}
+    ${NET_SOURCE_FILES}
+    ${CLIENT_SOURCE_FILES}
+)
+
+message(STATUS, ${SOURCE_FILES})
 file(GLOB INCLUDE_FILES ${PROJECT_SOURCE_DIR}/include/*.h)
 
 add_library(express_client OBJECT ${SOURCE_FILES} ${INCLUDE_FILES})
