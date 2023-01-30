@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.25)
 
-file (GLOB HTTP_SOURCE_FILES "http/*.cpp")
-file (GLOB NET_SOURCE_FILES "net/*.cpp")
-file (GLOB CLIENT_SOURCE_FILES "*.cpp")
+file (GLOB HTTP_SOURCE_FILES "http/*.cc")
+file (GLOB NET_SOURCE_FILES "net/*.cc")
+file (GLOB CLIENT_SOURCE_FILES "*.cc")
 
 set(SOURCE_FILES
     ${HTTP_SOURCE_FILES}
