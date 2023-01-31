@@ -98,4 +98,11 @@ namespace Express::Http {
 
     auto operator<<(std::ostream& os, Method method) -> std::ostream&;
     auto operator<<(std::ostream& os, StatusCode code) -> std::ostream&;
+
+    template <class CharT, class Traits>
+    std::basic_ostream<CharT, Traits>& crlf(std::basic_ostream<CharT, Traits>& os) {
+        static constexpr char CRLF[] = { 0xD, 0xA };
+        os.write(CRLF, 2);
+        return os;
+    }
 }

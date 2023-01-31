@@ -3,35 +3,36 @@
 
 #include <express_client/client.h>
 #include <express_client/socket.h>
+#include <express_client/request.h>
 
+#include <ios>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <stdio.h>
 #include <string.h>
 
 namespace Express {
-    using namespace Net;
-
     auto Client::get() const -> int {
-        Socket socket {{"example.com", "80"}};
+        Net::Socket socket {{"example.com", "80"}};
         socket.connect();
 
-        char buffer[2048];
-        sprintf(buffer, "GET / HTTP/1.1\r\n");
-        sprintf(buffer + strlen(buffer), "Host: %s:%s\r\n", "example.com", "80");
-        sprintf(buffer + strlen(buffer), "Connection: close\r\n");
-        sprintf(buffer + strlen(buffer), "User-Agent: Express-client 1.0\r\n");
-        sprintf(buffer + strlen(buffer), "\r\n");
+        Http::Request request(Http::Method::Get, "example.com");
+        std::stringstream request_buffer;
+        request.writeRequest(request_buffer);
 
-        socket.send(buffer);
+        socket.send(request_buffer.str());
 
-        std::string response;
-        long bytes = 0;
+        std::stringstream response_buffer;
+        char buffer[BUFSIZ];
+        std::streamsize bytes = 0;
         while ((bytes = socket.recv(buffer)) > 0) {
-            buffer[bytes] = '\0';
-            response += buffer;
+            response_buffer.write(buffer, bytes);
+            response_buffer << Http::crlf;
         }
-        std::cout << response << '\n';
+
+        auto output = response_buffer.str();
+        std::cout << output;
 
         return 12;
     }

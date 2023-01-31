@@ -12,21 +12,21 @@ namespace Express::Net {
     public:
         Endpoint(std::string_view host, std::string_view port);
 
-        // Delete copy and move operations
         Endpoint(const Endpoint&) = delete;
         auto operator=(const Endpoint&) -> Endpoint& = delete;
+
         Endpoint(Endpoint&& rhs) = delete;
         auto operator=(Endpoint&& rhs) -> Endpoint& = delete;
 
-        [[nodiscard]] auto getFamily() const { return address->ai_family; }
-        [[nodiscard]] auto getSocketType() const { return address->ai_socktype; }
-        [[nodiscard]] auto getProtocol() const { return address->ai_protocol; }
-        [[nodiscard]] auto getAddress() const { return address->ai_addr; }
-        [[nodiscard]] auto getAddressLength() const { return address->ai_addrlen; }
+        [[nodiscard]] auto getFamily() const { return address_->ai_family; }
+        [[nodiscard]] auto getSocketType() const { return address_->ai_socktype; }
+        [[nodiscard]] auto getProtocol() const { return address_->ai_protocol; }
+        [[nodiscard]] auto getAddress() const { return address_->ai_addr; }
+        [[nodiscard]] auto getAddressLength() const { return address_->ai_addrlen; }
 
         ~Endpoint();
     private:
-        addrinfo* address = nullptr;
+        addrinfo* address_ = nullptr;
     };
 
     struct InvalidAddress : public std::runtime_error {

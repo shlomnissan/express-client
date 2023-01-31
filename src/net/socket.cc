@@ -8,36 +8,36 @@
 
 namespace Express::Net {
     Socket::Socket(const Endpoint& endpoint)
-        : address_len(endpoint.getAddressLength()),
-            address(endpoint.getAddress()) {
-        fd_socket = socket(
+        : address_len_(endpoint.getAddressLength()),
+            address_(endpoint.getAddress()) {
+        fd_socket_ = socket(
             endpoint.getFamily(),
             endpoint.getSocketType(),
             endpoint.getProtocol()
         );
 
-        if (!fd_socket) {
+        if (!fd_socket_) {
             throw InvalidSocket();
         }
     }
 
     auto Socket::connect() const -> void {
-        if (::connect(fd_socket, address, address_len)) {
+        if (::connect(fd_socket_, address_, address_len_)) {
             throw UnableToConnect();
         }
     }
 
     auto Socket::send(std::string_view buffer) const -> long {
-        return ::send(fd_socket, buffer.data(), buffer.size(), 0);
+        return ::send(fd_socket_, buffer.data(), buffer.size(), 0);
     }
 
     auto Socket::recv(char* buffer) const -> long {
-        return ::recv(fd_socket, buffer, 2048, 0);
+        return ::recv(fd_socket_, buffer, 2048, 0);
     }
 
     Socket::~Socket() {
-        if (fd_socket) {
-            close(fd_socket);
+        if (fd_socket_) {
+            close(fd_socket_);
         }
     }
 }

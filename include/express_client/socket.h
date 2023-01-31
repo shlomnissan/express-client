@@ -13,9 +13,9 @@ namespace Express::Net {
     public:
         explicit Socket(const Endpoint& endpoint);
 
-        // Delete copy and move operations
         Socket(const Socket&) = delete;
         auto operator=(const Socket&) -> Socket& = delete;
+
         Socket(Socket&& rhs) = delete;
         auto operator=(Socket&& rhs) -> Socket& = delete;
 
@@ -26,9 +26,9 @@ namespace Express::Net {
         ~Socket();
 
     private:
-        int fd_socket = 0;
-        int address_len = 0;
-        sockaddr* address = nullptr;
+        int fd_socket_ = 0;
+        int address_len_ = 0;
+        sockaddr* address_ = nullptr;
     };
 
     struct InvalidSocket : public std::runtime_error {
