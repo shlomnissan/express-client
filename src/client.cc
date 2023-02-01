@@ -13,11 +13,13 @@
 #include <string.h>
 
 namespace Express {
-    auto Client::get() const -> int {
+    // TODO: replace vars with request config
+    auto Client::request(Http::Method method, std::string_view url) const -> void {
+
         Net::Socket socket {{"example.com", "80"}};
         socket.connect();
 
-        Http::Request request(Http::Method::Get, "example.com");
+        Http::Request request(method, "example.com");
         std::stringstream request_buffer;
         request.writeRequest(request_buffer);
 
@@ -33,7 +35,11 @@ namespace Express {
 
         auto output = response_buffer.str();
         std::cout << output;
+    }
 
+    // TODO: add request config
+    auto Client::get(std::string_view url) const -> int {
+        request(Http::Method::Get, url);
         return 12;
     }
 }

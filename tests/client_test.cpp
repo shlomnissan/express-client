@@ -7,5 +7,5 @@
 
 TEST(client_test, get) {
     Express::Client client;
-    EXPECT_EQ(client.get(), 12);
+    EXPECT_EQ(client.get("http://example.com"), 12);
 }
