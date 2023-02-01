@@ -16,8 +16,8 @@ namespace Express::Net {
         Socket(const Socket&) = delete;
         auto operator=(const Socket&) -> Socket& = delete;
 
-        Socket(Socket&& rhs) = delete;
-        auto operator=(Socket&& rhs) -> Socket& = delete;
+        Socket(Socket&&) = delete;
+        auto operator=(Socket&&) -> Socket& = delete;
 
         auto connect() const -> void;
         auto send(std::string_view buffer) const -> long;

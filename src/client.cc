@@ -2,6 +2,7 @@
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
 #include <express/client.h>
+#include <express/url.h>
 #include <express/socket.h>
 #include <express/request.h>
 
@@ -15,6 +16,7 @@
 namespace Express {
     // TODO: replace vars with request config
     auto Client::request(Http::Method method, std::string_view url) const -> void {
+        Net::URL parsed_url(url);
 
         Net::Socket socket {{"example.com", "80"}};
         socket.connect();

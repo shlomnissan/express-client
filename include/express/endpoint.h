@@ -15,8 +15,8 @@ namespace Express::Net {
         Endpoint(const Endpoint&) = delete;
         auto operator=(const Endpoint&) -> Endpoint& = delete;
 
-        Endpoint(Endpoint&& rhs) = delete;
-        auto operator=(Endpoint&& rhs) -> Endpoint& = delete;
+        Endpoint(Endpoint&&) = delete;
+        auto operator=(Endpoint&&) -> Endpoint& = delete;
 
         [[nodiscard]] auto getFamily() const { return address_->ai_family; }
         [[nodiscard]] auto getSocketType() const { return address_->ai_socktype; }

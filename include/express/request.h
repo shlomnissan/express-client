@@ -14,11 +14,11 @@ namespace Express::Http {
     public:
         Request(Method method, const std::string& resource);
 
-        Request(const Request& other) = default;
-        auto operator=(const Request& other) -> Request& = default;
+        Request(const Request&) = default;
+        auto operator=(const Request&) -> Request& = default;
 
-        Request(Request&& other) = default;
-        auto operator=(Request&& other) -> Request& = default;
+        Request(Request&&) = default;
+        auto operator=(Request&&) -> Request& = default;
 
         auto writeRequest(std::stringstream& buffer) const -> void;
 
