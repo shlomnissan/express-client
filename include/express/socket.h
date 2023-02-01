@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <express_client/endpoint.h>
+#include <express/endpoint.h>
 
 #include <string_view>
 #include <stdexcept>

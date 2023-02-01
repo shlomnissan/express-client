@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-#include <express_client/client.h>
+#include <express/client.h>
 
 TEST(client_test, get) {
     Express::Client client;

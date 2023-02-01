@@ -7,7 +7,7 @@
 #include <string>
 #include <chrono>
 
-#include <express_client/http_defs.h>
+#include <express/http_defs.h>
 
 namespace Express::Http {
     class Request {

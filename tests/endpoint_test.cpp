@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-#include <express_client/endpoint.h>
+#include <express/endpoint.h>
 #include <sys/socket.h>
 
 using namespace Express::Net;

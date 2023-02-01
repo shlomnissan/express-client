@@ -1,9 +1,9 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <express_client/client.h>
-#include <express_client/socket.h>
-#include <express_client/request.h>
+#include <express/client.h>
+#include <express/socket.h>
+#include <express/request.h>
 
 #include <ios>
 #include <iostream>
