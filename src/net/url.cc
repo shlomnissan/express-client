@@ -35,7 +35,8 @@ namespace Express::Net {
         processAuthority(authority_);
 
         // RFC3986, 3.3. Path
-        if (authority_pos != end(url) && ++authority_pos != end(url)) {
+        if (authority_pos != end(url)) {
+            if (*authority_pos == '/') ++authority_pos;
             path_ = std::string(authority_pos, end(url));
 
             // RFC3986, 3.5. Fragment
