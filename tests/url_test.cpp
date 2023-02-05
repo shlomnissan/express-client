@@ -189,7 +189,7 @@ TEST(url_test, parses_url_with_password_and_no_username) {
     EXPECT_EQ(url.fragment(), "");
 }
 
-TEST(url_test, throws_error_if_the_url_is_empty) {
+TEST(url_test, throws_if_the_url_is_empty) {
     EXPECT_THROW({
         try {
             URL url("");
@@ -200,7 +200,7 @@ TEST(url_test, throws_error_if_the_url_is_empty) {
     }, URLError);
 }
 
-TEST(url_test, throws_error_if_theres_no_scheme) {
+TEST(url_test, throws_if_theres_no_scheme) {
     EXPECT_THROW({
         try {
             URL url("example.com");
@@ -211,7 +211,7 @@ TEST(url_test, throws_error_if_theres_no_scheme) {
     }, URLError);
 }
 
-TEST(url_test, throws_error_if_theres_an_invalid_scheme_delimiter) {
+TEST(url_test, throws_if_theres_an_invalid_scheme_delimiter) {
     EXPECT_THROW({
         try {
             URL url("https:/example.com");

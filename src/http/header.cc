@@ -12,18 +12,22 @@ namespace Express::Http {
 
     HeaderCollection::HeaderCollection(const std::vector<Header>& headers)
         : headers_(headers) {
-        for (int i = 0; i < static_cast<int>(size(headers)); ++i) {
-            header_pos_[headers[i].name()] = i;
+        for (const auto& h : headers) {
+            existing_headers_.emplace(h.name());
         }
     }
 
     auto HeaderCollection::add(const Header &header) -> void {
-        if (header_pos_.find(header.name()) == std::end(header_pos_)) {
-            headers_.emplace_back(header);
-            header_pos_[header.name()] = static_cast<int>(size(headers_));
+        if (existing_headers_.find(header.name()) != std::end(existing_headers_)) {
+            for (auto& h : headers_) {
+                if (h.name() == header.name()) {
+                    h.value_ = header.value();
+                    return;
+                }
+            }
         } else {
-            auto idx = header_pos_[header.name()];
-            headers_[idx].value_ = header.value();
+            headers_.emplace_back(header);
+            existing_headers_.emplace(header.name());
         }
     }
 }

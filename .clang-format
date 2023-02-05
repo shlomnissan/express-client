@@ -8,7 +8,7 @@ AllowShortCaseLabelsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: true 
 BinPackArguments: false
 BinPackParameters: false
-ColumnLimit: 100 
+ColumnLimit: 80 
 IndentAccessModifiers: false
 IndentCaseLabels: true
 NamespaceIndentation: false

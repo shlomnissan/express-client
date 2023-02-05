@@ -5,7 +5,7 @@
 
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <unordered_set>
 
 namespace Express::Http {
     class Header {
@@ -29,13 +29,16 @@ namespace Express::Http {
 
         auto add(const Header& header) -> void;
 
-        auto begin() { return headers_.begin(); }
-        auto begin() const { return headers_.begin(); }
-        auto end() { return headers_.end(); }
-        auto end() const { return headers_.end(); }
+        [[nodiscard]] auto front() { return headers_.front(); }
+        [[nodiscard]] auto back() { return headers_.back(); }
+
+        [[nodiscard]] auto begin() { return headers_.begin(); }
+        [[nodiscard]] auto begin() const { return headers_.begin(); }
+        [[nodiscard]] auto end() { return headers_.end(); }
+        [[nodiscard]] auto end() const { return headers_.end(); }
 
     private:
         std::vector<Header> headers_;
-        std::unordered_map<std::string, int> header_pos_;
+        std::unordered_set<std::string> existing_headers_;
     };
 }
