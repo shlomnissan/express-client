@@ -2,12 +2,29 @@
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
 #include <express/header.h>
+#include <express/http_defs.h>
+#include <express/validators.h>
 
 namespace Express::Http {
     Header::Header(std::string_view name, std::string_view value)
         : name_(name), value_(value) {
-        // TODO: validate name (raise if invalid)
-        // TODO: validate value (raise if invalid)
+        using namespace Validators;
+
+        if (name_.empty()) {
+            throw HeaderError {"Invalid header name."};
+        }
+
+        for (const auto c : name) {
+            if (!Validators::is_token(c)) {
+                throw HeaderError {"Invalid header name."};
+            }
+        }
+
+        for (const auto c : value) {
+            if (!is_visible(c) && !is_whitespace(c) && !is_obsolete_text(c)) {
+                throw HeaderError {"Invalid header value."};
+            }
+        }
     }
 
     HeaderCollection::HeaderCollection(const std::vector<Header>& headers)
@@ -29,5 +46,10 @@ namespace Express::Http {
             headers_.emplace_back(header);
             existing_headers_.emplace(header.name());
         }
+    }
+
+    auto operator<<(std::ostream& os, const Header& header) -> std::ostream& {
+        os << header.name() + ": " + header.value() << crlf;
+        return os;
     }
 }

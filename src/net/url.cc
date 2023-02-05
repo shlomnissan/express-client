@@ -1,10 +1,10 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <iostream>
 #include <ranges>
 
 #include <express/url.h>
+#include <express/validators.h>
 #include <string_view>
 
 namespace Express::Net {
@@ -13,17 +13,19 @@ namespace Express::Net {
     }
 
     auto URL::parseURL(std::string_view url) -> void {
-        if (url.empty() || !std::isalnum(url[0])) {
-            throw URLError {"Invalid URL"};
+        using namespace Http::Validators;
+
+        if (url.empty() || !is_alnum(url[0])) {
+            throw URLError {"Invalid URL."};
         }
 
         // RFC3986, 3.1. Scheme
         auto scheme_pos = std::ranges::find_if_not(url, [](char c) {
-            return isalnum(c) || c == '+' || c == '-' || c == '.'; // scheme characters
+            return is_alnum(c) || c == '+' || c == '-' || c == '.'; // scheme characters
         });
         scheme_ = std::string(begin(url), scheme_pos);
         if (std::string_view(scheme_pos, scheme_pos + 3) != "://") {
-            throw URLError {"Invalid URL scheme"};
+            throw URLError {"Invalid URL scheme."};
         }
         std::advance(scheme_pos, 3);
         

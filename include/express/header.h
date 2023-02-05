@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <unordered_set>
+#include <stdexcept>
 
 namespace Express::Http {
     class Header {
@@ -41,4 +42,10 @@ namespace Express::Http {
         std::vector<Header> headers_;
         std::unordered_set<std::string> existing_headers_;
     };
+
+    struct HeaderError : public std::runtime_error {
+        using std::runtime_error::runtime_error;
+    };
+
+    auto operator<<(std::ostream& os, const Header& header) -> std::ostream&;
 }

@@ -48,5 +48,7 @@ namespace Express::Net {
             auto processAuthority(std::string_view authority) -> void;
     };
 
-    struct URLError : public std::logic_error { using logic_error::logic_error; };
+    struct URLError : public std::logic_error {
+        using logic_error::logic_error;
+    };
 }

@@ -2,10 +2,15 @@
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
 #include <gtest/gtest.h>
-
+#include <iostream>
 #include <express/header.h>
 
 using namespace Express::Http;
+
+// TODO: creates a valid header object "(test ostream)"
+// TODO: throws if the header name is empty
+// TODO: throws if the header name contains invalid characters
+// TODO: throws if the header value contains invalid characters
 
 TEST(collection_header_test, initializes_an_object_with_initializer_list) {
     HeaderCollection headers {{
