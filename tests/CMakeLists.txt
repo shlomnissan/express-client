@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.25)
 
 function(express_client_test test_name)
     set(TEST_EXECUTABLE run_${test_name})
-    add_executable(${TEST_EXECUTABLE} ${test_name}.cpp)
+    add_executable(${TEST_EXECUTABLE} ${test_name}.cc)
     target_link_libraries(${TEST_EXECUTABLE} GTest::gtest GTest::gtest_main express_client_static)
     add_test(${test_name} ${TEST_EXECUTABLE})
 endfunction()
