@@ -7,23 +7,20 @@
 #include <string>
 #include <chrono>
 
-#include <express/http_defs.h>
+#include <express/request_config.h>
+#include <express/url.h>
 
 namespace Express::Http {
+    using Express::Net::URL;
+
     class Request {
     public:
-        Request(Method method, const std::string& resource);
-
-        Request(const Request&) = default;
-        auto operator=(const Request&) -> Request& = default;
-
-        Request(Request&&) = default;
-        auto operator=(Request&&) -> Request& = default;
+        Request(const RequestConfig& config, const URL& url);
 
         auto writeRequest(std::stringstream& buffer) const -> void;
 
     private:
-        Method method_;
-        std::string resource_;
+        RequestConfig config_;
+        URL url_;
     };
 }

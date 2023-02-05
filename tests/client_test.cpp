@@ -7,5 +7,10 @@
 
 TEST(client_test, get) {
     Express::Client client;
-    EXPECT_EQ(client.get("http://example.com"), 12);
+    client.get("http://localhost:5000");
+}
+
+TEST(client_test, post) {
+    Express::Client client;
+    client.post("http://localhost:5000");
 }

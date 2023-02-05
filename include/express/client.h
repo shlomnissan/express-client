@@ -5,12 +5,25 @@
 
 #include <string_view>
 
+#include <express/request_config.h>
 #include <express/http_defs.h>
 
 namespace Express {
     class Client {
     public:
-        auto request(Http::Method method, std::string_view url) const -> void;
-        auto get(std::string_view url) const -> int;
+        auto request(const Http::RequestConfig& config) const -> void;
+        auto get(std::string_view url) const -> void;
+        auto post(std::string_view url) const -> void;
+
+    private:
+        auto prepareRequestWithNoData(
+            const Http::Method method,
+            std::string_view url
+        ) const -> void;
+
+        auto prepareRequestWithData(
+            const Http::Method method,
+            std::string_view url
+        ) const -> void;
     };
 }

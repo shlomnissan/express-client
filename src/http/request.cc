@@ -6,16 +6,19 @@
 #include <iostream>
 
 namespace Express::Http {
-    Request::Request(Method method, const std::string& resource) :
-        method_(method),
-        resource_(resource) {
+    Request::Request(const RequestConfig& config, const URL& url) :
+        config_(config),
+        url_(url) {
+           // TODO: throws exception if scheme is not supported
+           config_.headers.add({"Host", url_.host() + ":" + url_.port()});
+           config_.headers.add({"User-Agent", "express/0.1"});
     }
 
     auto Request::writeRequest(std::stringstream& buffer) const -> void {
-        buffer << method_ << " ";
+        buffer << config_.method << " ";
         buffer << "/";
         buffer << " HTTP/1.1" << crlf;
-        buffer << "Host: " << resource_ << ":80" << crlf;
+        buffer << "Host: " << url_.host() << ":" << url_.port() << crlf;
         buffer << "Connection: close" << crlf;
         buffer << "User-Agent: express/0.1" << crlf;
         buffer << crlf;

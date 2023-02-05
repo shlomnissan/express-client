@@ -4,6 +4,7 @@
 #include <express/client.h>
 #include <express/url.h>
 #include <express/socket.h>
+#include <express/request_config.h>
 #include <express/request.h>
 
 #include <ios>
@@ -14,14 +15,15 @@
 #include <string.h>
 
 namespace Express {
-    // TODO: replace vars with request config
-    auto Client::request(Http::Method method, std::string_view url) const -> void {
-        Net::URL parsed_url(url);
+    auto Client::request(const Http::RequestConfig& config) const -> void {
+        Net::URL url {config.url};
 
-        Net::Socket socket {{"example.com", "80"}};
+        Net::Socket socket {{url.host(), url.port()}};
         socket.connect();
 
-        Http::Request request(method, "example.com");
+        // TODO: normalize config file
+
+        Http::Request request {config, url};
         std::stringstream request_buffer;
         request.writeRequest(request_buffer);
 
@@ -39,9 +41,35 @@ namespace Express {
         std::cout << output;
     }
 
-    // TODO: add request config
-    auto Client::get(std::string_view url) const -> int {
-        request(Http::Method::Get, url);
-        return 12;
+    auto Client::prepareRequestWithNoData(
+        const Http::Method method,
+        std::string_view url
+    ) const -> void {
+        request({
+            .method = method,
+            .url = url,
+            .headers = {},
+        });
+    }
+
+    auto Client::prepareRequestWithData(
+        const Http::Method method,
+        std::string_view url
+    ) const -> void {
+        request({
+            .method = method,
+            .url = url,
+            .headers = {{
+                {"Content-Type", "multipart/form-data"},
+            }},
+        });
+    }
+
+    auto Client::get(std::string_view url) const -> void {
+        prepareRequestWithNoData(Http::Method::Get, url); 
+    }
+
+    auto Client::post(std::string_view url) const -> void {
+        prepareRequestWithData(Http::Method::Post, url);
     }
 }
