@@ -194,7 +194,7 @@ TEST(url_test, throws_if_the_url_is_empty) {
         try {
             URL url("");
         } catch (const URLError& e) {
-            EXPECT_STREQ("Invalid URL", e.what());
+            EXPECT_STREQ("Invalid URL.", e.what());
             throw;
         }
     }, URLError);
@@ -205,7 +205,7 @@ TEST(url_test, throws_if_theres_no_scheme) {
         try {
             URL url("example.com");
         } catch (const URLError& e) {
-            EXPECT_STREQ("Invalid URL scheme", e.what());
+            EXPECT_STREQ("Invalid URL scheme.", e.what());
             throw;
         }
     }, URLError);
@@ -216,7 +216,7 @@ TEST(url_test, throws_if_theres_an_invalid_scheme_delimiter) {
         try {
             URL url("https:/example.com");
         } catch (const URLError& e) {
-            EXPECT_STREQ("Invalid URL scheme", e.what());
+            EXPECT_STREQ("Invalid URL scheme.", e.what());
             throw;
         }
     }, URLError);

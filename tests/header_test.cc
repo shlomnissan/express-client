@@ -4,13 +4,54 @@
 #include <gtest/gtest.h>
 #include <iostream>
 #include <express/header.h>
+#include <sstream>
+#include <string>
 
 using namespace Express::Http;
 
-// TODO: creates a valid header object "(test ostream)"
-// TODO: throws if the header name is empty
-// TODO: throws if the header name contains invalid characters
-// TODO: throws if the header value contains invalid characters
+TEST(header_test, creates_valid_header_object) {
+    Header header {"Host", "example.com"};
+
+    EXPECT_EQ(header.name(), "Host");
+    EXPECT_EQ(header.value(), "example.com");
+
+    std::stringstream buffer;
+    buffer << header;
+    EXPECT_EQ(buffer.str(), "Host: example.com\r\n");
+}
+
+TEST(header_test, throws_if_the_header_name_is_empty) {
+    EXPECT_THROW({
+        try {
+            Header header("", "value");
+        } catch (const HeaderError& e) {
+            EXPECT_STREQ("Invalid header name.", e.what());
+            throw;
+        }
+    }, HeaderError);
+}
+
+TEST(header_test, throws_if_the_header_name_contains_invalid_characters) {
+    EXPECT_THROW({
+        try {
+            Header header("Invalid-Token(@", "value");
+        } catch (const HeaderError& e) {
+            EXPECT_STREQ("Invalid header name.", e.what());
+            throw;
+        }
+    }, HeaderError);
+}
+
+TEST(header_test, throws_if_the_header_value_contains_invalid_characters) {
+    EXPECT_THROW({
+        try {
+            Header header("Host", "Invisible form feed character \f");
+        } catch (const HeaderError& e) {
+            EXPECT_STREQ("Invalid header value.", e.what());
+            throw;
+        }
+    }, HeaderError);
+}
 
 TEST(collection_header_test, initializes_an_object_with_initializer_list) {
     HeaderCollection headers {{
