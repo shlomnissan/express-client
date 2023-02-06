@@ -4,14 +4,20 @@
 #pragma once
 
 #include <sstream>
-#include <string>
-#include <chrono>
+#include <stdexcept>
 
-#include <express/request_config.h>
+#include <express/header.h>
+#include <express/http_defs.h>
 #include <express/url.h>
 
 namespace Express::Http {
     using Express::Net::URL;
+
+    struct RequestConfig {
+        Method method;
+        std::string_view url;
+        HeaderCollection headers;
+    };
 
     class Request {
     public:
@@ -22,5 +28,9 @@ namespace Express::Http {
     private:
         RequestConfig config_;
         URL url_;
+    };
+
+    struct RequestError : public std::logic_error {
+        using std::logic_error::logic_error;
     };
 }

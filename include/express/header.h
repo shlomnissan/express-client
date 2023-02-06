@@ -28,6 +28,8 @@ namespace Express::Http {
         HeaderCollection() = default;
         HeaderCollection(const std::vector<Header>& headers);
 
+        // TODO: get(std::string_view)
+
         auto add(const Header& header) -> void;
 
         [[nodiscard]] auto front() { return headers_.front(); }

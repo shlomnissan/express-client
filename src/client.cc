@@ -1,18 +1,14 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <express/client.h>
-#include <express/url.h>
-#include <express/socket.h>
-#include <express/request_config.h>
-#include <express/request.h>
-
-#include <ios>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <stdio.h>
-#include <string.h>
+
+#include <express/client.h>
+#include <express/request.h>
+#include <express/socket.h>
+#include <express/url.h>
 
 namespace Express {
     auto Client::request(const Http::RequestConfig& config) const -> void {

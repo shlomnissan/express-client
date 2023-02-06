@@ -5,7 +5,7 @@
 
 #include <string_view>
 
-#include <express/request_config.h>
+#include <express/request.h>
 #include <express/http_defs.h>
 
 namespace Express {
