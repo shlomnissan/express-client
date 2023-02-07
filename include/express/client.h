@@ -17,13 +17,13 @@ namespace Express {
 
     private:
         auto prepareRequestWithNoData(
-            const Http::Method method,
-            std::string_view url
+            std::string_view url,
+            const Http::Method method
         ) const -> void;
 
         auto prepareRequestWithData(
-            const Http::Method method,
-            std::string_view url
+            std::string_view url,
+            const Http::Method method
         ) const -> void;
     };
 }

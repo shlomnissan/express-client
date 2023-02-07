@@ -19,7 +19,7 @@ namespace Express {
 
         // TODO: normalize config file
 
-        Http::Request request {config, url};
+        Http::Request request {url, config};
         std::stringstream request_buffer;
         request.writeRequest(request_buffer);
 
@@ -38,8 +38,8 @@ namespace Express {
     }
 
     auto Client::prepareRequestWithNoData(
-        const Http::Method method,
-        std::string_view url
+        std::string_view url,
+        const Http::Method method
     ) const -> void {
         request({
             .method = method,
@@ -49,23 +49,23 @@ namespace Express {
     }
 
     auto Client::prepareRequestWithData(
-        const Http::Method method,
-        std::string_view url
+        std::string_view url,
+        const Http::Method method
     ) const -> void {
         request({
             .method = method,
             .url = url,
             .headers = {{
-                {"Content-Type", "multipart/form-data"},
+                {"Content-Type", "application/x-www-form-urlencoded"},
             }},
         });
     }
 
     auto Client::get(std::string_view url) const -> void {
-        prepareRequestWithNoData(Http::Method::Get, url); 
+        prepareRequestWithNoData(url, Http::Method::Get); 
     }
 
     auto Client::post(std::string_view url) const -> void {
-        prepareRequestWithData(Http::Method::Post, url);
+        prepareRequestWithData(url, Http::Method::Post);
     }
 }

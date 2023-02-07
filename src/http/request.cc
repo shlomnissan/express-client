@@ -6,7 +6,7 @@
 #include <iostream>
 
 namespace Express::Http {
-    Request::Request(const RequestConfig& config, const URL& url) :
+    Request::Request(const URL& url, const RequestConfig& config) :
         config_(config),
         url_(url) {
         if (url.scheme() != "http") {

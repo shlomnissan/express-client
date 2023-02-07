@@ -21,7 +21,7 @@ namespace Express::Http {
 
     class Request {
     public:
-        Request(const RequestConfig& config, const URL& url);
+        Request(const URL& url, const RequestConfig& config);
 
         auto writeRequest(std::stringstream& buffer) const -> void;
 
