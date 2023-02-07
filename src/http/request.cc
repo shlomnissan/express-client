@@ -13,7 +13,7 @@ namespace Express::Http {
             throw RequestError {"Invalid URL scheme. Only http is supported."};
         }
 
-        config_.headers.add({"Host", url_.host() + ":" + url_.port()});
+        config_.headers.add({"Host", url_.host()});
         config_.headers.add({"User-Agent", "express/0.1"});
         config_.headers.add({"Connection", "close"});
     }
