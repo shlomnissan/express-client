@@ -6,12 +6,15 @@
 #include <iostream>
 
 namespace Express::Http {
-    Request::Request(const URL& url, const RequestConfig& config) :
+    Request::Request(const Net::URL& url, const RequestConfig& config) :
         config_(config),
         url_(url) {
         if (url.scheme() != "http") {
             throw RequestError {"Invalid URL scheme. Only http is supported."};
         }
+
+        // RFC7230 3.2 - A sender MUST NOT send a Content-Length header field in any message
+        // that contains a Transfer-Encoding header field.
 
         config_.headers.add({"Host", url_.host()});
         config_.headers.add({"User-Agent", "express/0.1"});

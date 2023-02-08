@@ -8,8 +8,8 @@
 #include <string_view>
 
 namespace Express::Net {
-    URL::URL(std::string_view url) {
-        parseURL(url);
+    URL::URL(std::string_view url) : source_(url) {
+        parseURL(source_);
     }
 
     auto URL::parseURL(std::string_view url) -> void {

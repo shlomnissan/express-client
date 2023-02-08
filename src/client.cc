@@ -42,19 +42,20 @@ namespace Express {
         const Http::Method method
     ) const -> void {
         request({
-            .method = method,
             .url = url,
-            .headers = {},
+            .method = method,
         });
     }
 
     auto Client::prepareRequestWithData(
         std::string_view url,
+        const Http::Body& data,
         const Http::Method method
     ) const -> void {
         request({
-            .method = method,
             .url = url,
+            .method = method,
+            .body = data,
             .headers = {{
                 {"Content-Type", "application/x-www-form-urlencoded"},
             }},
@@ -65,7 +66,10 @@ namespace Express {
         prepareRequestWithNoData(url, Http::Method::Get); 
     }
 
-    auto Client::post(std::string_view url) const -> void {
-        prepareRequestWithData(url, Http::Method::Post);
+    auto Client::post(
+        std::string_view url,
+        const Http::Body& data
+    ) const -> void {
+        prepareRequestWithData(url, data, Http::Method::Post);
     }
 }

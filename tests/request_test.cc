@@ -10,7 +10,10 @@ using namespace Express::Http;
 
 TEST(request, creates_valid_request_object) {
     Express::Net::URL url {"http://example.com"};
-    Request request {url, {Method::Get}};
+    Request request {url, {
+        .url = url.source(),
+        .method = Method::Get
+    }};
 
     std::stringstream buffer;
     request.writeRequest(buffer);
@@ -28,7 +31,10 @@ TEST(request, throws_error_if_url_scheme_isnt_supported) {
     Express::Net::URL url {"ftp://example.com"};
     EXPECT_THROW({
         try {
-            Request request(url, {Method::Get});
+            Request request(url, {
+                .url = url.source(),
+                .method = Method::Get
+            });
         } catch (const RequestError& e) {
             EXPECT_STREQ(
                 "Invalid URL scheme. Only http is supported.",

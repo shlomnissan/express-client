@@ -6,6 +6,7 @@
 #include <string_view>
 
 #include <express/request.h>
+#include <express/body.h>
 #include <express/http_defs.h>
 
 namespace Express {
@@ -13,7 +14,7 @@ namespace Express {
     public:
         auto request(const Http::RequestConfig& config) const -> void;
         auto get(std::string_view url) const -> void;
-        auto post(std::string_view url) const -> void;
+        auto post(std::string_view url, const Http::Body& data) const -> void;
 
     private:
         auto prepareRequestWithNoData(
@@ -23,6 +24,7 @@ namespace Express {
 
         auto prepareRequestWithData(
             std::string_view url,
+            const Http::Body& data,
             const Http::Method method
         ) const -> void;
     };

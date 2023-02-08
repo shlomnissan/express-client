@@ -12,5 +12,7 @@ TEST(client_test, get) {
 
 TEST(client_test, post) {
     Express::Client client;
-    client.post("http://localhost:5000");
+    client.post("http://localhost:5000", {
+        "Country=Brasil&City=Belo Horizonte"
+    });
 }

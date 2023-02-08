@@ -23,6 +23,8 @@ namespace Express::Http {
         std::string value_;
     };
 
+    auto operator<<(std::ostream& os, const Header& header) -> std::ostream&;
+
     class HeaderCollection {
     public:
         HeaderCollection() = default;
@@ -46,6 +48,4 @@ namespace Express::Http {
     struct HeaderError : public std::runtime_error {
         using std::runtime_error::runtime_error;
     };
-
-    auto operator<<(std::ostream& os, const Header& header) -> std::ostream&;
 }
