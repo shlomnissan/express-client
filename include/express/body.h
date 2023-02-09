@@ -10,12 +10,12 @@
 namespace Express::Http {
     class Body {
     public:
+        Body() = default;
         Body(std::string_view data);
 
         [[nodiscard]] auto str() const -> std::string;
 
     private:
-        // TODO: vector<uint_8> for transmission
         std::stringstream data_;
     };
 }

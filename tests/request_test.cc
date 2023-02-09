@@ -22,8 +22,35 @@ TEST(request, creates_valid_request_object) {
         "GET / HTTP/1.1\r\n"
         "Host: example.com\r\n"
         "User-Agent: express/0.1\r\n"
+        "Content-Length: 0\r\n"
         "Connection: close\r\n"
         "\r\n"
+    );
+}
+
+TEST(request, creates_valid_request_object_with_form_data) {
+    Express::Net::URL url {"http://example.com"};
+    Request request {url, {
+        .url = url.source(),
+        .method = Method::Post,
+        .body = {"firstName=John"},
+        .headers = {{
+            {"Content-Type", "application/x-www-form-urlencoded"}
+        }}
+    }};
+
+    std::stringstream buffer;
+    request.writeRequest(buffer);
+    EXPECT_EQ(
+        buffer.str(),
+        "POST / HTTP/1.1\r\n"
+        "Content-Type: application/x-www-form-urlencoded\r\n"
+        "Host: example.com\r\n"
+        "User-Agent: express/0.1\r\n"
+        "Content-Length: 14\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        "firstName=John"
     );
 }
 

@@ -14,9 +14,9 @@
 namespace Express::Http {
     struct RequestConfig {
         std::string_view url;
-        Method method = Method::Get;
-        const Body& body = {""};
-        HeaderCollection headers = {};
+        Method method {Method::Get};
+        const Body& body {};
+        HeaderCollection headers {};
     };
 
     class Request {

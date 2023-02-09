@@ -3,8 +3,6 @@
 
 #include <express/request.h>
 
-#include <iostream>
-
 namespace Express::Http {
     Request::Request(const Net::URL& url, const RequestConfig& config) :
         config_(config),
@@ -13,11 +11,9 @@ namespace Express::Http {
             throw RequestError {"Invalid URL scheme. Only http is supported."};
         }
 
-        // RFC7230 3.2 - A sender MUST NOT send a Content-Length header field in any message
-        // that contains a Transfer-Encoding header field.
-
         config_.headers.add({"Host", url_.host()});
         config_.headers.add({"User-Agent", "express/0.1"});
+        config_.headers.add({"Content-Length", std::to_string(config_.body.str().size())});
         config_.headers.add({"Connection", "close"});
     }
 
@@ -27,5 +23,6 @@ namespace Express::Http {
             buffer << header;
         } 
         buffer << crlf;
+        buffer << config_.body.str(); 
     }
 }
