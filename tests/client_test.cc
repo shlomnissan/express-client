@@ -4,15 +4,24 @@
 #include <gtest/gtest.h>
 
 #include <express/client.h>
+#include <express/http_defs.h>
 
-TEST(client_test, get) {
-    Express::Client client;
-    client.get("http://localhost:5000");
+using namespace Express;
+
+TEST(client_test, simple_get) {
+    ExpressClient::request({
+        .url = "http://localhost:5000",
+        .method = Http::Method::Get,
+    });
 }
 
-TEST(client_test, post) {
-    Express::Client client;
-    client.post("http://localhost:5000", {
-        "Country=Brasil&City=Belo Horizonte"
+TEST(client_test, simple_post) {
+    ExpressClient::request({
+        .url = "http://localhost:5000",
+        .method = Http::Method::Post,
+        .body = {"Country=Brasil&City=Belo Horizonte"},
+        .headers = {{
+            {"Content-Type", "application/x-www-form-urlencoded"}
+        }}
     });
 }

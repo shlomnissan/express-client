@@ -10,22 +10,8 @@
 #include <express/http_defs.h>
 
 namespace Express {
-    class Client {
+    class ExpressClient {
     public:
-        auto request(const Http::RequestConfig& config) const -> void;
-        auto get(std::string_view url) const -> void;
-        auto post(std::string_view url, const Http::Body& data) const -> void;
-
-    private:
-        auto prepareRequestWithNoData(
-            std::string_view url,
-            const Http::Method method
-        ) const -> void;
-
-        auto prepareRequestWithData(
-            std::string_view url,
-            const Http::Body& data,
-            const Http::Method method
-        ) const -> void;
+        static auto request(const Http::RequestConfig& config) -> void;
     };
 }

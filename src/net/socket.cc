@@ -9,7 +9,7 @@
 namespace Express::Net {
     Socket::Socket(const Endpoint& endpoint)
         : address_len_(endpoint.getAddressLength()),
-            address_(endpoint.getAddress()) {
+          address_(endpoint.getAddress()) {
         fd_socket_ = socket(
             endpoint.getFamily(),
             endpoint.getSocketType(),

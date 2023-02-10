@@ -55,6 +55,9 @@ namespace Express::Net {
                 path_.resize(query_pos);
             }
         }
+
+        // TODO: scheme to port if not specified
+        // https://gist.github.com/mahmoud/2fe281a8daaff26cfe9c15d2c5bf5c8b
     }
 
     auto URL::processAuthority(std::string_view authority) -> void {
