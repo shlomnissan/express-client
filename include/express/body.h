@@ -3,19 +3,47 @@
 
 #pragma once
 
-#include <sstream>
+#include <vector>
 #include <string>
 #include <string_view>
 
-namespace Express::Http {
-    class Body {
+namespace Express::Http::Body {
+    class __Base {
     public:
-        Body() = default;
-        Body(std::string_view data);
+        __Base() = default;
+        virtual auto contentType() const -> std::string { return ""; };
+        virtual auto size() const -> std::size_t { return 0; }
+        virtual auto data() const -> std::string { return ""; }
 
-        [[nodiscard]] auto str() const -> std::string;
+        virtual ~__Base() = default; 
+    };
+
+    class FormFields : public __Base {
+        class FormField;
+
+    public:
+        explicit FormFields(const std::vector<FormField>& fields);
+
+        [[nodiscard]] auto contentType() const -> std::string override;
+        [[nodiscard]] auto size() const -> std::size_t override;
+        [[nodiscard]] auto data() const -> std::string override;
+
+        ~FormFields() override = default; 
 
     private:
-        std::stringstream data_;
+        class FormField {
+        public:
+            FormField(std::string_view key, std::string_view value)
+                : key_(key), value_(value) {}
+
+            [[nodiscard]] auto key() const { return key_; }
+            [[nodiscard]] auto value() const { return value_; }
+
+        private:
+            std::string key_;
+            std::string value_;
+        };
+
+        std::string data_;
     };
 }

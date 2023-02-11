@@ -24,7 +24,7 @@ using namespace Express;
 auto response = ExpressClient::request({
     .url = "http://example.com/user/12345",
     .method = Http::Method::Post,
-    .data = Body::FormFields {{
+    .data = Http::Body::FormFields {{
         {"firstName", "Fred"},
         {"lastName", "Flintstone"}
     }}

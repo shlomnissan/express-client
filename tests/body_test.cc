@@ -5,10 +5,13 @@
 
 #include <express/body.h>
 
-using namespace Express::Http;
+using namespace Express::Http::Body;
 
-TEST(body_test, initializes_body_with_string) {
-    Body body {"Country=Brasil&City=Belo Horizonte"};
+TEST(body_test, initializes_form_fields) {
+    FormFields fields {{
+        {"firstName", "Fred"},
+        {"lastName", "Flinstone"}
+    }};
 
-    EXPECT_EQ(body.str(), "Country=Brasil&City=Belo Horizonte");
+    EXPECT_EQ(fields.data(), "firstName=Fred&lastName=Flinstone");
 }

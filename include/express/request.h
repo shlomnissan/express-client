@@ -4,6 +4,7 @@
 #pragma once
 
 #include <sstream>
+#include <string>
 #include <stdexcept>
 
 #include <express/header.h>
@@ -15,7 +16,7 @@ namespace Express::Http {
     struct RequestConfig {
         std::string_view url;
         Method method {Method::Get};
-        const Body& body {};
+        const Body::__Base& body {};
         HeaderCollection headers {};
     };
 
@@ -27,6 +28,7 @@ namespace Express::Http {
 
     private:
         RequestConfig config_;
+        std::string data_;
         Net::URL url_;
     };
 

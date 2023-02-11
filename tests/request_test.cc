@@ -22,7 +22,6 @@ TEST(request, creates_valid_request_object) {
         "GET / HTTP/1.1\r\n"
         "Host: example.com\r\n"
         "User-Agent: express/0.1\r\n"
-        "Content-Length: 0\r\n"
         "Connection: close\r\n"
         "\r\n"
     );
@@ -33,7 +32,10 @@ TEST(request, creates_valid_request_object_with_form_data) {
     Request request {url, {
         .url = url.source(),
         .method = Method::Post,
-        .body = {"firstName=John"},
+        .body = Body::FormFields {{
+            {"firstName", "Fred"},
+            {"lastName", "Flintstone"}
+        }},
         .headers = {{
             {"Content-Type", "application/x-www-form-urlencoded"}
         }}
@@ -47,10 +49,10 @@ TEST(request, creates_valid_request_object_with_form_data) {
         "Content-Type: application/x-www-form-urlencoded\r\n"
         "Host: example.com\r\n"
         "User-Agent: express/0.1\r\n"
-        "Content-Length: 14\r\n"
+        "Content-Length: 34\r\n"
         "Connection: close\r\n"
         "\r\n"
-        "firstName=John"
+        "firstName=Fred&lastName=Flintstone"
     );
 }
 

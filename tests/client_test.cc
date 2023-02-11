@@ -19,9 +19,9 @@ TEST(client_test, simple_post) {
     ExpressClient::request({
         .url = "http://localhost:5000",
         .method = Http::Method::Post,
-        .body = {"Country=Brasil&City=Belo Horizonte"},
-        .headers = {{
-            {"Content-Type", "application/x-www-form-urlencoded"}
-        }}
+        .body = Http::Body::FormFields {{
+            {"firstName", "Fred"},
+            {"lastName", "Flintstone"}
+        }},
     });
 }

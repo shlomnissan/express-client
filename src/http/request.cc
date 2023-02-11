@@ -7,13 +7,21 @@ namespace Express::Http {
     Request::Request(const Net::URL& url, const RequestConfig& config) :
         config_(config),
         url_(url) {
+        // TODO: Move this check to the request (socket should not connect)
         if (url.scheme() != "http") {
             throw RequestError {"Invalid URL scheme. Only http is supported."};
         }
-
         config_.headers.add({"Host", url_.host()});
         config_.headers.add({"User-Agent", "express/0.1"});
-        config_.headers.add({"Content-Length", std::to_string(config_.body.str().size())});
+        if (config_.body.size()) {
+            // TODO: Must be a valid body request or ignore?
+            config_.headers.add({"Content-Type", config_.body.contentType()});
+            config_.headers.add({"Content-Length", std::to_string(config_.body.size())});
+
+            // The body in the configuration object is a reference to a temp,
+            // so we need to store a copy of the data locally.
+            data_ = config_.body.data();
+        }
         config_.headers.add({"Connection", "close"});
     }
 
@@ -21,8 +29,8 @@ namespace Express::Http {
         buffer << config_.method << " " << "/ HTTP/1.1" << crlf;
         for (const auto& header : config_.headers) {
             buffer << header;
-        } 
+        }
         buffer << crlf;
-        buffer << config_.body.str(); 
+        buffer << data_;
     }
 }
