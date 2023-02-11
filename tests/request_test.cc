@@ -55,21 +55,3 @@ TEST(request, creates_valid_request_object_with_form_data) {
         "firstName=Fred&lastName=Flintstone"
     );
 }
-
-TEST(request, throws_error_if_url_scheme_isnt_supported) {
-    Express::Net::URL url {"ftp://example.com"};
-    EXPECT_THROW({
-        try {
-            Request request(url, {
-                .url = url.source(),
-                .method = Method::Get
-            });
-        } catch (const RequestError& e) {
-            EXPECT_STREQ(
-                "Invalid URL scheme. Only http is supported.",
-                e.what()
-            );
-            throw;
-        }
-    }, RequestError);
-}

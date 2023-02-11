@@ -7,10 +7,6 @@ namespace Express::Http {
     Request::Request(const Net::URL& url, const RequestConfig& config) :
         config_(config),
         url_(url) {
-        // TODO: Move this check to the request (socket should not connect)
-        if (url.scheme() != "http") {
-            throw RequestError {"Invalid URL scheme. Only http is supported."};
-        }
         config_.headers.add({"Host", url_.host()});
         config_.headers.add({"User-Agent", "express/0.1"});
         if (config_.body.size()) {

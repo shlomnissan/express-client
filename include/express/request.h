@@ -31,8 +31,4 @@ namespace Express::Http {
         std::string data_;
         Net::URL url_;
     };
-
-    struct RequestError : public std::logic_error {
-        using std::logic_error::logic_error;
-    };
 }

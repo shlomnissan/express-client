@@ -8,14 +8,14 @@
 
 using namespace Express;
 
-TEST(client_test, simple_get) {
+TEST(client, simple_get) {
     ExpressClient::request({
         .url = "http://localhost:5000",
         .method = Http::Method::Get,
     });
 }
 
-TEST(client_test, simple_post) {
+TEST(client, simple_post) {
     ExpressClient::request({
         .url = "http://localhost:5000",
         .method = Http::Method::Post,
@@ -24,4 +24,21 @@ TEST(client_test, simple_post) {
             {"lastName", "Flintstone"}
         }},
     });
+}
+
+TEST(client, throws_error_if_url_scheme_isnt_supported) {
+    EXPECT_THROW({
+        try {
+            ExpressClient::request({
+                .url = "https://localhost:5000",
+                .method = Http::Method::Get,
+            });
+        } catch (const ExpressClientError& e) {
+            EXPECT_STREQ(
+                "Invalid URL scheme. Only http is supported.",
+                e.what()
+            );
+            throw;
+        }
+    }, ExpressClientError);
 }
