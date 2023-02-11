@@ -6,10 +6,7 @@
 #include <express/validators.h>
 
 namespace Express::Http {
-    Header::Header(std::string_view name, std::string_view value)
-        : name_(name), value_(value) {
-        using namespace Validators;
-
+    Header::Header(std::string_view name, std::string_view value) : name_(name), value_(value) {
         if (name_.empty()) {
             throw HeaderError {"Invalid header name."};
         }
@@ -21,7 +18,7 @@ namespace Express::Http {
         }
 
         for (const auto c : value) {
-            if (!is_visible(c) && !is_whitespace(c) && !is_obsolete_text(c)) {
+            if (!Validators::is_valid_char(c)) {
                 throw HeaderError {"Invalid header value."};
             }
         }

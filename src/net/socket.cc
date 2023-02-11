@@ -1,6 +1,7 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
+#include <cstdint>
 #include <express/socket.h>
 
 #include <sys/socket.h>
@@ -31,8 +32,8 @@ namespace Express::Net {
         return ::send(fd_socket_, buffer.data(), buffer.size(), 0);
     }
 
-    auto Socket::recv(char* buffer) const -> long {
-        return ::recv(fd_socket_, buffer, 2048, 0);
+    auto Socket::recv(uint8_t* buffer) const -> long {
+        return ::recv(fd_socket_, buffer, BUFSIZ, 0);
     }
 
     Socket::~Socket() {

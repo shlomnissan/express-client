@@ -55,4 +55,9 @@ namespace Express::Http::Validators {
         return static_cast<unsigned char>(c) >= 0x80 &&
                static_cast<unsigned char>(c) <= 0xFF;
     }
+
+    template <typename TChar>
+    [[nodiscard]] auto constexpr is_valid_char(TChar c) noexcept {
+        return is_visible(c) || is_whitespace(c) || is_obsolete_text(c);
+    }
 }

@@ -7,6 +7,7 @@
 
 #include <express/client.h>
 #include <express/request.h>
+#include <express/response.h>
 #include <express/socket.h>
 #include <express/url.h>
 
@@ -21,23 +22,22 @@ namespace Express {
         Net::Socket socket {{url.host(), url.port()}};
         socket.connect();
 
-        // TODO: normalize config file
-
-        Http::Request request {url, config};
+        // TODO: Remove writeRequest. Use constructor and an accessor instead
         std::stringstream request_buffer;
+        Http::Request request {url, config};
         request.writeRequest(request_buffer);
 
         socket.send(request_buffer.str());
 
-        std::stringstream response_buffer;
-        char buffer[BUFSIZ];
-        std::streamsize bytes = 0;
-        while ((bytes = socket.recv(buffer)) > 0) {
-            response_buffer.write(buffer, bytes);
-            response_buffer << Http::crlf;
+        uint8_t temp_buffer[BUFSIZ];
+        Http::Response response;
+        while (true) {
+            auto size = socket.recv(temp_buffer);
+            if (size == 0) {
+                break; // disconnected
+            }
+            response.feed(temp_buffer, size);
+            // TODO: we should also break if we're done processing the data
         }
-
-        auto output = response_buffer.str();
-        std::cout << output;
     }
 }

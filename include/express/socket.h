@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <express/endpoint.h>
 
 #include <string_view>
@@ -21,7 +22,7 @@ namespace Express::Net {
 
         auto connect() const -> void;
         auto send(std::string_view buffer) const -> long;
-        auto recv(char* buffer) const -> long;
+        auto recv(uint8_t* buffer) const -> long;
 
         ~Socket();
 
