@@ -7,7 +7,7 @@
 
 using namespace Express::Net;
 
-TEST(url_test, parses_complete_url) {
+TEST(url, parses_complete_url) {
     URL url("https://user:pass@example.com:80/user?q=foo#bar"); 
 
     EXPECT_EQ(url.scheme(), "https");
@@ -21,7 +21,7 @@ TEST(url_test, parses_complete_url) {
     EXPECT_EQ(url.fragment(), "bar");
 }
 
-TEST(url_test, parses_simple_url) {
+TEST(url, parses_simple_url) {
     URL url("http://example.com");
 
     EXPECT_EQ(url.scheme(), "http");
@@ -35,7 +35,7 @@ TEST(url_test, parses_simple_url) {
     EXPECT_EQ(url.fragment(), "");
 }
 
-TEST(url_test, parses_simple_url_with_path) {
+TEST(url, parses_simple_url_with_path) {
     URL url("https://example.com/user");
 
     EXPECT_EQ(url.scheme(), "https");
@@ -49,7 +49,7 @@ TEST(url_test, parses_simple_url_with_path) {
     EXPECT_EQ(url.fragment(), "");
 }
 
-TEST(url_test, parses_url_with_multiple_path_segments) {
+TEST(url, parses_url_with_multiple_path_segments) {
     URL url("https://www.example.com/user/david/image.png");
 
     EXPECT_EQ(url.scheme(), "https");
@@ -63,7 +63,7 @@ TEST(url_test, parses_url_with_multiple_path_segments) {
     EXPECT_EQ(url.fragment(), "");
 }
 
-TEST(url_test, parses_url_with_query_and_fragment_no_path) {
+TEST(url, parses_url_with_query_and_fragment_no_path) {
     URL url("https://example.com?q=foo#bar");
 
     EXPECT_EQ(url.scheme(), "https");
@@ -77,7 +77,7 @@ TEST(url_test, parses_url_with_query_and_fragment_no_path) {
     EXPECT_EQ(url.fragment(), "bar");
 }
 
-TEST(url_test, parses_url_with_query_and_fragment_no_path_after_slash) {
+TEST(url, parses_url_with_query_and_fragment_no_path_after_slash) {
     URL url("https://example.com/?q=foo#bar");
 
     EXPECT_EQ(url.scheme(), "https");
@@ -91,7 +91,7 @@ TEST(url_test, parses_url_with_query_and_fragment_no_path_after_slash) {
     EXPECT_EQ(url.fragment(), "bar");
 }
 
-TEST(url_test, parses_url_with_query_no_path) {
+TEST(url, parses_url_with_query_no_path) {
     URL url("https://example.com?q=foo");
 
     EXPECT_EQ(url.scheme(), "https");
@@ -105,7 +105,7 @@ TEST(url_test, parses_url_with_query_no_path) {
     EXPECT_EQ(url.fragment(), "");
 }
 
-TEST(url_test, parses_url_with_query_and_path) {
+TEST(url, parses_url_with_query_and_path) {
     URL url("https://example.com/user?q=foo");
 
     EXPECT_EQ(url.scheme(), "https");
@@ -119,7 +119,7 @@ TEST(url_test, parses_url_with_query_and_path) {
     EXPECT_EQ(url.fragment(), "");
 }
 
-TEST(url_test, parses_url_with_fragment_no_path) {
+TEST(url, parses_url_with_fragment_no_path) {
     URL url("https://example.com#bar");
 
     EXPECT_EQ(url.scheme(), "https");
@@ -133,7 +133,7 @@ TEST(url_test, parses_url_with_fragment_no_path) {
     EXPECT_EQ(url.fragment(), "bar");
 }
 
-TEST(url_test, parses_url_with_fragment_and_path) {
+TEST(url, parses_url_with_fragment_and_path) {
     URL url("https://example.com/user#bar");
 
     EXPECT_EQ(url.scheme(), "https");
@@ -147,7 +147,7 @@ TEST(url_test, parses_url_with_fragment_and_path) {
     EXPECT_EQ(url.fragment(), "bar");
 }
 
-TEST(url_test, parses_url_with_empty_user_info) {
+TEST(url, parses_url_with_empty_user_info) {
     URL url("https://@example.com");
 
     EXPECT_EQ(url.scheme(), "https");
@@ -161,7 +161,7 @@ TEST(url_test, parses_url_with_empty_user_info) {
     EXPECT_EQ(url.fragment(), "");
 }
 
-TEST(url_test, parses_url_with_username_and_no_password) {
+TEST(url, parses_url_with_username_and_no_password) {
     URL url("https://user@example.com");
 
     EXPECT_EQ(url.scheme(), "https");
@@ -175,7 +175,7 @@ TEST(url_test, parses_url_with_username_and_no_password) {
     EXPECT_EQ(url.fragment(), "");
 }
 
-TEST(url_test, parses_url_with_password_and_no_username) {
+TEST(url, parses_url_with_password_and_no_username) {
     URL url("https://:pass@example.com");
 
     EXPECT_EQ(url.scheme(), "https");
@@ -189,7 +189,7 @@ TEST(url_test, parses_url_with_password_and_no_username) {
     EXPECT_EQ(url.fragment(), "");
 }
 
-TEST(url_test, throws_if_the_url_is_empty) {
+TEST(url, throws_if_the_url_is_empty) {
     EXPECT_THROW({
         try {
             URL url("");
@@ -200,7 +200,7 @@ TEST(url_test, throws_if_the_url_is_empty) {
     }, URLError);
 }
 
-TEST(url_test, throws_if_theres_no_scheme) {
+TEST(url, throws_if_theres_no_scheme) {
     EXPECT_THROW({
         try {
             URL url("example.com");
@@ -211,7 +211,7 @@ TEST(url_test, throws_if_theres_no_scheme) {
     }, URLError);
 }
 
-TEST(url_test, throws_if_theres_an_invalid_scheme_delimiter) {
+TEST(url, throws_if_theres_an_invalid_scheme_delimiter) {
     EXPECT_THROW({
         try {
             URL url("https:/example.com");

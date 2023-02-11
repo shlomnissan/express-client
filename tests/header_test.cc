@@ -9,7 +9,7 @@
 
 using namespace Express::Http;
 
-TEST(header_test, creates_valid_header_object) {
+TEST(header, creates_valid_header_object) {
     Header header {"Host", "example.com"};
 
     EXPECT_EQ(header.name(), "Host");
@@ -20,7 +20,7 @@ TEST(header_test, creates_valid_header_object) {
     EXPECT_EQ(buffer.str(), "Host: example.com\r\n");
 }
 
-TEST(header_test, throws_if_the_header_name_is_empty) {
+TEST(header, throws_if_the_header_name_is_empty) {
     EXPECT_THROW({
         try {
             Header header("", "value");
@@ -31,7 +31,7 @@ TEST(header_test, throws_if_the_header_name_is_empty) {
     }, HeaderError);
 }
 
-TEST(header_test, throws_if_the_header_name_contains_invalid_characters) {
+TEST(header, throws_if_the_header_name_contains_invalid_characters) {
     EXPECT_THROW({
         try {
             Header header("Invalid-Token(@", "value");
@@ -42,7 +42,7 @@ TEST(header_test, throws_if_the_header_name_contains_invalid_characters) {
     }, HeaderError);
 }
 
-TEST(header_test, throws_if_the_header_value_contains_invalid_characters) {
+TEST(header, throws_if_the_header_value_contains_invalid_characters) {
     EXPECT_THROW({
         try {
             Header header("Host", "Invisible form feed character \f");
@@ -53,7 +53,7 @@ TEST(header_test, throws_if_the_header_value_contains_invalid_characters) {
     }, HeaderError);
 }
 
-TEST(collection_header_test, initializes_an_object_with_initializer_list) {
+TEST(collection_header, initializes_an_object_with_initializer_list) {
     HeaderCollection headers {{
         {"Host", "example.com"},
         {"User-Agent", "express/0.1"}
@@ -65,7 +65,7 @@ TEST(collection_header_test, initializes_an_object_with_initializer_list) {
     EXPECT_EQ(headers.back().value(), "express/0.1");
 }
 
-TEST(collection_header_test, adds_headers_to_the_collection) {
+TEST(collection_header, adds_headers_to_the_collection) {
     HeaderCollection headers;
     headers.add({"Host", "example.com"});
 
@@ -73,7 +73,7 @@ TEST(collection_header_test, adds_headers_to_the_collection) {
     EXPECT_EQ(headers.front().value(), "example.com");
 }
 
-TEST(collection_header_test, overrides_headers_if_the_same_name_is_used) {
+TEST(collection_header, overrides_headers_if_the_same_name_is_used) {
     HeaderCollection headers {{
         {"Host", "example.com"},
     }};
@@ -83,7 +83,7 @@ TEST(collection_header_test, overrides_headers_if_the_same_name_is_used) {
     EXPECT_EQ(headers.front().value(), "google.com");
 }
 
-TEST(collection_header_test, iterates_through_the_collection_using_iterators) {
+TEST(collection_header, iterates_through_the_collection_using_iterators) {
     HeaderCollection headers {{
         {"Host", "example.com"},
         {"User-Agent", "express/0.1"}

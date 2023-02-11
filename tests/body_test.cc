@@ -7,7 +7,7 @@
 
 using namespace Express::Http::Body;
 
-TEST(body_test, initializes_form_fields) {
+TEST(body, initializes_form_fields) {
     FormFields fields {{
         {"firstName", "Fred"},
         {"lastName", "Flinstone"}

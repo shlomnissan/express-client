@@ -8,14 +8,6 @@
 
 using namespace Express::Net;
 
-TEST(socket_test, basic_test) {
+TEST(socket, basic_test) {
     // TODO: impl. 
-}
-
-TEST(socket_test, throws_initialization_error) {
-    // TODO: impl.
-}
-
-TEST(socket_test, throws_connection_error) {
-    // TODO: impl.
 }

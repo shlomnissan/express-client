@@ -8,7 +8,7 @@
 
 using namespace Express::Net;
 
-TEST(endpoint_test, basic_test) {
+TEST(endpoint, basic_test) {
     Endpoint endpoint {"example.com", "80"};
 
     EXPECT_EQ(endpoint.getFamily(), AF_INET);
@@ -18,7 +18,7 @@ TEST(endpoint_test, basic_test) {
     EXPECT_TRUE(endpoint.getAddress() != nullptr);
 }
 
-TEST(endpoint_test, throws_initialization_error) {
+TEST(endpoint, throws_initialization_error) {
     EXPECT_THROW({
         Endpoint endpoint("invalid-address", "80");
     }, InvalidAddress);
