@@ -4,29 +4,29 @@
 #pragma once
 
 namespace Express::Http::Validators {
-    template <typename TChar>
+    template<typename TChar>
     [[nodiscard]] auto constexpr is_digit(TChar c) noexcept {
         return c >= 0x30 && c <= 0x39;
     }
 
-    template <typename T>
+    template<typename T>
     [[nodiscard]] auto constexpr is_digit_range(T range) noexcept {
         for (auto c : range) if (!is_digit(c)) return false;
         return true;
     }
 
-    template <typename TChar>
+    template<typename TChar>
     [[nodiscard]] auto constexpr is_alpha(TChar c) noexcept {
         return (c >= 0x61 && c <= 0x7A) || // a - z
                (c >= 0x41 && c <= 0x5A);   // A - Z
     }
 
-    template <typename TChar>
+    template<typename TChar>
     [[nodiscard]] auto constexpr is_alnum(TChar c) noexcept {
         return is_alpha(c) || is_digit(c);
     }
 
-    template <typename TChar>
+    template<typename TChar>
     [[nodiscard]] auto constexpr is_token(TChar c) noexcept {
         return c == 0x21 || // =!
                c == 0x23 || // #
@@ -46,34 +46,34 @@ namespace Express::Http::Validators {
                is_alnum(c);
     }
 
-    template <typename T>
+    template<typename T>
     [[nodiscard]] auto constexpr is_token_range(T range) noexcept {
         for (auto c : range) if (!is_token(c)) return false;
         return true;
     }
 
-    template <typename TChar>
+    template<typename TChar>
     [[nodiscard]] auto constexpr is_whitespace(TChar c) noexcept {
         return c == 0x20 || c == 0x09;
     }
 
-    template <typename TChar>
+    template<typename TChar>
     [[nodiscard]] auto constexpr is_visible(TChar c) noexcept {
         return c >= 0x21 && c <= 0x7E;
     }
 
-    template <typename TChar>
+    template<typename TChar>
     [[nodiscard]] auto constexpr is_obsolete_text(TChar c) noexcept {
         return static_cast<unsigned char>(c) >= 0x80 &&
                static_cast<unsigned char>(c) <= 0xFF;
     }
 
-    template <typename TChar>
+    template<typename TChar>
     [[nodiscard]] auto constexpr is_valid_char(TChar c) noexcept {
         return is_visible(c) || is_whitespace(c) || is_obsolete_text(c);
     }
 
-    template <typename T>
+    template<typename T>
     [[nodiscard]] auto constexpr is_valid_char_range(T range) noexcept {
         for (auto c : range) if (!is_valid_char(c)) return false;
         return true;

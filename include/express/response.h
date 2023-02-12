@@ -31,7 +31,7 @@ namespace Express::Http {
         auto processHeaders() -> void;
         auto parseStatusLine(const std::string& status_line) -> void;
 
-        template <class Iterator>
+        template<class Iterator>
         auto tokenzieHeaders(const Iterator begin, const Iterator end) {
             std::string data {begin, end};
             std::vector<std::string> tokens;
