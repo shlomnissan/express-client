@@ -7,20 +7,18 @@
 
 namespace Express::Http {
     Header::Header(std::string_view name, std::string_view value) : name_(name), value_(value) {
+        using namespace Validators;
+
         if (name_.empty()) {
             throw HeaderError {"Invalid header name."};
         }
 
-        for (const auto c : name) {
-            if (!Validators::is_token(c)) {
-                throw HeaderError {"Invalid header name."};
-            }
+        if (!is_token_range(name)) {
+            throw HeaderError {"Invalid header name."};
         }
 
-        for (const auto c : value) {
-            if (!Validators::is_valid_char(c)) {
-                throw HeaderError {"Invalid header value."};
-            }
+        if (!is_valid_char_range(value)) {
+            throw HeaderError {"Invalid header value."};
         }
     }
 

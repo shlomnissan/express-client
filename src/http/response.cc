@@ -1,8 +1,6 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <sstream>
-
 #include <express/response.h>
 #include <express/validators.h>
 
@@ -34,42 +32,42 @@ namespace Express::Http {
         auto tokens = tokenzieHeaders(headers_begin, headers_end);
 
         parseStatusLine(tokens.front());
+        // parse headers
 
         data_.erase(headers_begin, headers_end + 2);
 
         parsing_body_ = true;
     }
 
-    auto Response::parseStatusLine(const std::string& status) -> void {
-        auto token = "HTTP/"s;
-        if (!status.starts_with(token)) {
-            // TODO: raise an error bad status line
+    // RFC7230, 3.1.2. Status Line
+    auto Response::parseStatusLine(const std::string& status_line) -> void {
+        using namespace Validators;
+        auto status = status_line;
+        if (!status.starts_with("HTTP/"s)) {
+            throw ResponseError {"Malformed status line"};
         }
 
-        // TODO: generalize tokenize string
-        std::stringstream data_stream {status.substr(token.size())};
-        std::vector<std::string> tokens;
-        while (getline(data_stream, token, ' ')) {
-            tokens.emplace_back(token);
+        // HTML version
+        status = status.substr(status.find('/') + 1);
+        auto version = status.substr(0, status.find(0x20));
+        if (version != "1.0" && version != "1.1") {
+            throw ResponseError {"Unsupported HTML version (" + version + ")"};
         }
-        if (size(tokens) != 3) {
-            // TODO: incomplete status line
-        }
+        status = status.substr(4);
 
-        if (tokens[0] != "1.0" || tokens[0] != "1.1") {
-            // TODO: raise an error, invalid version
+        // status code
+        auto separator = status.find(0x20);
+        auto status_code = status.substr(0, separator);
+        if (separator != 3 && !is_digit_range(status_code)) {
+            throw ResponseError {"Invalid status code (" + status_code + ")"};
         }
-
-        response_.status_code = stoi(tokens[1]);
-        if (tokens[1].size() != 3 || response_.status_code < 100 || response_.status_code > 599) {
-            // TODO: raise an error, invalid status code
+        response_.status_code = std::stoi(status_code);
+        
+        // reason phrase
+        auto response_phrase = status.substr(separator + 1);
+        if (!is_valid_char_range(response_phrase)) {
+            throw HeaderError {"Invalid characters in reason phrase"};
         }
-
-        response_.status_text = tokens[2];
-        for (auto c : response_.status_text) {
-            if (!Validators::is_valid_char(c)) {
-                // TODO: invalid message
-            }
-        }
+        response_.status_text = status.substr(separator + 1);
     }
 }

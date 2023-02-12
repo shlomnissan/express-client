@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include <cstdint>
-#include <array>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -30,7 +29,7 @@ namespace Express::Http {
         ResponseObject response_;
 
         auto processHeaders() -> void;
-        auto parseStatusLine(const std::string& status) -> void;
+        auto parseStatusLine(const std::string& status_line) -> void;
 
         template <class Iterator>
         auto tokenzieHeaders(const Iterator begin, const Iterator end) {
@@ -44,5 +43,10 @@ namespace Express::Http {
             }
             return tokens;
         }
+    };
+
+    struct ResponseError : public std::runtime_error {
+    public:
+        using std::runtime_error::runtime_error;
     };
 }

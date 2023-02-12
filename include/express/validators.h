@@ -9,6 +9,12 @@ namespace Express::Http::Validators {
         return c >= 0x30 && c <= 0x39;
     }
 
+    template <typename T>
+    [[nodiscard]] auto constexpr is_digit_range(T range) noexcept {
+        for (auto c : range) if (!is_digit(c)) return false;
+        return true;
+    }
+
     template <typename TChar>
     [[nodiscard]] auto constexpr is_alpha(TChar c) noexcept {
         return (c >= 0x61 && c <= 0x7A) || // a - z
@@ -40,6 +46,12 @@ namespace Express::Http::Validators {
                is_alnum(c);
     }
 
+    template <typename T>
+    [[nodiscard]] auto constexpr is_token_range(T range) noexcept {
+        for (auto c : range) if (!is_token(c)) return false;
+        return true;
+    }
+
     template <typename TChar>
     [[nodiscard]] auto constexpr is_whitespace(TChar c) noexcept {
         return c == 0x20 || c == 0x09;
@@ -59,5 +71,11 @@ namespace Express::Http::Validators {
     template <typename TChar>
     [[nodiscard]] auto constexpr is_valid_char(TChar c) noexcept {
         return is_visible(c) || is_whitespace(c) || is_obsolete_text(c);
+    }
+
+    template <typename T>
+    [[nodiscard]] auto constexpr is_valid_char_range(T range) noexcept {
+        for (auto c : range) if (!is_valid_char(c)) return false;
+        return true;
     }
 }
