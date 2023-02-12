@@ -14,23 +14,8 @@ namespace Express::Http {
         return "";
     }
 
-    auto statusCodeString(StatusCode code) {
-        switch (code) {
-#define STATUS_CODE(_, name, str) \
-    case StatusCode::name: return str;
-            STATUS_CODES
-#undef STATUS_CODE
-        }
-        return "";
-    }
-
     auto operator<<(std::ostream& os, Method method) -> std::ostream& {
         os << methodString(method);
-        return os;
-    }
-
-    auto operator<<(std::ostream& os, StatusCode code) -> std::ostream& {
-        os << statusCodeString(code);
         return os;
     }
 }
