@@ -7,7 +7,7 @@
 namespace Express::Http {
     using namespace std::string_literals;
 
-    auto Response::feed(uint8_t* buffer, std::size_t size) -> void {
+    auto ResponseParser::feed(uint8_t* buffer, std::size_t size) -> void {
         data_.insert(end(data_), buffer, buffer + size);
 
         if (!parsing_body_) {
@@ -19,7 +19,7 @@ namespace Express::Http {
         }
     }
 
-    auto Response::processHeaders() -> void {
+    auto ResponseParser::processHeaders() -> void {
         const std::array<uint8_t, 4> header_separator = {0xD, 0xA, 0xD, 0xA};
         auto iter = std::search(
             begin(data_), end(data_),
@@ -40,7 +40,7 @@ namespace Express::Http {
     }
 
     // RFC7230, 3.1.2. Status Line
-    auto Response::parseStatusLine(const std::string& status_line) -> void {
+    auto ResponseParser::parseStatusLine(const std::string& status_line) -> void {
         using namespace Validators;
         auto status = status_line;
         if (!status.starts_with("HTTP/"s)) {

@@ -5,18 +5,19 @@
 
 #include <express/client.h>
 #include <express/http_defs.h>
+#include <iostream>
 
 using namespace Express;
 
 TEST(client, simple_get) {
-    ExpressClient::request({
+    auto reponse = ExpressClient::request({
         .url = "http://localhost:5000",
         .method = Http::Method::Get,
     });
 }
 
 TEST(client, simple_post) {
-    ExpressClient::request({
+    auto response = ExpressClient::request({
         .url = "http://localhost:5000",
         .method = Http::Method::Post,
         .body = Http::Body::FormFields {{

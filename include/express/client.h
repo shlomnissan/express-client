@@ -7,13 +7,14 @@
 #include <stdexcept>
 
 #include <express/request.h>
+#include <express/response.h>
 #include <express/body.h>
 #include <express/http_defs.h>
 
 namespace Express {
     class ExpressClient {
     public:
-        static auto request(const Http::RequestConfig& config) -> void;
+        static auto request(const Http::RequestConfig& config) -> Http::Response;
     };
 
     struct ExpressClientError : public std::logic_error {

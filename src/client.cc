@@ -7,12 +7,11 @@
 
 #include <express/client.h>
 #include <express/request.h>
-#include <express/response.h>
 #include <express/socket.h>
 #include <express/url.h>
 
 namespace Express {
-    auto ExpressClient::request(const Http::RequestConfig& config) -> void {
+    auto ExpressClient::request(const Http::RequestConfig& config) -> Http::Response {
         Net::URL url {config.url};
 
         if (url.scheme() != "http") {
@@ -30,14 +29,16 @@ namespace Express {
         socket.send(request_buffer.str());
 
         uint8_t temp_buffer[BUFSIZ];
-        Http::Response response;
+        Http::ResponseParser response_parser;
         while (true) {
             auto size = socket.recv(temp_buffer);
             if (size == 0) {
                 break; // disconnected
             }
-            response.feed(temp_buffer, size);
+            response_parser.feed(temp_buffer, size);
             // TODO: we should also break if we're done processing the data
         }
+
+        return response_parser.response();
     }
 }

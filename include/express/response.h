@@ -10,23 +10,25 @@
 #include <express/header.h>
 
 namespace Express::Http {
-    struct ResponseObject {
+    struct Response {
         int status_code;
         std::string status_text;
         std::vector<uint8_t> body;
         HeaderCollection headers;
     };
 
-    class Response {
+    class ResponseParser {
     public:
-        Response() = default;
+        ResponseParser() = default;
 
         auto feed(uint8_t* buffer, std::size_t size) -> void;
+        
+        [[nodiscard]] auto response() const { return response_; };
 
     private:
         bool parsing_body_;
         std::vector<uint8_t> data_;
-        ResponseObject response_;
+        Response response_;
 
         auto processHeaders() -> void;
         auto parseStatusLine(const std::string& status_line) -> void;
