@@ -29,16 +29,16 @@ namespace Express {
         socket.send(request_buffer.str());
 
         uint8_t temp_buffer[BUFSIZ];
-        Http::ResponseParser response_parser;
+        Http::ResponseParser parser;
         while (true) {
             auto size = socket.recv(temp_buffer);
             if (size == 0) {
                 break; // disconnected
             }
-            response_parser.feed(temp_buffer, size);
+            parser.feed(temp_buffer, size);
             // TODO: we should also break if we're done processing the data
         }
 
-        return response_parser.response();
+        return parser.response();
     }
 }
