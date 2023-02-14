@@ -30,14 +30,17 @@ namespace Express::Http {
         std::vector<uint8_t> data_;
         Response response_;
 
-        auto processHeaders() -> void;
-        auto parseStatusLine(const std::string& status_line) -> void;
+        auto parseStatusLine(const std::string& status_line);
+        auto parseHeaders(const std::vector<std::string>& tokens);
+        auto processHeaders();
 
         template<class Iterator>
         auto tokenzieHeaders(const Iterator begin, const Iterator end) {
             std::string data {begin, end};
             std::vector<std::string> tokens;
             for (std::size_t i = 0, j = 0; i < size(data); ++i) {
+                // TODO: handle a linear white space
+                // obsolete fold RFC 7230, 3.2.4. Field Parsing
                 if (data[i] == '\r' && data[i + 1] == '\n') {
                     tokens.emplace_back(data.substr(j, i - j));
                     j = i += 2;

@@ -20,10 +20,43 @@ TEST(header, creates_valid_header_object) {
     EXPECT_EQ(buffer.str(), "Host: example.com\r\n");
 }
 
-TEST(header, throws_if_the_header_name_is_empty) {
+TEST(header, trims_leading_and_trailing_whitespaces_from_value) {
+    Header header {"Host", " \t example.com  \t "};
+
+    EXPECT_EQ(header.name(), "Host");
+    EXPECT_EQ(header.value(), "example.com");
+
+    std::stringstream buffer;
+    buffer << header;
+    EXPECT_EQ(buffer.str(), "Host: example.com\r\n");
+}
+
+TEST(header, throws_if_header_name_is_empty) {
     EXPECT_THROW({
         try {
             Header header("", "value");
+        } catch (const HeaderError& e) {
+            EXPECT_STREQ("Invalid header name.", e.what());
+            throw;
+        }
+    }, HeaderError);
+}
+
+TEST(header, throws_if_header_name_contains_leading_whitespaces) {
+    EXPECT_THROW({
+        try {
+            Header header("\t Host", "example.com");
+        } catch (const HeaderError& e) {
+            EXPECT_STREQ("Invalid header name.", e.what());
+            throw;
+        }
+    }, HeaderError);
+}
+
+TEST(header, throws_if_header_name_contains_trailing_whitespaces) {
+    EXPECT_THROW({
+        try {
+            Header header("Host ", "example.com");
         } catch (const HeaderError& e) {
             EXPECT_STREQ("Invalid header name.", e.what());
             throw;

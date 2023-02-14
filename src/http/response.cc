@@ -7,40 +7,8 @@
 namespace Express::Http {
     using namespace std::string_literals;
 
-    auto ResponseParser::feed(uint8_t* buffer, std::size_t size) -> void {
-        data_.insert(end(data_), buffer, buffer + size);
-
-        if (!parsing_body_) {
-            processHeaders();
-        }
-
-        if (parsing_body_) {
-            // TODO: processBody();
-        }
-    }
-
-    auto ResponseParser::processHeaders() -> void {
-        const std::array<uint8_t, 4> header_separator = {0xD, 0xA, 0xD, 0xA};
-        auto iter = std::search(
-            begin(data_), end(data_),
-            begin(header_separator), end(header_separator)
-        );
-        if (iter == end(data_)) return;
-
-        auto headers_begin = begin(data_);
-        auto headers_end = iter + 2;
-        auto tokens = tokenzieHeaders(headers_begin, headers_end);
-
-        parseStatusLine(tokens.front());
-        // parse headers
-
-        data_.erase(headers_begin, headers_end + 2);
-
-        parsing_body_ = true;
-    }
-
     // RFC7230, 3.1.2. Status Line
-    auto ResponseParser::parseStatusLine(const std::string& status_line) -> void {
+    auto ResponseParser::parseStatusLine(const std::string& status_line) {
         using namespace Validators;
         auto status = status_line;
         if (!status.starts_with("HTTP/"s)) {
@@ -69,5 +37,49 @@ namespace Express::Http {
             throw ResponseError {"Invalid characters in reason phrase"};
         }
         response_.status_text = status.substr(separator + 1);
+    }
+
+    // RFC 7230, 3.2. Header Fields
+    auto ResponseParser::parseHeaders(const std::vector<std::string>& tokens) {
+        // split with colon
+        // if there's no colon, throw
+        // if there leading or trailing spaces in name, throw error
+        // emplace header within the collection
+        // the header class already validates token range and char range
+        // the tokenizer should already handle obsolete folds
+    }
+
+    // TODO: tokenize headers, include obsolete fold
+
+    auto ResponseParser::processHeaders() {
+        const std::array<uint8_t, 4> header_separator = {0xD, 0xA, 0xD, 0xA};
+        auto iter = std::search(
+            begin(data_), end(data_),
+            begin(header_separator), end(header_separator)
+        );
+        if (iter == end(data_)) return;
+
+        auto headers_begin = begin(data_);
+        auto headers_end = iter + 2;
+        auto tokens = tokenzieHeaders(headers_begin, headers_end);
+
+        parseStatusLine(tokens.front());
+        parseHeaders(tokens);
+
+        data_.erase(headers_begin, headers_end + 2);
+
+        parsing_body_ = true;
+    }
+
+    auto ResponseParser::feed(uint8_t* buffer, std::size_t size) -> void {
+        data_.insert(end(data_), buffer, buffer + size);
+
+        if (!parsing_body_) {
+            processHeaders();
+        }
+
+        if (parsing_body_) {
+            // TODO: processBody();
+        }
     }
 }
