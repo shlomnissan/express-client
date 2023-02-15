@@ -86,7 +86,7 @@ TEST(header, throws_if_the_header_value_contains_invalid_characters) {
     }, HeaderError);
 }
 
-TEST(collection_header, initializes_an_object_with_initializer_list) {
+TEST(header_collection, initializes_an_object_with_initializer_list) {
     HeaderCollection headers {{
         {"Host", "example.com"},
         {"User-Agent", "express/0.1"}
@@ -98,7 +98,7 @@ TEST(collection_header, initializes_an_object_with_initializer_list) {
     EXPECT_EQ(headers.back().value(), "express/0.1");
 }
 
-TEST(collection_header, adds_headers_to_the_collection) {
+TEST(header_collection, adds_headers_to_the_collection) {
     HeaderCollection headers;
     headers.add({"Host", "example.com"});
 
@@ -106,7 +106,7 @@ TEST(collection_header, adds_headers_to_the_collection) {
     EXPECT_EQ(headers.front().value(), "example.com");
 }
 
-TEST(collection_header, overrides_headers_if_the_same_name_is_used) {
+TEST(header_collection, overrides_headers_if_the_same_name_is_used) {
     HeaderCollection headers {{
         {"Host", "example.com"},
     }};
@@ -116,7 +116,39 @@ TEST(collection_header, overrides_headers_if_the_same_name_is_used) {
     EXPECT_EQ(headers.front().value(), "google.com");
 }
 
-TEST(collection_header, iterates_through_the_collection_using_iterators) {
+TEST(header_collection, has_method_returns_the_correct_value) {
+    HeaderCollection headers {{
+        {"Host", "example.com"},
+        {"User-Agent", "express/0.1"}
+    }};
+
+    EXPECT_EQ(headers.has("Host"), true);
+    EXPECT_EQ(headers.has("User-Agent"), true);
+    EXPECT_EQ(headers.has("Date"), false);
+}
+
+TEST(header_collection, get_method_returns_the_correct_value) {
+    HeaderCollection headers {{
+        {"Host", "example.com"},
+        {"User-Agent", "express/0.1"}
+    }};
+
+    EXPECT_EQ(headers.get("Host"), "example.com");
+    EXPECT_EQ(headers.get("User-Agent"), "express/0.1");
+
+    EXPECT_THROW({
+        try {
+            EXPECT_EQ(headers.get("Date"), "Wed, 15 Feb 2023 14:43:39 GMT"); 
+        } catch (const HeaderError& e) {
+            EXPECT_STREQ(e.what(),
+                "Attempting to access value for a header that doesn't exist."
+            );
+            throw;
+        }
+    }, HeaderError);
+}
+
+TEST(header_collection, iterates_through_the_collection_using_iterators) {
     HeaderCollection headers {{
         {"Host", "example.com"},
         {"User-Agent", "express/0.1"}

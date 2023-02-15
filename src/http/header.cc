@@ -1,7 +1,7 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include "express/transformers.h"
+#include <express/transformers.h>
 #include <express/header.h>
 #include <express/http_defs.h>
 #include <express/validators.h>
@@ -46,6 +46,24 @@ namespace Express::Http {
             headers_.emplace_back(header);
             existing_headers_.emplace(header.name());
         }
+    }
+
+    auto HeaderCollection::has(const std::string& name) const -> bool {
+        if (existing_headers_.find(name) != std::end(existing_headers_)) {
+            return true;
+        }
+        return false;
+    }
+
+    auto HeaderCollection::get(const std::string& name) const -> std::string {
+        if (existing_headers_.find(name) != std::end(existing_headers_)) {
+            for (const auto& h : headers_) {
+                if (h.name() == name) {
+                    return h.value();
+                }
+            }
+        }
+        throw HeaderError {"Attempting to access value for a header that doesn't exist."};
     }
 
     auto operator<<(std::ostream& os, const Header& header) -> std::ostream& {

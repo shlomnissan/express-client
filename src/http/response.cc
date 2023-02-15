@@ -41,15 +41,21 @@ namespace Express::Http {
 
     // RFC 7230, 3.2. Header Fields
     auto ResponseParser::parseHeaders(const std::vector<std::string>& tokens) {
-        // split with colon
-        // if there's no colon, throw
-        // if there leading or trailing spaces in name, throw error
-        // emplace header within the collection
-        // the header class already validates token range and char range
-        // the tokenizer should already handle obsolete folds
+        for (std::string_view header : tokens) {
+            auto separator = header.find(':');
+            if (separator == std::string::npos) {
+                throw ResponseError {"Failed to process invalid response header"};
+            }
+            // The tokenizer handles the obsolete fold,
+            // and the Header constructor handles the header field validation. 
+            response_.headers.add({
+                header.substr(0, separator),
+                header.substr(separator + 1)
+            });
+        }
     }
 
-    // TODO: tokenize headers, include obsolete fold
+    // TODO: tokenize headers and handle obsolete fold
 
     auto ResponseParser::processHeaders() {
         const std::array<uint8_t, 4> header_separator = {0xD, 0xA, 0xD, 0xA};
@@ -64,7 +70,7 @@ namespace Express::Http {
         auto tokens = tokenzieHeaders(headers_begin, headers_end);
 
         parseStatusLine(tokens.front());
-        parseHeaders(tokens);
+        parseHeaders({begin(tokens) + 1, end(tokens)});
 
         data_.erase(headers_begin, headers_end + 2);
 

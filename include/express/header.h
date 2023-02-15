@@ -31,10 +31,12 @@ namespace Express::Http {
         HeaderCollection(const std::vector<Header>& headers);
 
         auto add(const Header& header) -> void;
+        auto has(const std::string& name) const -> bool;
+        auto get(const std::string& name) const -> std::string;
 
+        [[nodiscard]] auto size() const { return headers_.size(); }
         [[nodiscard]] auto front() { return headers_.front(); }
         [[nodiscard]] auto back() { return headers_.back(); }
-
         [[nodiscard]] auto begin() { return headers_.begin(); }
         [[nodiscard]] auto begin() const { return headers_.begin(); }
         [[nodiscard]] auto end() { return headers_.end(); }
