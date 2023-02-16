@@ -5,7 +5,7 @@
 
 #include <stdexcept>
 #include <string>
-#include <unordered_set>
+#include <unordered_map>
 #include <vector>
 
 namespace Express::Http {
@@ -32,7 +32,7 @@ namespace Express::Http {
 
         auto add(const Header& header) -> void;
         auto has(const std::string& name) const -> bool;
-        auto get(const std::string& name) const -> std::string;
+        auto get(const std::string& name) -> std::string;
 
         [[nodiscard]] auto size() const { return headers_.size(); }
         [[nodiscard]] auto front() { return headers_.front(); }
@@ -44,7 +44,7 @@ namespace Express::Http {
 
     private:
         std::vector<Header> headers_;
-        std::unordered_set<std::string> existing_headers_;
+        std::unordered_map<std::string, size_t> existing_headers_;
     };
 
     struct HeaderError : public std::runtime_error {

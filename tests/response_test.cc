@@ -108,3 +108,5 @@ TEST(response_parser_status_line, throws_error_invalid_char_reason_phrase) {
         }
     }, ResponseError);
 }
+
+// TODO: add tests for headers including validation and obsolete fold

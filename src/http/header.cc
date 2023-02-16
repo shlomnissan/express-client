@@ -29,22 +29,17 @@ namespace Express::Http {
 
     HeaderCollection::HeaderCollection(const std::vector<Header>& headers)
         : headers_(headers) {
-        for (const auto& h : headers) {
-            existing_headers_.emplace(h.name());
+        for (size_t i = 0; i < (headers.size()); ++i) {
+            existing_headers_[headers[i].name()] = i;
         }
     }
 
     auto HeaderCollection::add(const Header &header) -> void {
         if (existing_headers_.find(header.name()) != std::end(existing_headers_)) {
-            for (auto& h : headers_) {
-                if (h.name() == header.name()) {
-                    h.value_ = header.value();
-                    return;
-                }
-            }
+            headers_[existing_headers_[header.name()]] = header;
         } else {
             headers_.emplace_back(header);
-            existing_headers_.emplace(header.name());
+            existing_headers_[header.name()] = headers_.size() - 1;
         }
     }
 
@@ -55,13 +50,9 @@ namespace Express::Http {
         return false;
     }
 
-    auto HeaderCollection::get(const std::string& name) const -> std::string {
+    auto HeaderCollection::get(const std::string& name) -> std::string {
         if (existing_headers_.find(name) != std::end(existing_headers_)) {
-            for (const auto& h : headers_) {
-                if (h.name() == name) {
-                    return h.value();
-                }
-            }
+            return headers_[existing_headers_[name]].value();
         }
         throw HeaderError {"Attempting to access value for a header that doesn't exist."};
     }
