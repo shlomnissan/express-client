@@ -55,8 +55,6 @@ namespace Express::Http {
         }
     }
 
-    // TODO: tokenize headers and handle obsolete fold
-
     auto ResponseParser::processHeaders() {
         const std::array<uint8_t, 4> header_separator = {0xD, 0xA, 0xD, 0xA};
         auto iter = std::search(

@@ -8,6 +8,7 @@
 #include <vector>
 
 #include <express/header.h>
+#include <express/validators.h>
 
 namespace Express::Http {
     struct Response {
@@ -34,16 +35,36 @@ namespace Express::Http {
         auto parseHeaders(const std::vector<std::string>& tokens);
         auto processHeaders();
 
-        template<class Iterator>
-        auto tokenzieHeaders(const Iterator begin, const Iterator end) {
-            std::string data {begin, end};
+        auto isDelimiter(const auto begin, const auto end) {
+            if (begin == end || begin + 1 == end) return false;
+            return *begin == '\r' && *(begin + 1) == '\n';
+        } 
+
+        auto isObsoleteLineFolding(const auto begin, const auto end) {
+            using namespace Validators;
+              if (begin == end || begin + 1 == end || begin + 2 == end) return false;
+              return *begin == '\r' && *(begin + 1) == '\n' && is_whitespace(*(begin + 2));
+        }
+
+        auto tokenzieHeaders(const auto begin, const auto end) {
             std::vector<std::string> tokens;
-            for (std::size_t i = 0, j = 0; i < size(data); ++i) {
-                // TODO: handle a linear white space
-                // obsolete fold RFC 7230, 3.2.4. Field Parsing
-                if (data[i] == '\r' && data[i + 1] == '\n') {
-                    tokens.emplace_back(data.substr(j, i - j));
-                    j = i += 2;
+            std::string token;
+            auto iter = begin;
+            while (iter != end) {
+                if (isObsoleteLineFolding(iter, end)) {
+                    // Obsolete Line Folding RFC 7230, 3.2.4. Field Parsing
+                    // A user agent that receives an obs-fold in a response
+                    // message that is not within a message/http container MUST
+                    // replace each received obs-fold with one or more SP octets
+                    // prior to interpreting the field value.
+                    token += ' ';
+                    iter += 3;
+                } else if (isDelimiter(iter, end)) {
+                    tokens.emplace_back(std::move(token));
+                    iter += 2;
+                } else {
+                    // Validation name/value is handled by the header class.
+                    token += *iter++;
                 }
             }
             return tokens;
