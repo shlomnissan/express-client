@@ -1,13 +1,12 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <cstdint>
 #include <string>
-#include <cinttypes>
+#include <vector>
 
 #include <gtest/gtest.h>
 #include <express/response.h>
-#include <vector>
+#include <express/header.h>
 
 using namespace Express::Http;
 
@@ -135,9 +134,59 @@ TEST(response_parser_status_line, throws_error_invalid_char_reason_phrase) {
     }, ResponseError);
 }
 
-// TEST: invalid header
-// TEST: invalid header name
-// TEST: invalid header value
+TEST(response_parser_headers, throws_when_parsing_invalid_header) {
+    auto input = to_input(
+        "HTTP/1.0 200 OK\r\n"
+        "Server Werkzeug/2.2.2 Python/3.10.6\r\n"
+        "\r\n"
+    );
+    
+    ResponseParser parser;
+    EXPECT_THROW({
+        try {
+            parser.feed(input.data(), input.size());
+        } catch (const ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Failed to process invalid response header");
+            throw;
+        }
+    }, ResponseError);
+}
+
+TEST(response_parser_headers, throws_when_parsing_invalid_header_name) {
+    auto input = to_input(
+        "HTTP/1.0 200 OK\r\n"
+        "Sun, 12 Feb 2023 22:29:15 GMT\r\n"
+        "\r\n"
+    );
+
+    ResponseParser parser;
+    EXPECT_THROW({
+        try {
+            parser.feed(input.data(), input.size());
+        } catch (const HeaderError& e) {
+            EXPECT_STREQ(e.what(), "Invalid header name.");
+            throw;
+        }
+    }, HeaderError);
+}
+
+TEST(response_parser_headers, throws_when_parsing_invalid_header_value) {
+    auto input = to_input(
+        "HTTP/1.0 200 OK\r\n"
+        "Date: Sun, 12 Feb  \f2023 22:29:15 GMT\r\n"
+        "\r\n"
+    );
+
+    ResponseParser parser;
+    EXPECT_THROW({
+        try {
+            parser.feed(input.data(), input.size());
+        } catch (const HeaderError& e) {
+            EXPECT_STREQ(e.what(), "Invalid header value.");
+            throw;
+        }
+    }, HeaderError);
+}
 
 TEST(response_parser_headers, handles_obsolete_line_folding) {
     auto input = to_input(
@@ -148,7 +197,7 @@ TEST(response_parser_headers, handles_obsolete_line_folding) {
         "\r\n"
     );
 
-    ResponseParser parser;    
+    ResponseParser parser;
     parser.feed(input.data(), input.size());
 
     auto response = parser.response();

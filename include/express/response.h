@@ -33,7 +33,7 @@ namespace Express::Http {
 
         auto parseStatusLine(const std::string& status_line);
         auto parseHeaders(const std::vector<std::string>& tokens);
-        auto processHeaders();
+        auto processHeadersSection();
 
         auto isDelimiter(const auto begin, const auto end) {
             if (begin == end || begin + 1 == end) return false;
@@ -42,8 +42,8 @@ namespace Express::Http {
 
         auto isObsoleteLineFolding(const auto begin, const auto end) {
             using namespace Validators;
-              if (begin == end || begin + 1 == end || begin + 2 == end) return false;
-              return *begin == '\r' && *(begin + 1) == '\n' && is_whitespace(*(begin + 2));
+            if (begin == end || begin + 1 == end || begin + 2 == end) return false;
+            return *begin == '\r' && *(begin + 1) == '\n' && is_whitespace(*(begin + 2));
         }
 
         auto tokenzieHeaders(const auto begin, const auto end) {
@@ -63,7 +63,6 @@ namespace Express::Http {
                     tokens.emplace_back(std::move(token));
                     iter += 2;
                 } else {
-                    // Validation name/value is handled by the header class.
                     token += *iter++;
                 }
             }

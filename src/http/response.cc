@@ -47,7 +47,7 @@ namespace Express::Http {
                 throw ResponseError {"Failed to process invalid response header"};
             }
             // The tokenizer handles the obsolete fold,
-            // and the Header constructor handles the header field validation. 
+            // and the Header constructor handles the header name/value validation. 
             response_.headers.add({
                 header.substr(0, separator),
                 header.substr(separator + 1)
@@ -55,7 +55,7 @@ namespace Express::Http {
         }
     }
 
-    auto ResponseParser::processHeaders() {
+    auto ResponseParser::processHeadersSection() {
         const std::array<uint8_t, 4> header_separator = {0xD, 0xA, 0xD, 0xA};
         auto iter = std::search(
             begin(data_), end(data_),
@@ -79,7 +79,7 @@ namespace Express::Http {
         data_.insert(end(data_), buffer, buffer + size);
 
         if (!parsing_body_) {
-            processHeaders();
+            processHeadersSection();
         }
 
         if (parsing_body_) {
