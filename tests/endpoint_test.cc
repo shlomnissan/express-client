@@ -18,6 +18,8 @@ TEST(endpoint, basic_test) {
     EXPECT_TRUE(endpoint.getAddress() != nullptr);
 }
 
+// Test IPv4/IPv6
+
 TEST(endpoint, throws_initialization_error) {
     EXPECT_THROW({
         Endpoint endpoint("invalid-address", "80");

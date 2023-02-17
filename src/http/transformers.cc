@@ -1,6 +1,8 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
+#include <algorithm>
+
 #include <express/transformers.h>
 #include <express/validators.h>
 
@@ -20,5 +22,13 @@ namespace Express::Http::Transformers {
         size_t i = n;
         while (i != 0 && is_whitespace(str[i])) --i;
         if (i != n) str.erase(i + 1);
+    }
+
+    auto str_to_lowercase(std::string* str_ptr) noexcept -> std::string {
+        auto& str = *str_ptr;
+        std::ranges::transform(str, begin(str), [](auto c) mutable {
+            return tolower(c);
+        });
+        return str;
     }
 }

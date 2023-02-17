@@ -27,32 +27,40 @@ namespace Express::Http {
         }
     }
 
+    auto HeaderCollection::transformName(std::string name) const {
+        return Transformers::str_to_lowercase(&name);
+    }
+
     HeaderCollection::HeaderCollection(const std::vector<Header>& headers)
         : headers_(headers) {
-        for (size_t i = 0; i < (headers.size()); ++i) {
-            existing_headers_[headers[i].name()] = i;
+        for (size_t i = 0; i < headers.size(); ++i) {
+            auto lowercase_name = transformName(headers[i].name());
+            existing_headers_[lowercase_name] = i;
         }
     }
 
     auto HeaderCollection::add(const Header &header) -> void {
-        if (existing_headers_.find(header.name()) != std::end(existing_headers_)) {
-            headers_[existing_headers_[header.name()]] = header;
+        auto lowercase_name = transformName(header.name());
+        if (existing_headers_.find(lowercase_name) != std::end(existing_headers_)) {
+            headers_[existing_headers_[lowercase_name]] = header;
         } else {
             headers_.emplace_back(header);
-            existing_headers_[header.name()] = headers_.size() - 1;
+            existing_headers_[lowercase_name] = headers_.size() - 1;
         }
     }
 
     auto HeaderCollection::has(const std::string& name) const -> bool {
-        if (existing_headers_.find(name) != std::end(existing_headers_)) {
+        auto lowercase_name = transformName(name);
+        if (existing_headers_.find(lowercase_name) != std::end(existing_headers_)) {
             return true;
         }
         return false;
     }
 
     auto HeaderCollection::get(const std::string& name) -> std::string {
-        if (existing_headers_.find(name) != std::end(existing_headers_)) {
-            return headers_[existing_headers_[name]].value();
+        auto lowercase_name = transformName(name);
+        if (existing_headers_.find(lowercase_name) != std::end(existing_headers_)) {
+            return headers_[existing_headers_[lowercase_name]].value();
         }
         throw HeaderError {"Attempting to access value for a header that doesn't exist."};
     }
