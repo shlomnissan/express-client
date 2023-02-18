@@ -2,10 +2,11 @@
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
 #include <express/response.h>
-#include <express/validators.h>
+#include <express/transformers.h>
 
 namespace Express::Http {
     using namespace std::string_literals;
+    using namespace Transformers;
 
     // RFC7230, 3.1.2. Status Line
     auto ResponseParser::parseStatusLine(const std::string& status_line) {
@@ -29,7 +30,7 @@ namespace Express::Http {
         if (separator != 3 || !is_digit_range(status_code)) {
             throw ResponseError {"Invalid status code (" + status_code + ")"};
         }
-        response_.status_code = std::stoi(status_code);
+        response_.status_code = str_to_uint(status_code);
         
         // reason phrase
         auto response_phrase = status.substr(separator + 1);
@@ -55,7 +56,7 @@ namespace Express::Http {
         }
     }
 
-    auto ResponseParser::processHeadersSection() {
+    auto ResponseParser::processHeaders() {
         const std::array<uint8_t, 4> header_separator = {0xD, 0xA, 0xD, 0xA};
         auto iter = std::search(
             begin(data_), end(data_),
@@ -69,21 +70,28 @@ namespace Express::Http {
 
         parseStatusLine(tokens.front());
         parseHeaders({begin(tokens) + 1, end(tokens)});
-
         data_.erase(headers_begin, headers_end + 2);
+
+        if (response_.headers.has("transfer-encoding")) {
+            auto value = response_.headers.get("transfer-encoding");
+            if (value == "chunked") {
+                has_chunked_response_ = true;
+            } else {
+                throw ResponseError {"Unsupported transfer encoding (" + value + ")"};
+            }
+        } else if (response_.headers.has("content-length")) {
+            has_content_length_ = true;
+            auto length = str_to_uint(response_.headers.get("content-length"));
+            response_.body.reserve(length);
+        }
 
         parsing_body_ = true;
     }
 
+    auto ResponseParser::processBody() {}
+
     auto ResponseParser::feed(uint8_t* buffer, std::size_t size) -> void {
         data_.insert(end(data_), buffer, buffer + size);
-
-        if (!parsing_body_) {
-            processHeadersSection();
-        }
-
-        if (parsing_body_) {
-            // TODO: processBody();
-        }
+        !parsing_body_ ? processHeaders() : processBody();
     }
 }

@@ -30,13 +30,13 @@ namespace Express::Http {
     HeaderCollection::HeaderCollection(const std::vector<Header>& headers)
         : headers_(headers) {
         for (size_t i = 0; i < headers.size(); ++i) {
-            auto lowercase_name = to_lowercase(headers[i].name());
+            auto lowercase_name = str_to_lowercase(headers[i].name());
             existing_headers_[lowercase_name] = i;
         }
     }
 
     auto HeaderCollection::add(const Header &header) -> void {
-        auto lowercase_name = to_lowercase(header.name());
+        auto lowercase_name = str_to_lowercase(header.name());
         if (existing_headers_.find(lowercase_name) != std::end(existing_headers_)) {
             headers_[existing_headers_[lowercase_name]] = header;
         } else {
@@ -46,7 +46,7 @@ namespace Express::Http {
     }
 
     auto HeaderCollection::has(const std::string& name) const -> bool {
-        auto lowercase_name = to_lowercase(name);
+        auto lowercase_name = str_to_lowercase(name);
         if (existing_headers_.find(lowercase_name) != std::end(existing_headers_)) {
             return true;
         }
@@ -54,7 +54,7 @@ namespace Express::Http {
     }
 
     auto HeaderCollection::get(const std::string& name) -> std::string {
-        auto lowercase_name = to_lowercase(name);
+        auto lowercase_name = str_to_lowercase(name);
         if (existing_headers_.find(lowercase_name) != std::end(existing_headers_)) {
             return headers_[existing_headers_[lowercase_name]].value();
         }

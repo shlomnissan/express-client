@@ -11,6 +11,8 @@
 #include <express/validators.h>
 
 namespace Express::Http {
+    using namespace Validators;
+
     struct Response {
         int status_code;
         std::string status_text;
@@ -29,11 +31,14 @@ namespace Express::Http {
     private:
         std::vector<uint8_t> data_;
         Response response_;
-        bool parsing_body_;
+        bool parsing_body_ {false};
+        bool has_content_length_ {false};
+        bool has_chunked_response_ {false};
 
         auto parseStatusLine(const std::string& status_line);
         auto parseHeaders(const std::vector<std::string>& tokens);
-        auto processHeadersSection();
+        auto processHeaders();
+        auto processBody();
 
         auto isDelimiter(const auto begin, const auto end) {
             if (begin == end || begin + 1 == end) return false;
@@ -41,7 +46,6 @@ namespace Express::Http {
         } 
 
         auto isObsoleteLineFolding(const auto begin, const auto end) {
-            using namespace Validators;
             if (begin == end || begin + 1 == end || begin + 2 == end) return false;
             return *begin == '\r' && *(begin + 1) == '\n' && is_whitespace(*(begin + 2));
         }

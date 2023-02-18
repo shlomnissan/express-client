@@ -223,3 +223,6 @@ TEST(response_parser_headers, handles_obsolete_line_folding) {
     EXPECT_EQ(another_response.headers.get("Server"), "Werkzeug/2.2.2 Python/3.10.6");
     EXPECT_EQ(another_response.headers.get("Content-Length"), "17");
 }
+
+// response_parser_headers, throws_if_transfer_encoding_not_supported
+// response_parser_headers, throws_if_content_length_is_invalid 
