@@ -98,14 +98,6 @@ TEST(header_collection, initializes_an_object_with_initializer_list) {
     EXPECT_EQ(headers.back().value(), "express/0.1");
 }
 
-TEST(header_collection, adds_headers_to_the_collection) {
-    HeaderCollection headers;
-    headers.add({"Host", "example.com"});
-
-    EXPECT_EQ(headers.front().name(), "Host");
-    EXPECT_EQ(headers.front().value(), "example.com");
-}
-
 TEST(header_collection, overrides_headers_if_the_same_name_is_used) {
     HeaderCollection headers {{
         {"Host", "example.com"},
@@ -114,6 +106,14 @@ TEST(header_collection, overrides_headers_if_the_same_name_is_used) {
 
     EXPECT_EQ(headers.front().name(), "Host");
     EXPECT_EQ(headers.front().value(), "google.com");
+}
+
+TEST(header_collection, adds_headers_to_the_collection) {
+    HeaderCollection headers;
+    headers.add({"Host", "example.com"});
+
+    EXPECT_EQ(headers.front().name(), "Host");
+    EXPECT_EQ(headers.front().value(), "example.com");
 }
 
 TEST(header_collection, has_method_returns_the_correct_value) {
@@ -125,6 +125,16 @@ TEST(header_collection, has_method_returns_the_correct_value) {
     EXPECT_EQ(headers.has("Host"), true);
     EXPECT_EQ(headers.has("User-Agent"), true);
     EXPECT_EQ(headers.has("Date"), false);
+}
+
+TEST(header_collection, has_method_case_insensitive) {
+    HeaderCollection headers {{
+        {"Host", "example.com"},
+        {"User-Agent", "express/0.1"}
+    }};
+
+    EXPECT_EQ(headers.has("host"), true);
+    EXPECT_EQ(headers.has("useR-agEnt"), true);
 }
 
 TEST(header_collection, get_method_returns_the_correct_value) {
@@ -146,6 +156,16 @@ TEST(header_collection, get_method_returns_the_correct_value) {
             throw;
         }
     }, HeaderError);
+}
+
+TEST(header_collection, get_method_case_insensitive) {
+    HeaderCollection headers {{
+        {"Host", "example.com"},
+        {"User-Agent", "express/0.1"}
+    }};
+
+    EXPECT_EQ(headers.get("host"), "example.com");
+    EXPECT_EQ(headers.get("useR-agEnt"), "express/0.1");
 }
 
 TEST(header_collection, iterates_through_the_collection_using_iterators) {

@@ -30,7 +30,6 @@ namespace Express::Http {
         std::vector<uint8_t> data_;
         Response response_;
         bool parsing_body_;
-        bool has_content_length_;
 
         auto parseStatusLine(const std::string& status_line);
         auto parseHeaders(const std::vector<std::string>& tokens);

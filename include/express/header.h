@@ -15,7 +15,6 @@ namespace Express::Http {
 
         Header(std::string_view name, std::string_view value);
 
-        // TODO: header names case-sensitive?
         [[nodiscard]] auto name() const { return name_; }
         [[nodiscard]] auto value() const { return value_; }
 
@@ -46,9 +45,6 @@ namespace Express::Http {
     private:
         std::vector<Header> headers_;
         std::unordered_map<std::string, size_t> existing_headers_;
-
-        // TODO: remove this template function
-        auto transformName(std::string name) const;
     };
 
     struct HeaderError : public std::runtime_error {
