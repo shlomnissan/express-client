@@ -46,6 +46,10 @@ TEST(response_parser, parses_a_valid_response_successfully) {
     // TODO: assert data
 }
 
+// TODO: parses a response with content length and transfer encoding chunked
+// TODO: parses a response with encoding that's not chuncked
+// TODO: parses a response with a body but no explicit body size
+
 TEST(response_parser_status_line, throws_error_malformed_status_line) {
     auto input = to_input(
         "XHTTPX/1.1 200 OK\r\n"
@@ -224,5 +228,40 @@ TEST(response_parser_headers, handles_obsolete_line_folding) {
     EXPECT_EQ(another_response.headers.get("Content-Length"), "17");
 }
 
-// response_parser_headers, throws_if_transfer_encoding_not_supported
-// response_parser_headers, throws_if_content_length_is_invalid 
+TEST(response_parser_headers, throws_if_multiple_content_length_values) {
+    auto input = to_input(
+        "HTTP/1.0 200 OK\r\n"
+        "Server: Werkzeug/2.2.2 Python/3.10.6\r\n"
+        "Content-Length: 17\r\n"
+        "Content-Length: 14\r\n"
+        "\r\n"
+    );
+
+    ResponseParser parser;
+    EXPECT_THROW({
+        try {
+            parser.feed(input.data(), input.size());
+        } catch (const ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Received multiple content length fields.");
+            throw;
+        }
+    }, ResponseError);
+}
+
+TEST(response_parser_headers, throws_if_content_length_is_invalid) {
+    auto input = to_input(
+        "HTTP/1.0 200 OK\r\n"
+        "Server: Werkzeug/2.2.2 Python/3.10.6\r\n"
+        "Content-Length: 0x17\r\n"
+        "\r\n"
+    );
+    ResponseParser parser;
+    EXPECT_THROW({
+        try {
+            parser.feed(input.data(), input.size());
+        } catch (const ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Invalid content length value");
+            throw;
+        }
+    }, ResponseError);
+}

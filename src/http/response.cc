@@ -47,10 +47,26 @@ namespace Express::Http {
             if (separator == std::string::npos) {
                 throw ResponseError {"Failed to process invalid response header"};
             }
+
+            auto name = header.substr(0, separator);
+            auto lowercase_name = str_to_lower(name);
+
+            if (lowercase_name == "content-length") {
+                if (response_.headers.has("content-length"))
+                    throw ResponseError {"Received multiple content length fields."};
+                if (response_.headers.has("transfer-encoding")) {
+                    continue;
+                }
+            }
+            if (lowercase_name == "transfer-encoding" &&
+                response_.headers.has("content-length")) {
+                response_.headers.remove("content_length");
+            }
+
             // The tokenizer handles the obsolete fold,
             // and the Header constructor handles the header name/value validation. 
             response_.headers.add({
-                header.substr(0, separator),
+                name,
                 header.substr(separator + 1)
             });
         }
@@ -72,29 +88,36 @@ namespace Express::Http {
         parseHeaders({begin(tokens) + 1, end(tokens)});
         data_.erase(headers_begin, headers_end + 2);
 
+        parsing_body_ = true;
+    }
+
+    auto ResponseParser::setMessageBodyLength() {
         if (response_.headers.has("transfer-encoding")) {
             auto value = response_.headers.get("transfer-encoding");
             if (value == "chunked") {
-                has_chunked_response_ = true;
+                body_parsing_method_ = MessageBodyParsingMethod::ChunkedTransfer;
             } else {
-                throw ResponseError {"Unsupported transfer encoding (" + value + ")"};
+                body_parsing_method_ = MessageBodyParsingMethod::UntilClosed;
             }
         } else if (response_.headers.has("content-length")) {
             auto length = response_.headers.get("content-length");
             if (!is_digit_range(length)) {
                 throw ResponseError {"Invalid content length value"};
             }
-            has_content_length_ = true;
+            body_parsing_method_ = MessageBodyParsingMethod::ContentLength;
             response_.body.reserve(std::stoul(length));
         }
-
-        parsing_body_ = true;
     }
 
-    auto ResponseParser::processBody() {}
+    auto ResponseParser::processBody() {
+        if (body_parsing_method_ == MessageBodyParsingMethod::Undetermined) {
+            setMessageBodyLength();
+        }
+    }
 
     auto ResponseParser::feed(uint8_t* buffer, std::size_t size) -> void {
         data_.insert(end(data_), buffer, buffer + size);
-        !parsing_body_ ? processHeaders() : processBody();
+        if (!parsing_body_) processHeaders();
+        if (parsing_body_) processBody();
     }
 }

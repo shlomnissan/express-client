@@ -8,7 +8,7 @@
 namespace Express::Http::Transformers {
     using namespace Validators;
 
-    auto str_to_lowercase(std::string_view str) -> std::string {
+    auto str_to_lower(std::string_view str) -> std::string {
         std::string output {str};
         std::ranges::transform(output, begin(output), [](auto c) {
             return tolower(c);

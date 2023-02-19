@@ -137,6 +137,36 @@ TEST(header_collection, has_method_case_insensitive) {
     EXPECT_EQ(headers.has("useR-agEnt"), true);
 }
 
+TEST(header_Collection, removes_header_correctly) {
+    HeaderCollection headers {{
+        {"Host", "example.com"},
+        {"User-Agent", "express/0.1"}
+    }};
+
+    EXPECT_EQ(headers.size(), 2);
+    EXPECT_EQ(headers.has("host"), true);
+
+    headers.remove("host");
+
+    EXPECT_EQ(headers.size(), 1);
+    EXPECT_EQ(headers.has("host"), false);
+    EXPECT_EQ(headers.has("user-agent"), true);
+
+    headers.remove("user-agent");
+
+    EXPECT_EQ(headers.size(), 0);
+    EXPECT_EQ(headers.has("user-agent"), false);
+
+    EXPECT_THROW({
+        try {
+            headers.remove("date");
+        } catch (const HeaderError& e) {
+            EXPECT_STREQ(e.what(), "Attempting to remove a header that doesn't exist");
+            throw;
+        }
+    }, HeaderError);
+}
+
 TEST(header_collection, get_method_returns_the_correct_value) {
     HeaderCollection headers {{
         {"Host", "example.com"},

@@ -33,6 +33,7 @@ namespace Express {
         while (true) {
             auto size = socket.recv(temp_buffer);
             if (size == 0) {
+                // TODO: error if client didn't complete the transfer RFC 7230 (3.3.3#5)
                 break; // disconnected
             }
             parser.feed(temp_buffer, size);

@@ -13,6 +13,13 @@
 namespace Express::Http {
     using namespace Validators;
 
+    enum class MessageBodyParsingMethod {
+        Undetermined,
+        ChunkedTransfer,
+        ContentLength,
+        UntilClosed
+    };
+
     struct Response {
         int status_code;
         std::string status_text;
@@ -31,13 +38,13 @@ namespace Express::Http {
     private:
         std::vector<uint8_t> data_;
         Response response_;
+        MessageBodyParsingMethod body_parsing_method_ {MessageBodyParsingMethod::Undetermined};
         bool parsing_body_ {false};
-        bool has_content_length_ {false};
-        bool has_chunked_response_ {false};
 
         auto parseStatusLine(const std::string& status_line);
         auto parseHeaders(const std::vector<std::string>& tokens);
         auto processHeaders();
+        auto setMessageBodyLength();
         auto processBody();
 
         auto isDelimiter(const auto begin, const auto end) {

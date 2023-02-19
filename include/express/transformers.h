@@ -9,7 +9,7 @@
 #include <express/validators.h>
 
 namespace Express::Http::Transformers {
-    auto str_to_lowercase(std::string_view str) -> std::string;
+    auto str_to_lower(std::string_view str) -> std::string;
     auto trim_leading_whitespaces(std::string& str) noexcept -> void; 
     auto trim_trailing_whitespaces(std::string& str) noexcept -> void;
 }
