@@ -30,7 +30,7 @@ namespace Express::Http {
         if (separator != 3 || !is_digit_range(status_code)) {
             throw ResponseError {"Invalid status code (" + status_code + ")"};
         }
-        response_.status_code = str_to_uint(status_code);
+        response_.status_code = std::stoi(status_code);
         
         // reason phrase
         auto response_phrase = status.substr(separator + 1);
@@ -80,9 +80,12 @@ namespace Express::Http {
                 throw ResponseError {"Unsupported transfer encoding (" + value + ")"};
             }
         } else if (response_.headers.has("content-length")) {
+            auto length = response_.headers.get("content-length");
+            if (!is_digit_range(length)) {
+                throw ResponseError {"Invalid content length value"};
+            }
             has_content_length_ = true;
-            auto length = str_to_uint(response_.headers.get("content-length"));
-            response_.body.reserve(length);
+            response_.body.reserve(std::stoul(length));
         }
 
         parsing_body_ = true;

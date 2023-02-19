@@ -11,8 +11,8 @@ namespace Express::Http {
     using namespace Transformers;
 
     Header::Header(std::string_view name, std::string_view value) : name_(name), value_(value) {
-        trim_trailing_whitespaces(&value_);
-        trim_leading_whitespaces(&value_);
+        trim_trailing_whitespaces(value_);
+        trim_leading_whitespaces(value_);
 
         if (name_.empty()) {
             throw HeaderError {"Invalid header name."};
