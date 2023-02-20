@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.22)
 
 function(express_client_test test_name)
     set(TEST_EXECUTABLE run_${test_name})
