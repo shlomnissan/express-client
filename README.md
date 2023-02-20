@@ -1,6 +1,8 @@
 # ⚡ express-client
 Promise based HTTP client for modern C++ development
 
+[![express](https://github.com/shlomnissan/express-client/actions/workflows/main.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/main.yml)
+
 ### Express API
 
 Requests can be made by passing the relevant config to `ExpressClient::request`.
