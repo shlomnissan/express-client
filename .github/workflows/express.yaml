@@ -21,7 +21,7 @@ jobs:
               generators: "Ninja"
             }
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install shared dependencies
         run: |
           sudo apt-get -yq update
