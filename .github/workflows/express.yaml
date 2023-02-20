@@ -1,0 +1,52 @@
+name: Express
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {
+              name: "Ubuntu GCC",
+              os: ubuntu-latest,
+              artifact: "ubuntu_gcc.7z",
+              build_type: "Release",
+              cc: "gcc",
+              cxx: "g++",
+              archiver: "7z a",
+              generators: "Ninja"
+            }
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install shared dependencies
+        run: |
+          sudo apt-get -yq update
+          sudo apt-get install -yq cmake ninja-build python3-pip
+          cmake --version
+          ninja --version
+          gcc --version
+          python3 --version
+          pip3 --version
+      - name: Configure
+        run: |
+          mkdir build
+          mkdir instdir
+          cmake \
+            -S . \
+            -B . \
+            -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} \
+            -G "${{ matrix.config.generators }}" \
+            -DCMAKE_INSTALL_PREFIX:PATH=instdir
+      - name: Build
+        shell: bash
+        run: cmake --build . --config ${{ matrix.config.build_type }}
+      - name: Test
+        run: |
+          pip3 install -r tools/mock-server/requirements.txt
+          nohup python3 tools/mock-server/server.py &
+          sleep 1s
+          ctest -V 

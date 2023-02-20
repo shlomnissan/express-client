@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.22)
 
 file (GLOB HTTP_SOURCE_FILES "http/*.cc")
 file (GLOB NET_SOURCE_FILES "net/*.cc")
