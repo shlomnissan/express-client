@@ -8,6 +8,13 @@ namespace Express::Http {
     using namespace std::string_literals;
     using namespace Transformers;
 
+    auto ResponseParser::response() const -> Response {
+        if (knownBodyLength() && !done_reading_data_) {
+            throw ResponseError {"Incomplete data transfer."};
+        }
+        return response_;
+    }
+
     // RFC7230, 3.1.2. Status Line
     auto ResponseParser::parseStatusLine(const std::string& status_line) {
         using namespace Validators;
@@ -105,13 +112,32 @@ namespace Express::Http {
                 throw ResponseError {"Invalid content length value"};
             }
             body_parsing_method_ = MessageBodyParsingMethod::ContentLength;
-            response_.body.reserve(std::stoul(length));
+            content_length_ = std::stoul(length);
+            response_.body.reserve(content_length_);
         }
     }
 
     auto ResponseParser::processBody() {
+        if (done_reading_data_) return;
+
         if (body_parsing_method_ == MessageBodyParsingMethod::Undetermined) {
             setMessageBodyLength();
+        }
+
+        // TODO: until connection closes
+        // TODO: chunked transfer encoding
+
+        if (body_parsing_method_ == MessageBodyParsingMethod::ContentLength) {
+            response_.body.insert(
+                std::end(response_.body),
+                std::begin(data_),
+                std::end(data_)
+            );
+            data_.clear();
+            if (response_.body.size() >= content_length_) {
+                response_.body.resize(content_length_);
+                done_reading_data_ = true;
+            }
         }
     }
 

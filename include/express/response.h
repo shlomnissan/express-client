@@ -33,19 +33,27 @@ namespace Express::Http {
 
         auto feed(uint8_t* buffer, std::size_t size) -> void;
         
-        [[nodiscard]] auto response() const { return response_; };
+        [[nodiscard]] auto response() const -> Response;
+        [[nodiscard]] auto doneReadingData() const { return done_reading_data_; }
 
     private:
-        std::vector<uint8_t> data_;
-        Response response_;
+        std::vector<uint8_t> data_ {};
+        Response response_ {};
         MessageBodyParsingMethod body_parsing_method_ {MessageBodyParsingMethod::Undetermined};
+        size_t content_length_ {0};
         bool parsing_body_ {false};
+        bool done_reading_data_ {false};
 
         auto parseStatusLine(const std::string& status_line);
         auto parseHeaders(const std::vector<std::string>& tokens);
         auto processHeaders();
         auto setMessageBodyLength();
         auto processBody();
+
+        auto knownBodyLength() const -> bool {
+            return body_parsing_method_ == MessageBodyParsingMethod::ChunkedTransfer ||
+                body_parsing_method_ == MessageBodyParsingMethod::ContentLength;
+        }
 
         auto isDelimiter(const auto begin, const auto end) {
             if (begin == end || begin + 1 == end) return false;

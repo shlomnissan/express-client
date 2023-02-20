@@ -32,14 +32,13 @@ namespace Express {
         Http::ResponseParser parser;
         while (true) {
             auto size = socket.recv(temp_buffer);
-            if (size == 0) {
-                // TODO: error if client didn't complete the transfer RFC 7230 (3.3.3#5)
+            if (size == 0 || parser.doneReadingData()) {
                 break; // disconnected
             }
             parser.feed(temp_buffer, size);
-            // TODO: we should also break if we're done processing the data
         }
 
+        // response() will throw if we know the data transfer is incomplete
         return parser.response();
     }
 }
