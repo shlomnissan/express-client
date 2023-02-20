@@ -1,7 +1,7 @@
 # ⚡ express-client
 Promise based HTTP client for modern C++ development
 
-[![express](https://github.com/shlomnissan/express-client/actions/workflows/main.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/main.yml)
+[![express](https://github.com/shlomnissan/express-client/workflows/Express/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/main.yml)
 
 ### Express API
 
