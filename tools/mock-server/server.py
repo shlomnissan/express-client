@@ -4,16 +4,12 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET'])
 def process_get_request():
-    headers = request.headers
-    print(headers)
-    return 'Hello GET World!'
+    return 'Hello World!'
 
 @app.route("/", methods=['POST'])
 def process_post_request():
-    headers = request.headers
-    print(headers)
-    print("First name: " + request.form.get("firstName"))
-    print("Last name: " + request.form.get("lastName") + "\n")
-    return 'Hello POST World!'
+    first_name = request.form.get("firstName")
+    last_name = request.form.get("lastName")
+    return f'Hello {first_name} {last_name}!'
 
 app.run()
