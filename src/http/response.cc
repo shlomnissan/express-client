@@ -98,8 +98,8 @@ namespace Express::Http {
         parsing_body_ = true;
     }
 
+    // RFC 7230, 3.3.3. Message Body Length
     auto ResponseParser::setMessageBodyLength() {
-        // RFC 7230, 3.3.3. Message Body Length
         using enum MessageBodyParsingMethod;
 
         if (response_.headers.has("transfer-encoding")) {

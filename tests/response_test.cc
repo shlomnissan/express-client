@@ -338,6 +338,25 @@ TEST(response_parser_body_content_length, throws_when_fetching_incomplete_respon
     }, ResponseError);
 }
 
+TEST(response_parser_body_content_length, parses_response_without_content_length) {
+    auto input_0 = str_to_data(
+        "HTTP/1.0 200 OK\r\n"
+        "Server: Werkzeug/2.2.2 Python/3.10.6\r\n"
+        "\r\n"
+        "Hel"
+    );
+
+    auto input_1 = str_to_data(
+        "lo World!"
+    );
+
+    ResponseParser parser;
+    parser.feed(input_0.data(), input_0.size());
+    parser.feed(input_1.data(), input_1.size());
+
+    auto response = parser.response();
+    EXPECT_EQ(data_to_str(response.body), "Hello World!");
+}
+
 // TODO: response has chunked and content length
-// TODO: response has an unsupported transfer encoding 
-// TODO: response has no content length
+// TODO: response has an unsupported transfer encoding
