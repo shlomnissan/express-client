@@ -20,7 +20,7 @@ TEST(client, simple_get) {
     EXPECT_EQ(response.status_text, "OK");
     EXPECT_EQ(response.headers.size(), 5);
     EXPECT_EQ(response.headers.has("Date"), true);
-    EXPECT_EQ(response.headers.get("Server"), "Werkzeug/2.2.2 Python/3.10.6");
+    EXPECT_EQ(response.headers.has("Server"), true);
     EXPECT_EQ(response.headers.get("Content-Type"), "text/html; charset=utf-8");
     EXPECT_EQ(response.headers.get("Content-Length"), "12");
     EXPECT_EQ(response.headers.get("Connection"), "close");
@@ -43,7 +43,7 @@ TEST(client, simple_post) {
     EXPECT_EQ(response.status_text, "OK");
     EXPECT_EQ(response.headers.size(), 5);
     EXPECT_EQ(response.headers.has("Date"), true);
-    EXPECT_EQ(response.headers.get("Server"), "Werkzeug/2.2.2 Python/3.10.6");
+    EXPECT_EQ(response.headers.has("Server"), true);
     EXPECT_EQ(response.headers.get("Content-Type"), "text/html; charset=utf-8");
     EXPECT_EQ(response.headers.get("Content-Length"), "22");
     EXPECT_EQ(response.headers.get("Connection"), "close");

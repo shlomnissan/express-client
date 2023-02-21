@@ -294,7 +294,7 @@ TEST(response_parser_body_content_length, parses_body_with_content_length_correc
     EXPECT_EQ(data_to_str(response.body), "Hello GET World!");
 }
 
-TEST(response_parser_body_content_length, skips_data_beyond_the_expected_content_length) {
+TEST(response_parser_body_content_length, skips_body_data_that_exceeds_content_length) {
     auto input_0 = str_to_data(
         "HTTP/1.0 200 OK\r\n"
         "Server: Werkzeug/2.2.2 Python/3.10.6\r\n"
@@ -338,5 +338,6 @@ TEST(response_parser_body_content_length, throws_when_fetching_incomplete_respon
     }, ResponseError);
 }
 
+// TODO: response_parser_body_connection_close, parses_body_until_connection_closes
 // TODO: parses a response with encoding that's not chuncked
 // TODO: parses a response with a body but no explicit body size

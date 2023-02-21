@@ -104,7 +104,7 @@ namespace Express::Http {
             if (value == "chunked") {
                 body_parsing_method_ = MessageBodyParsingMethod::ChunkedTransfer;
             } else {
-                body_parsing_method_ = MessageBodyParsingMethod::UntilClosed;
+                body_parsing_method_ = MessageBodyParsingMethod::ConnectionClosed;
             }
         } else if (response_.headers.has("content-length")) {
             auto length = response_.headers.get("content-length");
@@ -124,20 +124,20 @@ namespace Express::Http {
             setMessageBodyLength();
         }
 
-        // TODO: until connection closes
-        // TODO: chunked transfer encoding
+        // TODO: parse chunked transfer encoding
 
-        if (body_parsing_method_ == MessageBodyParsingMethod::ContentLength) {
+        if (body_parsing_method_ == MessageBodyParsingMethod::ConnectionClosed ||
+            body_parsing_method_ == MessageBodyParsingMethod::ContentLength) {
             response_.body.insert(
-                std::end(response_.body),
-                std::begin(data_),
-                std::end(data_)
+                std::end(response_.body), std::begin(data_), std::end(data_)
             );
             data_.clear();
-            if (response_.body.size() >= content_length_) {
-                response_.body.resize(content_length_);
-                done_reading_data_ = true;
-            }
+        }
+
+        if (body_parsing_method_ == MessageBodyParsingMethod::ContentLength &&
+            response_.body.size() >= content_length_) {
+            response_.body.resize(content_length_);
+            done_reading_data_ = true;
         }
     }
 

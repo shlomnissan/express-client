@@ -17,7 +17,7 @@ namespace Express::Http {
         Undetermined,
         ChunkedTransfer,
         ContentLength,
-        UntilClosed
+        ConnectionClosed
     };
 
     struct Response {
