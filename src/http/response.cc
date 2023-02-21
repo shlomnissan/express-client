@@ -99,45 +99,50 @@ namespace Express::Http {
     }
 
     auto ResponseParser::setMessageBodyLength() {
+        // RFC 7230, 3.3.3. Message Body Length
+        using enum MessageBodyParsingMethod;
+
         if (response_.headers.has("transfer-encoding")) {
             auto value = response_.headers.get("transfer-encoding");
             if (value == "chunked") {
-                body_parsing_method_ = MessageBodyParsingMethod::ChunkedTransfer;
-            } else {
-                body_parsing_method_ = MessageBodyParsingMethod::ConnectionClosed;
+                body_parsing_method_ = ChunkedTransfer;
             }
         } else if (response_.headers.has("content-length")) {
             auto length = response_.headers.get("content-length");
             if (!is_digit_range(length)) {
                 throw ResponseError {"Invalid content length value"};
             }
-            body_parsing_method_ = MessageBodyParsingMethod::ContentLength;
             content_length_ = std::stoul(length);
             response_.body.reserve(content_length_);
+            body_parsing_method_ = ContentLength;
+        } else {
+            // In a response message without a declared message body length,
+            // the message body length is determined by the number of octets
+            // received prior to the server closing the connection.
+            body_parsing_method_ = ConnectionClosed;
         }
     }
 
     auto ResponseParser::processBody() {
-        if (done_reading_data_) return;
+        using enum MessageBodyParsingMethod;
 
-        if (body_parsing_method_ == MessageBodyParsingMethod::Undetermined) {
-            setMessageBodyLength();
-        }
+        if (done_reading_data_) return;
+        if (body_parsing_method_ == Undetermined) { setMessageBodyLength(); }
 
         // TODO: parse chunked transfer encoding
 
-        if (body_parsing_method_ == MessageBodyParsingMethod::ConnectionClosed ||
-            body_parsing_method_ == MessageBodyParsingMethod::ContentLength) {
-            response_.body.insert(
-                std::end(response_.body), std::begin(data_), std::end(data_)
-            );
+        if (body_parsing_method_ == ContentLength) {
+            response_.body.insert(end(response_.body), begin(data_), end(data_));
             data_.clear();
+            if (response_.body.size() >= content_length_) {
+                response_.body.resize(content_length_);
+                done_reading_data_ = true;
+            }
         }
 
-        if (body_parsing_method_ == MessageBodyParsingMethod::ContentLength &&
-            response_.body.size() >= content_length_) {
-            response_.body.resize(content_length_);
-            done_reading_data_ = true;
+        if (body_parsing_method_ == ConnectionClosed) {
+            response_.body.insert(end(response_.body), begin(data_), end(data_));
+            data_.clear();
         }
     }
 

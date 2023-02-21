@@ -338,6 +338,6 @@ TEST(response_parser_body_content_length, throws_when_fetching_incomplete_respon
     }, ResponseError);
 }
 
-// TODO: response_parser_body_connection_close, parses_body_until_connection_closes
-// TODO: parses a response with encoding that's not chuncked
-// TODO: parses a response with a body but no explicit body size
+// TODO: response has chunked and content length
+// TODO: response has an unsupported transfer encoding 
+// TODO: response has no content length
