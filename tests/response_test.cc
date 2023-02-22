@@ -338,7 +338,7 @@ TEST(response_parser_body_content_length, throws_when_fetching_incomplete_respon
     }, ResponseError);
 }
 
-TEST(response_parser_body_content_length, parses_response_without_content_length) {
+TEST(response_parser_body_content_length, parses_body_without_content_length) {
     auto input_0 = str_to_data(
         "HTTP/1.0 200 OK\r\n"
         "Server: Werkzeug/2.2.2 Python/3.10.6\r\n"
@@ -358,5 +358,27 @@ TEST(response_parser_body_content_length, parses_response_without_content_length
     EXPECT_EQ(data_to_str(response.body), "Hello World!");
 }
 
-// TODO: response has chunked and content length
-// TODO: response has an unsupported transfer encoding
+TEST(response_parser_body_chunked, parses_body_with_chunked_encoding_correctly) {
+    auto input = str_to_data(
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain\r\n"
+        "Transfer-Encoding: chunked\r\n"
+        "\r\n"
+        "8\r\n"
+        "Mozilla \r\n"
+        "11\r\n"
+        "Developer Network\r\n"
+        "0\r\n"
+        "\r\n"
+    );
+
+    ResponseParser parser;
+    parser.feed(input.data(), input.size());
+
+    auto response = parser.response();
+    EXPECT_EQ(data_to_str(response.body), "Mozilla Developer Network");
+}
+
+// TODO: parses_body_with_chunked_and_content_length_correctly
+// TODO: parses_body_with_multiple_transfer_encoding_including_chunked
+// TODO: parses_body_with_unsupported_transfer_encoding

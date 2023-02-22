@@ -3,6 +3,7 @@
 
 #include <express/response.h>
 #include <express/transformers.h>
+#include <express/http_defs.h>
 
 namespace Express::Http {
     using namespace std::string_literals;
@@ -80,10 +81,9 @@ namespace Express::Http {
     }
 
     auto ResponseParser::processHeaders() {
-        const std::array<uint8_t, 4> header_separator = {0xD, 0xA, 0xD, 0xA};
         auto iter = std::search(
             begin(data_), end(data_),
-            begin(header_separator), end(header_separator)
+            begin(HCRLF), end(HCRLF)
         );
         if (iter == end(data_)) return;
 
@@ -103,7 +103,8 @@ namespace Express::Http {
         using enum MessageBodyParsingMethod;
 
         if (response_.headers.has("transfer-encoding")) {
-            auto value = response_.headers.get("transfer-encoding");
+            auto value { response_.headers.get("transfer-encoding") };
+            // TODO(chunked): could be a comma-separated list
             if (value == "chunked") {
                 body_parsing_method_ = ChunkedTransfer;
             }
@@ -123,13 +124,64 @@ namespace Express::Http {
         }
     }
 
+    // TODO: extract this to a separate object
     auto ResponseParser::processBody() {
         using enum MessageBodyParsingMethod;
 
         if (done_reading_data_) return;
         if (body_parsing_method_ == Undetermined) { setMessageBodyLength(); }
 
-        // TODO: parse chunked transfer encoding
+        if (body_parsing_method_ == ChunkedTransfer) {
+            auto bytes_to_read {static_cast<unsigned long>(0)};
+            auto finished_reading_chunk {false};
+
+            while (true) {
+                if (finished_reading_chunk) {
+                    if (data_.size() < 2) break;
+                    if (data_[0] != CRLF[0] || data_[1] != CRLF[1]) {
+                        // Every chunk must end with crlf
+                        throw ResponseError {"Invalid chunk."};
+                    }
+                    data_.erase(begin(data_), begin(data_) + 2);
+                    finished_reading_chunk = false;
+                }
+
+                if (bytes_to_read > 0) {
+                    // TODO: extract this to a separate function
+                    const auto to_read {std::min(bytes_to_read, data_.size())};
+                    response_.body.insert(
+                        end(response_.body),
+                        begin(data_),
+                        begin(data_) + to_read
+                    );
+
+                    data_.erase(begin(data_), begin(data_) + to_read);
+
+                    bytes_to_read -= to_read;
+                    if (bytes_to_read == 0) {
+                        finished_reading_chunk = true;
+                    }
+                } else {
+                    // TODO: extract this to a separate function
+                    auto iter {std::search(
+                        begin(data_), end(data_),
+                        begin(CRLF), end(CRLF)
+                    )};
+
+                    if (iter == end(data_)) break;
+
+                    auto chunk_size = std::string(begin(data_), iter);
+                    bytes_to_read = std::stoul(chunk_size, nullptr, 16);
+
+                    data_.erase(begin(data_), iter + 2);
+
+                    if (bytes_to_read == 0) {
+                        done_reading_data_ = true;
+                        break;
+                    }
+                }
+            }
+        }
 
         if (body_parsing_method_ == ContentLength) {
             response_.body.insert(end(response_.body), begin(data_), end(data_));

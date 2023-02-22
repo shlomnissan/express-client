@@ -4,6 +4,7 @@
 #pragma once
 
 #include <ostream>
+#include <array>
 
 namespace Express::Http {
 #define HTTP_METHODS                                                                               \
@@ -25,10 +26,12 @@ namespace Express::Http {
 
     auto operator<<(std::ostream& os, Method method) -> std::ostream&;
 
+    static constexpr std::array<char, 2> CRLF {0xD, 0xA};
+    static constexpr std::array<char, 4> HCRLF {0xD, 0xA, 0xD, 0xA};
+
     template <class CharT, class Traits>
     std::basic_ostream<CharT, Traits>& crlf(std::basic_ostream<CharT, Traits>& os) {
-        static constexpr char CRLF[] = {0xD, 0xA};
-        os.write(CRLF, 2);
+        os.write(CRLF.data(), 2);
         return os;
     }
 }
