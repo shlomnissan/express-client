@@ -421,9 +421,39 @@ TEST(response_parser_body_chunked, parses_body_with_chunked_encoding_correctly) 
         "\r\n"
     );
 
+    auto input_4 = str_to_data("la \r\n");
+
     ResponseParser another_parser;
     another_parser.feed(input_2.data(), input_2.size());
     another_parser.feed(input_3.data(), input_3.size());
+    another_parser.feed(input_4.data(), input_4.size());
+
+    response = another_parser.response();
+    EXPECT_EQ(data_to_str(response.body), "Mozilla Developer Network");
+}
+
+TEST(response_parser_body_chunked, throws_error_when_parsing_invalid_chunked_data) {
+    auto input = str_to_data(
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain\r\n"
+        "Transfer-Encoding: chunked\r\n"
+        "\r\n"
+        "8\r\n"
+        "Mozilla " // missing \r\n at the end of a chunk 
+        "11\r\n"
+        "Developer Network\r\n"
+    );
+
+    ResponseParser parser;
+
+    EXPECT_THROW({
+        try {
+            parser.feed(input.data(), input.size());
+        } catch (const ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Invalid chunk delimiter.");
+            throw;
+        }
+    }, ResponseError);
 }
 
 // TODO: parses_body_with_chunked_and_content_length_correctly

@@ -150,7 +150,7 @@ namespace Express::Http {
                     )};
 
                     auto chunk_size = std::string(begin(data_), iter);
-                    if (chunk_size.empty() || !is_digit_range(chunk_size)) {
+                    if (chunk_size.empty()) {
                         throw ResponseError {"Invalid chunk size."};
                     }
                     bytes_to_read = std::stoul(chunk_size, nullptr, 16);
