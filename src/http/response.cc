@@ -132,22 +132,36 @@ namespace Express::Http {
         if (body_parsing_method_ == Undetermined) { setMessageBodyLength(); }
 
         if (body_parsing_method_ == ChunkedTransfer) {
-            auto bytes_to_read {static_cast<unsigned long>(0)};
-            auto finished_reading_chunk {false};
-
             while (true) {
                 if (finished_reading_chunk) {
                     if (data_.size() < 2) break;
                     if (data_[0] != CRLF[0] || data_[1] != CRLF[1]) {
                         // Every chunk must end with crlf
-                        throw ResponseError {"Invalid chunk."};
+                        throw ResponseError {"Invalid chunk delimiter."};
                     }
                     data_.erase(begin(data_), begin(data_) + 2);
                     finished_reading_chunk = false;
                 }
 
-                if (bytes_to_read > 0) {
-                    // TODO: extract this to a separate function
+                if (bytes_to_read == 0) {
+                    auto iter {std::search(
+                        begin(data_), end(data_),
+                        begin(CRLF), end(CRLF)
+                    )};
+
+                    auto chunk_size = std::string(begin(data_), iter);
+                    if (chunk_size.empty() || !is_digit_range(chunk_size)) {
+                        throw ResponseError {"Invalid chunk size."};
+                    }
+                    bytes_to_read = std::stoul(chunk_size, nullptr, 16);
+
+                    data_.erase(begin(data_), iter + 2);
+
+                    if (bytes_to_read == 0) {
+                        done_reading_data_ = true;
+                        break;
+                    }
+                } else {
                     const auto to_read {std::min(bytes_to_read, data_.size())};
                     response_.body.insert(
                         end(response_.body),
@@ -161,24 +175,8 @@ namespace Express::Http {
                     if (bytes_to_read == 0) {
                         finished_reading_chunk = true;
                     }
-                } else {
-                    // TODO: extract this to a separate function
-                    auto iter {std::search(
-                        begin(data_), end(data_),
-                        begin(CRLF), end(CRLF)
-                    )};
 
-                    if (iter == end(data_)) break;
-
-                    auto chunk_size = std::string(begin(data_), iter);
-                    bytes_to_read = std::stoul(chunk_size, nullptr, 16);
-
-                    data_.erase(begin(data_), iter + 2);
-
-                    if (bytes_to_read == 0) {
-                        done_reading_data_ = true;
-                        break;
-                    }
+                    if (data_.empty()) break;
                 }
             }
         }

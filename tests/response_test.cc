@@ -379,6 +379,53 @@ TEST(response_parser_body_chunked, parses_body_with_chunked_encoding_correctly) 
     EXPECT_EQ(data_to_str(response.body), "Mozilla Developer Network");
 }
 
+ TEST(response_parser_body_chunked, parses_body_with_chunked_with_multiple_inputs) {
+    auto input_0 = str_to_data(
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain\r\n"
+        "Transfer-Encoding: chunked\r\n"
+        "\r\n"
+        "8\r\n"
+        "Mozilla "
+    );
+
+    auto input_1 = str_to_data(
+        "\r\n"
+        "11\r\n"
+        "Developer Network\r\n"
+        "0\r\n"
+        "\r\n"
+    );
+
+    ResponseParser parser;
+    parser.feed(input_0.data(), input_0.size());
+    parser.feed(input_1.data(), input_1.size());
+    
+    auto response = parser.response();
+    EXPECT_EQ(data_to_str(response.body), "Mozilla Developer Network");
+
+    auto input_2 = str_to_data(
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain\r\n"
+        "Transfer-Encoding: chunked\r\n"
+        "\r\n"
+        "8\r\n"
+        "Mozil"
+    );
+
+    auto input_3 = str_to_data(
+        "la \r\n"
+        "11\r\n"
+        "Developer Network\r\n"
+        "0\r\n"
+        "\r\n"
+    );
+
+    ResponseParser another_parser;
+    another_parser.feed(input_2.data(), input_2.size());
+    another_parser.feed(input_3.data(), input_3.size());
+}
+
 // TODO: parses_body_with_chunked_and_content_length_correctly
 // TODO: parses_body_with_multiple_transfer_encoding_including_chunked
 // TODO: parses_body_with_unsupported_transfer_encoding
