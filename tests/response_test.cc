@@ -456,6 +456,57 @@ TEST(response_parser_body_chunked, throws_error_when_parsing_invalid_chunked_dat
     }, ResponseError);
 }
 
-// TODO: parses_body_with_chunked_and_content_length_correctly
+TEST(response_parser_body_chunked, chunked_transfer_encoding_overrides_content_length) {
+    auto input = str_to_data(
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain\r\n"
+        "Content-Length: 25\r\n"
+        "Transfer-Encoding: chunked\r\n"
+        "\r\n"
+        "8\r\n"
+        "Mozilla \r\n" 
+        "11\r\n"
+        "Developer Network\r\n"
+        "0\r\n"
+        "\r\n"
+    );
+
+    ResponseParser parser;
+    parser.feed(input.data(), input.size());
+    auto response = parser.response();
+    EXPECT_EQ(response.headers.has("Content-Length"), false);
+    EXPECT_EQ(data_to_str(response.body), "Mozilla Developer Network");
+}
+
+TEST(response_parser_body_chunked, parses_body_with_unsupported_transfer_encoding) {
+    auto input_0 = str_to_data(
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain\r\n"
+        "Content-Length: 25\r\n" // defaults the content length 
+        "Transfer-Encoding: deflate\r\n"
+        "\r\n"
+        "Mozilla Developer Network"
+    );
+
+    ResponseParser parser;
+    parser.feed(input_0.data(), input_0.size());
+
+    auto response = parser.response();
+    EXPECT_EQ(data_to_str(response.body), "Mozilla Developer Network");
+
+    auto input_1 = str_to_data(
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain\r\n"
+        "Transfer-Encoding: deflate\r\n"
+        "\r\n"
+        "Mozilla Developer Network"
+    );
+
+    ResponseParser another_parser;
+    another_parser.feed(input_1.data(), input_1.size());
+
+    auto another_response = another_parser.response();
+    EXPECT_EQ(data_to_str(another_response.body), "Mozilla Developer Network");
+}
+
 // TODO: parses_body_with_multiple_transfer_encoding_including_chunked
-// TODO: parses_body_with_unsupported_transfer_encoding

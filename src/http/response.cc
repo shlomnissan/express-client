@@ -50,6 +50,8 @@ namespace Express::Http {
 
     // RFC 7230, 3.2. Header Fields
     auto ResponseParser::parseHeaders(const std::vector<std::string>& tokens) {
+        using namespace Transformers;
+
         for (std::string_view header : tokens) {
             auto separator = header.find(':');
             if (separator == std::string::npos) {
@@ -59,6 +61,9 @@ namespace Express::Http {
             auto name = header.substr(0, separator);
             auto lowercase_name = str_to_lower(name);
 
+            auto value = trim_leading_whitespaces(header.substr(separator + 1));
+            auto lowercase_value = str_to_lower(value);
+
             if (lowercase_name == "content-length") {
                 if (response_.headers.has("content-length"))
                     throw ResponseError {"Received multiple content length fields."};
@@ -66,17 +71,16 @@ namespace Express::Http {
                     continue;
                 }
             }
+
             if (lowercase_name == "transfer-encoding" &&
+                value == "chunked" &&
                 response_.headers.has("content-length")) {
-                response_.headers.remove("content_length");
+                response_.headers.remove("content-length");
             }
 
             // The tokenizer handles the obsolete fold,
             // and the Header constructor handles the header name/value validation. 
-            response_.headers.add({
-                name,
-                header.substr(separator + 1)
-            });
+            response_.headers.add({name, value});
         }
     }
 
@@ -107,8 +111,11 @@ namespace Express::Http {
             // TODO(chunked): could be a comma-separated list
             if (value == "chunked") {
                 body_parsing_method_ = ChunkedTransfer;
+                return;
             }
-        } else if (response_.headers.has("content-length")) {
+        }
+
+        if (response_.headers.has("content-length")) {
             auto length = response_.headers.get("content-length");
             if (!is_digit_range(length)) {
                 throw ResponseError {"Invalid content length value"};
@@ -116,12 +123,13 @@ namespace Express::Http {
             content_length_ = std::stoul(length);
             response_.body.reserve(content_length_);
             body_parsing_method_ = ContentLength;
-        } else {
-            // In a response message without a declared message body length,
-            // the message body length is determined by the number of octets
-            // received prior to the server closing the connection.
-            body_parsing_method_ = ConnectionClosed;
+            return;
         }
+        
+        // In a response message without a declared message body length,
+        // the message body length is determined by the number of octets
+        // received prior to the server closing the connection.
+        body_parsing_method_ = ConnectionClosed;
     }
 
     // TODO: extract this to a separate object
