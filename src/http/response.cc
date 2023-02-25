@@ -65,6 +65,9 @@ namespace Express::Http {
             auto lowercase_value = str_to_lower(value);
 
             if (lowercase_name == "content-length") {
+                // If a message is received with multiple Content-Length 
+                // header fields having differing field-values, then the 
+                // message framing is invalid.
                 if (response_.headers.has("content-length"))
                     throw ResponseError {"Received multiple content length fields."};
                 if (response_.headers.has("transfer-encoding")) {
@@ -72,8 +75,7 @@ namespace Express::Http {
                 }
             }
 
-            if (lowercase_name == "transfer-encoding" &&
-                value == "chunked" &&
+            if (lowercase_name == "transfer-encoding" && value == "chunked" &&
                 response_.headers.has("content-length")) {
                 response_.headers.remove("content-length");
             }
@@ -108,7 +110,6 @@ namespace Express::Http {
 
         if (response_.headers.has("transfer-encoding")) {
             auto value { response_.headers.get("transfer-encoding") };
-            // TODO(chunked): could be a comma-separated list
             if (value == "chunked") {
                 body_parsing_method_ = ChunkedTransfer;
                 return;

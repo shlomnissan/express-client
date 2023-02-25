@@ -508,5 +508,3 @@ TEST(response_parser_body_chunked, parses_body_with_unsupported_transfer_encodin
     auto another_response = another_parser.response();
     EXPECT_EQ(data_to_str(another_response.body), "Mozilla Developer Network");
 }
-
-// TODO: parses_body_with_multiple_transfer_encoding_including_chunked
