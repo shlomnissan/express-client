@@ -16,7 +16,7 @@ TEST(client, simple_get) {
         .method = Http::Method::Get,
     });
 
-    EXPECT_EQ(response.status_code, 200);
+    EXPECT_EQ(response.status, 200);
     EXPECT_EQ(response.status_text, "OK");
     EXPECT_EQ(response.headers.size(), 5);
     EXPECT_EQ(response.headers.has("Date"), true);
@@ -25,7 +25,7 @@ TEST(client, simple_get) {
     EXPECT_EQ(response.headers.get("Content-Length"), "12");
     EXPECT_EQ(response.headers.get("Connection"), "close");
 
-    auto body = std::string {begin(response.body), end(response.body)};
+    auto body = std::string {begin(response.data), end(response.data)};
     EXPECT_EQ(body, "Hello World!");
 }
 
@@ -39,7 +39,7 @@ TEST(client, simple_post) {
         }},
     });
 
-    EXPECT_EQ(response.status_code, 200);
+    EXPECT_EQ(response.status, 200);
     EXPECT_EQ(response.status_text, "OK");
     EXPECT_EQ(response.headers.size(), 5);
     EXPECT_EQ(response.headers.has("Date"), true);
@@ -48,7 +48,7 @@ TEST(client, simple_post) {
     EXPECT_EQ(response.headers.get("Content-Length"), "22");
     EXPECT_EQ(response.headers.get("Connection"), "close");
 
-    auto body = std::string {begin(response.body), end(response.body)};
+    auto body = std::string {begin(response.data), end(response.data)};
     EXPECT_EQ(body, "Hello Fred Flintstone!");
 }
 

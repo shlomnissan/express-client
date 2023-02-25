@@ -38,7 +38,7 @@ namespace Express::Http {
         if (separator != 3 || !is_digit_range(status_code)) {
             throw ResponseError {"Invalid status code (" + status_code + ")"};
         }
-        response_.status_code = std::stoi(status_code);
+        response_.status = std::stoi(status_code);
         
         // reason phrase
         auto response_phrase = status.substr(separator + 1);
@@ -122,7 +122,7 @@ namespace Express::Http {
                 throw ResponseError {"Invalid content length value"};
             }
             content_length_ = std::stoul(length);
-            response_.body.reserve(content_length_);
+            response_.data.reserve(content_length_);
             body_parsing_method_ = ContentLength;
             return;
         }
@@ -172,8 +172,8 @@ namespace Express::Http {
                     }
                 } else {
                     const auto to_read {std::min(bytes_to_read, data_.size())};
-                    response_.body.insert(
-                        end(response_.body),
+                    response_.data.insert(
+                        end(response_.data),
                         begin(data_),
                         begin(data_) + to_read
                     );
@@ -191,16 +191,16 @@ namespace Express::Http {
         }
 
         if (body_parsing_method_ == ContentLength) {
-            response_.body.insert(end(response_.body), begin(data_), end(data_));
+            response_.data.insert(end(response_.data), begin(data_), end(data_));
             data_.clear();
-            if (response_.body.size() >= content_length_) {
-                response_.body.resize(content_length_);
+            if (response_.data.size() >= content_length_) {
+                response_.data.resize(content_length_);
                 done_reading_data_ = true;
             }
         }
 
         if (body_parsing_method_ == ConnectionClosed) {
-            response_.body.insert(end(response_.body), begin(data_), end(data_));
+            response_.data.insert(end(response_.data), begin(data_), end(data_));
             data_.clear();
         }
     }

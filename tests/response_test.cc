@@ -36,7 +36,7 @@ TEST(response_parser, parses_a_valid_response_successfully) {
 
     auto response = parser.response();
 
-    EXPECT_EQ(response.status_code, 200);
+    EXPECT_EQ(response.status, 200);
     EXPECT_EQ(response.status_text, "OK");
     EXPECT_EQ(response.headers.size(), 5);
     EXPECT_EQ(response.headers.get("Server"), "Werkzeug/2.2.2 Python/3.10.6");
@@ -45,7 +45,7 @@ TEST(response_parser, parses_a_valid_response_successfully) {
     EXPECT_EQ(response.headers.get("Content-Length"), "16");
     EXPECT_EQ(response.headers.get("Connection"), "close");
 
-    auto body = data_to_str(response.body);
+    auto body = data_to_str(response.data);
     EXPECT_EQ(body, "Hello GET World!");
 }
 
@@ -210,7 +210,7 @@ TEST(response_parser_headers, handles_obsolete_line_folding) {
     EXPECT_EQ(response.headers.get("Server"), "Werkzeug/2.2.2 Python/3.10.6");
     EXPECT_EQ(response.headers.get("Content-Length"), "16");
 
-    auto body = data_to_str(response.body);
+    auto body = data_to_str(response.data);
     EXPECT_EQ(body, "Hello GET World!");
 
     input = str_to_data(
@@ -231,7 +231,7 @@ TEST(response_parser_headers, handles_obsolete_line_folding) {
     EXPECT_EQ(another_response.headers.get("Server"), "Werkzeug/2.2.2 Python/3.10.6");
     EXPECT_EQ(another_response.headers.get("Content-Length"), "16");
 
-    auto another_body = data_to_str(another_response.body);
+    auto another_body = data_to_str(another_response.data);
     EXPECT_EQ(another_body, "Hello GET World!");
 }
 
@@ -291,7 +291,7 @@ TEST(response_parser_body_content_length, parses_body_with_content_length_correc
     parser.feed(input_1.data(), input_1.size());
 
     auto response = parser.response();
-    EXPECT_EQ(data_to_str(response.body), "Hello GET World!");
+    EXPECT_EQ(data_to_str(response.data), "Hello GET World!");
 }
 
 TEST(response_parser_body_content_length, skips_body_data_that_exceeds_content_length) {
@@ -313,7 +313,7 @@ TEST(response_parser_body_content_length, skips_body_data_that_exceeds_content_l
     parser.feed(input_1.data(), input_1.size());
 
     auto response = parser.response();
-    EXPECT_EQ(data_to_str(response.body), "Hello GET World!");
+    EXPECT_EQ(data_to_str(response.data), "Hello GET World!");
 }
 
 TEST(response_parser_body_content_length, throws_when_fetching_incomplete_response) {
@@ -355,7 +355,7 @@ TEST(response_parser_body_content_length, parses_body_without_content_length) {
     parser.feed(input_1.data(), input_1.size());
 
     auto response = parser.response();
-    EXPECT_EQ(data_to_str(response.body), "Hello World!");
+    EXPECT_EQ(data_to_str(response.data), "Hello World!");
 }
 
 TEST(response_parser_body_chunked, parses_body_with_chunked_encoding_correctly) {
@@ -376,7 +376,7 @@ TEST(response_parser_body_chunked, parses_body_with_chunked_encoding_correctly) 
     parser.feed(input.data(), input.size());
 
     auto response = parser.response();
-    EXPECT_EQ(data_to_str(response.body), "Mozilla Developer Network");
+    EXPECT_EQ(data_to_str(response.data), "Mozilla Developer Network");
 }
 
  TEST(response_parser_body_chunked, parses_body_with_chunked_with_multiple_inputs) {
@@ -402,7 +402,7 @@ TEST(response_parser_body_chunked, parses_body_with_chunked_encoding_correctly) 
     parser.feed(input_1.data(), input_1.size());
     
     auto response = parser.response();
-    EXPECT_EQ(data_to_str(response.body), "Mozilla Developer Network");
+    EXPECT_EQ(data_to_str(response.data), "Mozilla Developer Network");
 
     auto input_2 = str_to_data(
         "HTTP/1.1 200 OK\r\n"
@@ -429,7 +429,7 @@ TEST(response_parser_body_chunked, parses_body_with_chunked_encoding_correctly) 
     another_parser.feed(input_4.data(), input_4.size());
 
     response = another_parser.response();
-    EXPECT_EQ(data_to_str(response.body), "Mozilla Developer Network");
+    EXPECT_EQ(data_to_str(response.data), "Mozilla Developer Network");
 }
 
 TEST(response_parser_body_chunked, throws_error_when_parsing_invalid_chunked_data) {
@@ -475,7 +475,7 @@ TEST(response_parser_body_chunked, chunked_transfer_encoding_overrides_content_l
     parser.feed(input.data(), input.size());
     auto response = parser.response();
     EXPECT_EQ(response.headers.has("Content-Length"), false);
-    EXPECT_EQ(data_to_str(response.body), "Mozilla Developer Network");
+    EXPECT_EQ(data_to_str(response.data), "Mozilla Developer Network");
 }
 
 TEST(response_parser_body_chunked, parses_body_with_unsupported_transfer_encoding) {
@@ -492,7 +492,7 @@ TEST(response_parser_body_chunked, parses_body_with_unsupported_transfer_encodin
     parser.feed(input_0.data(), input_0.size());
 
     auto response = parser.response();
-    EXPECT_EQ(data_to_str(response.body), "Mozilla Developer Network");
+    EXPECT_EQ(data_to_str(response.data), "Mozilla Developer Network");
 
     auto input_1 = str_to_data(
         "HTTP/1.1 200 OK\r\n"
@@ -506,5 +506,5 @@ TEST(response_parser_body_chunked, parses_body_with_unsupported_transfer_encodin
     another_parser.feed(input_1.data(), input_1.size());
 
     auto another_response = another_parser.response();
-    EXPECT_EQ(data_to_str(another_response.body), "Mozilla Developer Network");
+    EXPECT_EQ(data_to_str(another_response.data), "Mozilla Developer Network");
 }
