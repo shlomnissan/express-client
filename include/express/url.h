@@ -45,7 +45,8 @@ namespace Express::Net {
             UserInformation user_information_;
 
             auto parseURL(std::string_view url) -> void;
-            auto processAuthority(std::string_view authority) -> void;
+            auto processAuthority() -> void;
+            auto processPath() -> void;
     };
 
     struct URLError : public std::logic_error {

@@ -8,14 +8,14 @@
 using namespace Express::Net;
 
 TEST(url, parses_complete_url) {
-    URL url("http://user:pass@example.com:80/user?q=foo#bar"); 
+    URL url("http://user:pass@example.com:3000/user?q=foo#bar"); 
 
     EXPECT_EQ(url.scheme(), "http");
-    EXPECT_EQ(url.authority(), "user:pass@example.com:80");
+    EXPECT_EQ(url.authority(), "user:pass@example.com:3000");
     EXPECT_EQ(url.user_information().username(), "user");
     EXPECT_EQ(url.user_information().password(), "pass");
     EXPECT_EQ(url.host(), "example.com");
-    EXPECT_EQ(url.port(), "80");
+    EXPECT_EQ(url.port(), "3000");
     EXPECT_EQ(url.path(), "user");
     EXPECT_EQ(url.query(), "q=foo");
 }
@@ -28,7 +28,7 @@ TEST(url, parses_simple_url) {
     EXPECT_EQ(url.user_information().username(), "");
     EXPECT_EQ(url.user_information().password(), "");
     EXPECT_EQ(url.host(), "example.com");
-    EXPECT_EQ(url.port(), "");
+    EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "");
     EXPECT_EQ(url.query(), "");
 }
@@ -41,7 +41,7 @@ TEST(url, parses_simple_url_with_path) {
     EXPECT_EQ(url.user_information().username(), "");
     EXPECT_EQ(url.user_information().password(), "");
     EXPECT_EQ(url.host(), "example.com");
-    EXPECT_EQ(url.port(), "");
+    EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "user");
     EXPECT_EQ(url.query(), "");
 }
@@ -54,7 +54,7 @@ TEST(url, parses_url_with_multiple_path_segments) {
     EXPECT_EQ(url.user_information().username(), "");
     EXPECT_EQ(url.user_information().password(), "");
     EXPECT_EQ(url.host(), "www.example.com");
-    EXPECT_EQ(url.port(), "");
+    EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "user/david/image.png");
     EXPECT_EQ(url.query(), "");
 }
@@ -67,7 +67,7 @@ TEST(url, parses_url_with_query_and_fragment_no_path) {
     EXPECT_EQ(url.user_information().username(), "");
     EXPECT_EQ(url.user_information().password(), "");
     EXPECT_EQ(url.host(), "example.com");
-    EXPECT_EQ(url.port(), "");
+    EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "");
     EXPECT_EQ(url.query(), "q=foo");
 }
@@ -80,7 +80,7 @@ TEST(url, parses_url_with_query_and_fragment_no_path_after_slash) {
     EXPECT_EQ(url.user_information().username(), "");
     EXPECT_EQ(url.user_information().password(), "");
     EXPECT_EQ(url.host(), "example.com");
-    EXPECT_EQ(url.port(), "");
+    EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "");
     EXPECT_EQ(url.query(), "q=foo");
 }
@@ -93,7 +93,7 @@ TEST(url, parses_url_with_query_no_path) {
     EXPECT_EQ(url.user_information().username(), "");
     EXPECT_EQ(url.user_information().password(), "");
     EXPECT_EQ(url.host(), "example.com");
-    EXPECT_EQ(url.port(), "");
+    EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "");
     EXPECT_EQ(url.query(), "q=foo");
 }
@@ -106,7 +106,7 @@ TEST(url, parses_url_with_query_and_path) {
     EXPECT_EQ(url.user_information().username(), "");
     EXPECT_EQ(url.user_information().password(), "");
     EXPECT_EQ(url.host(), "example.com");
-    EXPECT_EQ(url.port(), "");
+    EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "user");
     EXPECT_EQ(url.query(), "q=foo");
 }
@@ -119,7 +119,7 @@ TEST(url, parses_url_with_fragment_no_path) {
     EXPECT_EQ(url.user_information().username(), "");
     EXPECT_EQ(url.user_information().password(), "");
     EXPECT_EQ(url.host(), "example.com");
-    EXPECT_EQ(url.port(), "");
+    EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "");
     EXPECT_EQ(url.query(), "");
 }
@@ -132,7 +132,7 @@ TEST(url, parses_url_with_fragment_and_path) {
     EXPECT_EQ(url.user_information().username(), "");
     EXPECT_EQ(url.user_information().password(), "");
     EXPECT_EQ(url.host(), "example.com");
-    EXPECT_EQ(url.port(), "");
+    EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "user");
     EXPECT_EQ(url.query(), "");
 }
@@ -145,7 +145,7 @@ TEST(url, parses_url_with_empty_user_info) {
     EXPECT_EQ(url.user_information().username(), "");
     EXPECT_EQ(url.user_information().password(), "");
     EXPECT_EQ(url.host(), "example.com");
-    EXPECT_EQ(url.port(), "");
+    EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "");
     EXPECT_EQ(url.query(), "");
 }
@@ -158,7 +158,7 @@ TEST(url, parses_url_with_username_and_no_password) {
     EXPECT_EQ(url.user_information().username(), "user");
     EXPECT_EQ(url.user_information().password(), "");
     EXPECT_EQ(url.host(), "example.com");
-    EXPECT_EQ(url.port(), "");
+    EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "");
     EXPECT_EQ(url.query(), "");
 }
@@ -171,7 +171,7 @@ TEST(url, parses_url_with_password_and_no_username) {
     EXPECT_EQ(url.user_information().username(), "");
     EXPECT_EQ(url.user_information().password(), "pass");
     EXPECT_EQ(url.host(), "example.com");
-    EXPECT_EQ(url.port(), "");
+    EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "");
     EXPECT_EQ(url.query(), "");
 }
