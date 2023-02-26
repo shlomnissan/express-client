@@ -15,8 +15,11 @@ namespace Express::Net {
     auto URL::parseURL(std::string_view url) -> void {
         using namespace Http::Validators;
 
-        if (url.empty() || !is_alnum(url[0])) {
-            throw URLError {"Invalid URL."};
+        if (!url.starts_with("http://")) {
+            throw URLError {
+                "Unsupported URL scheme. "
+                "The client currently supports only HTTP."
+            };
         }
 
         // RFC3986, 3.1. Scheme
@@ -41,10 +44,9 @@ namespace Express::Net {
             if (*authority_pos == '/') ++authority_pos;
             path_ = std::string(authority_pos, end(url));
 
-            // RFC3986, 3.5. Fragment
+            // Skip fragment if needed
             auto fragment_pos = path_.find('#');
             if (fragment_pos != std::string::npos) {
-                fragment_ = path_.substr(fragment_pos + 1);
                 path_.resize(fragment_pos);
             }
 
@@ -78,7 +80,6 @@ namespace Express::Net {
         host_ = authority.substr(host_pos + 1);
         auto port_pos = host_.find(':');
         if (port_pos != std::string::npos) {
-
             // RFC3986, 3.2.3. Port
             port_ = host_.substr(port_pos + 1);
             host_.resize(port_pos);

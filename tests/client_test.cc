@@ -51,20 +51,3 @@ TEST(client, simple_post) {
     auto body = std::string {begin(response.data), end(response.data)};
     EXPECT_EQ(body, "Hello Fred Flintstone!");
 }
-
-TEST(client, throws_error_if_url_scheme_isnt_supported) {
-    EXPECT_THROW({
-        try {
-            ExpressClient::request({
-                .url = "https://127.0.0.1:5000",
-                .method = Http::Method::Get,
-            });
-        } catch (const ExpressClientError& e) {
-            EXPECT_STREQ(
-                "Invalid URL scheme. Only http is supported.",
-                e.what()
-            );
-            throw;
-        }
-    }, ExpressClientError);
-}

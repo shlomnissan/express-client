@@ -31,7 +31,6 @@ namespace Express::Net {
             [[nodiscard]] auto port() const { return port_; }
             [[nodiscard]] auto path() const { return path_; }
             [[nodiscard]] auto query() const { return query_; }
-            [[nodiscard]] auto fragment() const { return fragment_; }
             [[nodiscard]] auto source() const { return source_; }
 
         private:
@@ -41,7 +40,6 @@ namespace Express::Net {
             std::string port_;
             std::string path_;
             std::string query_;
-            std::string fragment_;
             std::string source_;
 
             UserInformation user_information_;

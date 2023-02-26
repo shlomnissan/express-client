@@ -14,10 +14,6 @@ namespace Express {
     auto ExpressClient::request(const Http::RequestConfig& config) -> Http::Response {
         Net::URL url {config.url};
 
-        if (url.scheme() != "http") {
-            throw ExpressClientError {"Invalid URL scheme. Only http is supported."};
-        }
-
         Net::Socket socket {{url.host(), url.port()}};
         socket.connect();
 

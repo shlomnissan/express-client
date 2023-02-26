@@ -32,7 +32,7 @@ namespace Express::Http {
         }
         status = status.substr(4);
 
-        // status code
+        // Status code
         auto separator = status.find(0x20);
         auto status_code = status.substr(0, separator);
         if (separator != 3 || !is_digit_range(status_code)) {
@@ -40,7 +40,7 @@ namespace Express::Http {
         }
         response_.status = std::stoi(status_code);
         
-        // reason phrase
+        // Reason phrase
         auto response_phrase = status.substr(separator + 1);
         if (!is_valid_char_range(response_phrase)) {
             throw ResponseError {"Invalid characters in reason phrase"};
