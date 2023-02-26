@@ -32,7 +32,7 @@ TEST(request, creates_valid_request_object_with_form_data) {
     Request request {url, {
         .url = url.source(),
         .method = Method::Post,
-        .body = Body::FormFields {{
+        .data = {{
             {"firstName", "Fred"},
             {"lastName", "Flintstone"}
         }},

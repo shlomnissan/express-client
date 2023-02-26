@@ -8,8 +8,6 @@
 
 #include <express/request.h>
 #include <express/response.h>
-#include <express/body.h>
-#include <express/http_defs.h>
 
 namespace Express {
     class ExpressClient {

@@ -10,13 +10,13 @@
 #include <express/header.h>
 #include <express/http_defs.h>
 #include <express/url.h>
-#include <express/body.h>
+#include <express/data.h>
 
 namespace Express::Http {
     struct RequestConfig {
         std::string_view url;
         Method method {Method::Get};
-        const Body::__Base& body {};
+        Data data {};
         HeaderCollection headers {};
     };
 

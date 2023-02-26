@@ -7,7 +7,7 @@ function(express_client_test test_name)
     add_test(${test_name} ${TEST_EXECUTABLE})
 endfunction()
 
-express_client_test(body_test)
+express_client_test(data_test)
 express_client_test(client_test)
 express_client_test(endpoint_test)
 express_client_test(header_test)

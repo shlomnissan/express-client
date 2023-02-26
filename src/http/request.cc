@@ -9,15 +9,15 @@ namespace Express::Http {
         url_(url) {
         config_.headers.add({"Host", url_.host()});
         config_.headers.add({"User-Agent", "express/0.1"});
-        if (config_.body.size()) {
+        if (config_.data.size()) {
             // TODO: Must be a valid body request POST, PUT, PATCH
-            config_.headers.add({"Content-Type", config_.body.contentType()});
-            config_.headers.add({"Content-Length", std::to_string(config_.body.size())});
+            config_.headers.add({"Content-Type", config_.data.contentType()});
+            config_.headers.add({"Content-Length", std::to_string(config_.data.size())});
 
             // TODO: FIX THIS
             // The body in the configuration object is a reference to a temp,
             // so we need to store a copy of the data locally.
-            data_ = config_.body.data();
+            data_ = config_.data.data();
         }
         config_.headers.add({"Connection", "close"});
     }
