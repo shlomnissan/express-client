@@ -13,11 +13,6 @@ namespace Express::Http {
             // TODO: Must be a valid body request POST, PUT, PATCH
             config_.headers.add({"Content-Type", config_.data.contentType()});
             config_.headers.add({"Content-Length", std::to_string(config_.data.size())});
-
-            // TODO: FIX THIS
-            // The body in the configuration object is a reference to a temp,
-            // so we need to store a copy of the data locally.
-            data_ = config_.data.data();
         }
         config_.headers.add({"Connection", "close"});
     }
@@ -28,6 +23,6 @@ namespace Express::Http {
             buffer << header;
         }
         buffer << crlf;
-        buffer << data_;
+        buffer << config_.data.data();;
     }
 }

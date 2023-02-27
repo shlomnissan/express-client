@@ -10,9 +10,10 @@ namespace Express::Http {
         for (const auto& field : data) {
             data_ += field.key() + '=' + field.value() + '&';
         }
-        if (!data_.empty()) {
-            data_.pop_back();
-        }
-        // TODO: encode the string to URL
+        if (!data_.empty()) { data_.pop_back(); }
+
+        content_type_hint_ = "application/x-www-form-urlencoded";
+
+        // TODO: encode URL string
     }
 }

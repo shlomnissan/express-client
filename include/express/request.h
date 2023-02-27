@@ -28,7 +28,6 @@ namespace Express::Http {
 
     private:
         RequestConfig config_;
-        std::string data_;
         Net::URL url_;
     };
 }

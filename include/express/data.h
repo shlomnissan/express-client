@@ -28,11 +28,12 @@ namespace Express::Http {
         Data(const std::vector<FormField>& data);
 
         // TODO: contentType shouldn't be fixed
-        [[nodiscard]] auto contentType() const { return "application/x-www-form-urlencoded"; }
+        [[nodiscard]] auto contentType() const { return content_type_hint_; }
         [[nodiscard]] auto size() const { return data_.size(); }
         [[nodiscard]] auto data() const { return data_; }
 
     private:
         std::string data_;
+        std::string content_type_hint_;
     };
 }
