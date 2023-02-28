@@ -32,7 +32,7 @@ using namespace Express;
 auto response = ExpressClient::request({
     .url = "http://example.com/user/12345",
     .method = Http::Method::Post,
-    .data = Http::Body::FormFields {{
+    .data = {{
         {"firstName", "Fred"},
         {"lastName", "Flintstone"}
     }}
@@ -53,9 +53,9 @@ struct RequestConfiguration {
     // The client supports 'OPTIONS', 'GET', 'POST', 'HEAD', 'PUT', 'PATCH', and 'DELETE'.
     Method method {Http::Method::Get};
     
-    // `body` is the data to be sent as the request body.
+    // `data` is the data to be sent as the request body.
     // Only applicable for request methods 'POST', 'PUT', PATCH', and 'DELETE'.
-    Body::__Base body {};
+    Data data {};
     
     // `headers` are custom headers to be sent.
     HeaderCollection headers {};
@@ -68,7 +68,7 @@ The configuration object is an aggregate type; defining it inline it using Desig
 auto response = ExpressClient::request({
     .url = "http://example.com/user/12345",
     .method = Http::Method::Post,
-    .data = Http::Body::FormFields {{
+    .data = {{
         {"firstName", "Fred"},
         {"lastName", "Flintstone"}
     }},
