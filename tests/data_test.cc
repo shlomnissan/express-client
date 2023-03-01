@@ -7,6 +7,34 @@
 
 using namespace Express::Http;
 
-// TODO: init data with string
-// TODO: init data with form fields
-// TODO: throws if content type wasn't set for raw string
+TEST(data, initializes_data_with_raw_string) {
+    Data requestData {"firstName=Fred&lastName=Flintstone"};
+
+    EXPECT_EQ(requestData.data(), "firstName=Fred&lastName=Flintstone");
+}
+
+TEST(data, initalizes_data_with_form_fields) {
+    Data requestData {{
+        {"firstName", "Fred"},
+        {"lastName", "Flintstone"},
+    }};
+
+    EXPECT_EQ(requestData.data(), "firstName=Fred&lastName=Flintstone");
+    EXPECT_EQ(requestData.contentType(), "application/x-www-form-urlencoded");
+}
+
+TEST(data, throws_if_content_type_is_not_set_for_raw_string) {
+    Data requestData {"firstName=Fred&lastName=Flintstone"};
+
+    EXPECT_THROW({
+        try {
+            auto contentType = requestData.contentType();
+        } catch (const DataError& e) {
+            EXPECT_STREQ(e.what(),
+                "Data was provided for this request, "
+                "but the ContentType header isn't set."
+            );
+            throw;
+        }
+    }, DataError);
+}

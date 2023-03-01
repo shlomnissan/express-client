@@ -23,7 +23,7 @@ namespace Express::Http {
         }
         throw DataError {
             "Data was provided for this request, "
-            "but the ContentType header isn't set"
+            "but the ContentType header isn't set."
         };
     }
 }
