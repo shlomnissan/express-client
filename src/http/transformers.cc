@@ -5,8 +5,8 @@
 
 #include <express/transformers.h>
 
-namespace Express::Http::Transformers {
-    using namespace Validators;
+namespace Express::Transformers {
+    using namespace Http::Validators;
 
     auto str_to_lower(std::string_view str) noexcept -> std::string {
         std::string output {str};

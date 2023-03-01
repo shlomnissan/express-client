@@ -10,9 +10,9 @@ namespace Express::Http {
 #define HTTP_METHODS                                                                               \
     METHOD(Options, "OPTIONS")                                                                     \
     METHOD(Get, "GET")                                                                             \
-    METHOD(Post, "POST")                                                                           \
     METHOD(Head, "HEAD")                                                                           \
     METHOD(Put, "PUT")                                                                             \
+    METHOD(Post, "POST")                                                                           \
     METHOD(Patch, "PATCH")                                                                         \
     METHOD(Delete, "DELETE")
 

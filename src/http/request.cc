@@ -10,7 +10,12 @@ namespace Express::Http {
         config_.headers.add({"Host", url_.host()});
         config_.headers.add({"User-Agent", "express/0.1"});
         if (config_.data.size()) {
-            // TODO: Must be a valid body request POST, PUT, PATCH
+            if (!allowedData(config.method)) {
+                throw RequestError {
+                    "Request data can only be added "
+                    "for PUT, POST, DELETE, and PATCH."
+                };
+            }
             config_.headers.add({"Content-Type", config_.data.contentType()});
             config_.headers.add({"Content-Length", std::to_string(config_.data.size())});
         }
@@ -23,6 +28,14 @@ namespace Express::Http {
             buffer << header;
         }
         buffer << crlf;
-        buffer << config_.data.data();;
+        buffer << config_.data.data();
+    }
+
+    auto Request::allowedData(const Method method) const -> bool {
+        using enum Method;
+        if (method == Get || method == Options || method == Head) {
+            return false;
+        }
+        return true;
     }
 }

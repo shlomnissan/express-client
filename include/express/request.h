@@ -29,5 +29,11 @@ namespace Express::Http {
     private:
         RequestConfig config_;
         Net::URL url_;
+
+        auto allowedData(const Method method) const -> bool;
+    };
+
+    struct RequestError : public std::logic_error {
+        using std::logic_error::logic_error;
     };
 }
