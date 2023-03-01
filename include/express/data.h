@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <string_view>
+#include <stdexcept>
 
 namespace Express::Http {
     class FormField {
@@ -27,13 +28,16 @@ namespace Express::Http {
         Data(std::string_view data);
         Data(const std::vector<FormField>& data);
 
-        // TODO: contentType shouldn't be fixed
-        [[nodiscard]] auto contentType() const { return content_type_hint_; }
+        [[nodiscard]] auto contentType() const -> std::string;
         [[nodiscard]] auto size() const { return data_.size(); }
         [[nodiscard]] auto data() const { return data_; }
 
     private:
         std::string data_;
         std::string content_type_hint_;
+    };
+
+    struct DataError : public std::logic_error {
+        using std::logic_error::logic_error;
     };
 }

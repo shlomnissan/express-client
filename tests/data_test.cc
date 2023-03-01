@@ -7,5 +7,6 @@
 
 using namespace Express::Http;
 
-// TODO: init data with form fields
 // TODO: init data with string
+// TODO: init data with form fields
+// TODO: throws if content type wasn't set for raw string
