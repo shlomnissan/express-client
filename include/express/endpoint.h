@@ -4,36 +4,31 @@
 #pragma once
 
 #include <stdexcept>
-#include <netdb.h>
+#include <memory>
 #include <string_view>
+#include <netdb.h>
 
 namespace Express::Net {
     class Endpoint {
     public:
         Endpoint(std::string_view host, std::string_view port);
 
-        Endpoint(const Endpoint&) = delete;
-        auto operator=(const Endpoint&) -> Endpoint& = delete;
+        [[nodiscard]] auto family() const { return address_->ai_family; }
+        [[nodiscard]] auto socketType() const { return address_->ai_socktype; }
+        [[nodiscard]] auto protocol() const { return address_->ai_protocol; }
+        [[nodiscard]] auto address() const { return address_->ai_addr; }
+        [[nodiscard]] auto addressLength() const { return address_->ai_addrlen; }
 
-        Endpoint(Endpoint&&) = delete;
-        auto operator=(Endpoint&&) -> Endpoint& = delete;
-
-        [[nodiscard]] auto getFamily() const { return address_->ai_family; }
-        [[nodiscard]] auto getSocketType() const { return address_->ai_socktype; }
-        [[nodiscard]] auto getProtocol() const { return address_->ai_protocol; }
-        [[nodiscard]] auto getAddress() const { return address_->ai_addr; }
-        [[nodiscard]] auto getAddressLength() const { return address_->ai_addrlen; }
-
-        ~Endpoint();
     private:
-        addrinfo* address_ = nullptr;
+        struct addrinfo_deleter {
+            void operator()(addrinfo* address) const {
+                freeaddrinfo(address);
+            }
+        };
+        std::unique_ptr<addrinfo, addrinfo_deleter> address_ {nullptr};
     };
 
-    struct InvalidAddress : public std::runtime_error {
-        InvalidAddress()
-            : std::runtime_error(
-                "Failed to initialize an endpoint. Check your hostname and "
-                "ensure the port you're requesting is free."
-            ) {}
+    struct AddressError : public std::logic_error {
+        using std::logic_error::logic_error;
     };
 }

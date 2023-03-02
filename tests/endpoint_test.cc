@@ -8,20 +8,42 @@
 
 using namespace Express::Net;
 
-TEST(endpoint, basic_test) {
+TEST(endpoint, initializes_basic_endpoint) {
     Endpoint endpoint {"example.com", "80"};
 
-    EXPECT_EQ(endpoint.getFamily(), AF_INET);
-    EXPECT_EQ(endpoint.getSocketType(), SOCK_STREAM);
-    EXPECT_EQ(endpoint.getProtocol(), IPPROTO_TCP);
-    EXPECT_EQ(endpoint.getAddressLength(), 16);
-    EXPECT_TRUE(endpoint.getAddress() != nullptr);
+    EXPECT_EQ(endpoint.family(), AF_INET);
+    EXPECT_EQ(endpoint.socketType(), SOCK_STREAM);
+    EXPECT_EQ(endpoint.protocol(), IPPROTO_TCP);
+    EXPECT_EQ(endpoint.addressLength(), 16);
+    EXPECT_TRUE(endpoint.address() != nullptr);
 }
 
-// Test IPv4/IPv6
+TEST(endpoint, initializes_ipv4_endpoint) {
+    Endpoint endpoint {"93.184.216.34", "80"};
+
+    EXPECT_EQ(endpoint.family(), AF_INET);
+    EXPECT_EQ(endpoint.addressLength(), 16);
+    EXPECT_TRUE(endpoint.address() != nullptr);
+}
+
+TEST(endpoint, initializes_ipv6_endpoint) {
+    Endpoint endpoint {"2606:2800:220:1:248:1893:25c8:1946", "80"};
+
+    EXPECT_EQ(endpoint.family(), AF_INET6);
+    EXPECT_EQ(endpoint.addressLength(), 28);
+    EXPECT_TRUE(endpoint.address() != nullptr);
+}
 
 TEST(endpoint, throws_initialization_error) {
     EXPECT_THROW({
-        Endpoint endpoint("invalid-address", "80");
-    }, InvalidAddress);
+        try {
+            Endpoint endpoint("invalid-address", "80");
+        } catch (const AddressError& e) {
+            EXPECT_STREQ(e.what(),
+                "Failed to initialize an endpoint. Check your hostname "
+                "and ensure the port you're requesting is free."
+            );
+            throw;
+        }
+    }, AddressError);
 }

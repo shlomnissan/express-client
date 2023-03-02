@@ -9,12 +9,12 @@
 
 namespace Express::Net {
     Socket::Socket(const Endpoint& endpoint)
-        : address_len_(endpoint.getAddressLength()),
-          address_(endpoint.getAddress()) {
+        : address_len_(endpoint.addressLength()),
+          address_(endpoint.address()) {
         fd_socket_ = socket(
-            endpoint.getFamily(),
-            endpoint.getSocketType(),
-            endpoint.getProtocol()
+            endpoint.family(),
+            endpoint.socketType(),
+            endpoint.protocol()
         );
 
         if (!fd_socket_) {

@@ -9,18 +9,18 @@
 
 namespace Express::Net {
     Endpoint::Endpoint(std::string_view host, std::string_view port) {
-        struct addrinfo hints;
+        addrinfo hints;
         memset(&hints, 0, sizeof(hints));
         hints.ai_socktype = SOCK_STREAM;
-        if (getaddrinfo(host.data(), port.data(), &hints, &address_)) {
-            throw InvalidAddress();
-        }
-    }
 
-    Endpoint::~Endpoint() {
-        if (address_ != nullptr) {
-            freeaddrinfo(address_);
+        addrinfo *address_info;
+        if (getaddrinfo(host.data(), port.data(), &hints, &address_info)) {
+            throw AddressError {
+                "Failed to initialize an endpoint. Check your hostname "
+                "and ensure the port you're requesting is free."
+            };
         }
+
+        address_.reset(address_info);
     }
 }
-
