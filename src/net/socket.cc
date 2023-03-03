@@ -18,13 +18,13 @@ namespace Express::Net {
         );
 
         if (!fd_socket_) {
-            throw InvalidSocket();
+            throw SocketError {"Failed to initialize socket."};
         }
     }
 
     auto Socket::connect() const -> void {
         if (::connect(fd_socket_, address_, address_len_)) {
-            throw UnableToConnect();
+            throw SocketError {"Failed to connect."};
         }
     }
 

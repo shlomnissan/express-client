@@ -32,19 +32,7 @@ namespace Express::Net {
         sockaddr* address_ = nullptr;
     };
 
-    struct InvalidSocket : public std::runtime_error {
-        InvalidSocket()
-            : std::runtime_error(
-                "Failed to initialize a socket. Check your endpoint and "
-                "try again."
-            ) {}
-    };
-
-    struct UnableToConnect : public std::runtime_error {
-        UnableToConnect()
-            : std::runtime_error(
-                "Failed to connect to endpoint. Make sure "
-                "your endpoint's port is not already in use."
-            ) {}
+    struct SocketError : public std::runtime_error {
+        using std::runtime_error::runtime_error;
     };
 }
