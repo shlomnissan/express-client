@@ -3,22 +3,16 @@
 
 #pragma once
 
-#include <cstdint>
 #include <express/endpoint.h>
 
+#include <cstdint>
 #include <string_view>
 #include <stdexcept>
 
 namespace Express::Net {
     class Socket {
     public:
-        explicit Socket(const Endpoint& endpoint);
-
-        Socket(const Socket&) = delete;
-        auto operator=(const Socket&) -> Socket& = delete;
-
-        Socket(Socket&&) = delete;
-        auto operator=(Socket&&) -> Socket& = delete;
+        explicit Socket(Endpoint endpoint);
 
         auto connect() const -> void;
         auto send(std::string_view buffer) const -> long;
@@ -27,9 +21,8 @@ namespace Express::Net {
         ~Socket();
 
     private:
-        int fd_socket_ = 0;
-        int address_len_ = 0;
-        sockaddr* address_ = nullptr;
+        int socket_fd = 0;
+        Endpoint endpoint_;
     };
 
     struct SocketError : public std::runtime_error {

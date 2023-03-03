@@ -1,44 +1,40 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <cstdint>
 #include <express/socket.h>
 
 #include <sys/socket.h>
-#include <unistd.h>
 
 namespace Express::Net {
-    Socket::Socket(const Endpoint& endpoint)
-        : address_len_(endpoint.addressLength()),
-          address_(endpoint.address()) {
-        fd_socket_ = socket(
-            endpoint.family(),
-            endpoint.socketType(),
-            endpoint.protocol()
+    Socket::Socket(Endpoint endpoint) : endpoint_(std::move(endpoint)) {
+        socket_fd = socket(
+            endpoint_.family(),
+            endpoint_.socketType(),
+            endpoint_.protocol()
         );
 
-        if (!fd_socket_) {
+        if (!socket_fd) {
             throw SocketError {"Failed to initialize socket."};
         }
     }
 
     auto Socket::connect() const -> void {
-        if (::connect(fd_socket_, address_, address_len_)) {
+        if (::connect(socket_fd, endpoint_.address(), endpoint_.addressLength())) {
             throw SocketError {"Failed to connect."};
         }
     }
 
     auto Socket::send(std::string_view buffer) const -> long {
-        return ::send(fd_socket_, buffer.data(), buffer.size(), 0);
+        return ::send(socket_fd, buffer.data(), buffer.size(), 0);
     }
 
     auto Socket::recv(uint8_t* buffer) const -> long {
-        return ::recv(fd_socket_, buffer, BUFSIZ, 0);
+        return ::recv(socket_fd, buffer, BUFSIZ, 0);
     }
 
     Socket::~Socket() {
-        if (fd_socket_) {
-            close(fd_socket_);
+        if (socket_fd) {
+            close(socket_fd);
         }
     }
 }
