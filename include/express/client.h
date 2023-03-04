@@ -7,11 +7,18 @@
 #include <stdexcept>
 
 #include <express/request.h>
+#include <express/url.h>
 #include <express/response.h>
 
 namespace Express {
+    using namespace Net;
+    using namespace Http;
+
     class ExpressClient {
     public:
-        static auto request(const Http::RequestConfig& config) -> Http::Response;
+        static auto request(const RequestConfig& config) -> Response;
+
+    private:
+        static auto makeRequest(const URL& url, const Request& request) -> Response;
     };
 }

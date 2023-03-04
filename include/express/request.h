@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <sstream>
 #include <string>
 #include <stdexcept>
@@ -16,6 +17,7 @@ namespace Express::Http {
     struct RequestConfig {
         std::string_view url;
         Method method {Method::Get};
+        uint64_t timeout {5000};
         Data data {};
         HeaderCollection headers {};
     };

@@ -1,6 +1,7 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
+#include <cerrno>
 #include <express/socket.h>
 
 #include <sys/socket.h>
@@ -19,12 +20,29 @@ namespace Express::Net {
     }
 
     auto Socket::connect() const -> void {
-        if (::connect(socket_fd, endpoint_.address(), endpoint_.addressLength())) {
+        auto result = ::connect(
+            socket_fd,
+            endpoint_.address(),
+            endpoint_.addressLength()
+        );
+
+        // The system call was interrupted by a signal that
+        // was caught; keep trying.
+        while (result == -1 && errno == EINTR) {
+            result = ::connect(
+                socket_fd,
+                endpoint_.address(),
+                endpoint_.addressLength()
+            ); 
+        }
+
+        if (result == -1) {
             throw SocketError {"Failed to connect."};
         }
     }
 
     auto Socket::send(std::string_view buffer) const -> long {
+        // use select on socket_fd with timeout 
         return ::send(socket_fd, buffer.data(), buffer.size(), 0);
     }
 

@@ -14,7 +14,7 @@ namespace Express::Http {
 
         content_type_hint_ = "application/x-www-form-urlencoded";
 
-        // TODO: encode URL string
+        // TODO: encode data
     }
 
     auto Data::contentType() const -> std::string {
