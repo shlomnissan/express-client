@@ -10,21 +10,25 @@
 #include <stdexcept>
 
 namespace Express::Net {
+    enum class EventType {ToRead, ToWrite};
+
     class Socket {
     public:
         explicit Socket(Endpoint endpoint);
 
         auto connect() const -> void;
-        auto send(std::string_view buffer) const -> long;
-        auto recv(uint8_t* buffer) const -> long;
+        auto send(std::string_view buffer, uint64_t timeout) const -> ssize_t;
+        auto recv(uint8_t* buffer, uint64_t timeout) const -> ssize_t;
 
-        [[nodiscard]] int get() const { return socket_fd; };
+        [[nodiscard]] int get() const { return fd_socket; };
 
         ~Socket();
 
     private:
-        int socket_fd = 0;
+        int fd_socket = 0;
         Endpoint endpoint_;
+
+        auto wait(EventType event, const std::uint64_t timeout) const -> void;
     };
 
     struct SocketError : public std::runtime_error {

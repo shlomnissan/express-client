@@ -17,16 +17,17 @@ namespace Express::Http {
     struct RequestConfig {
         std::string_view url;
         Method method {Method::Get};
-        uint64_t timeout {5000};
         Data data {};
         HeaderCollection headers {};
+        uint64_t timeout {0};
     };
 
     class Request {
     public:
         Request(const Net::URL& url, const RequestConfig& config);
 
-        [[nodiscard]] auto str() const -> std::string { return buffer_.str(); }
+        [[nodiscard]] auto str() const { return buffer_.str(); }
+        [[nodiscard]] auto timeout() const { return config_.timeout; } 
 
     private:
         std::stringstream buffer_;

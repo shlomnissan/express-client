@@ -19,12 +19,12 @@ namespace Express {
         Socket socket {std::move(endpoint)};
 
         socket.connect();
-        socket.send(request.str());
+        socket.send(request.str(), request.timeout());
 
         uint8_t temp_buffer[BUFSIZ];
         ResponseParser parser;
         while (true) {
-            auto size = socket.recv(temp_buffer);
+            auto size = socket.recv(temp_buffer, request.timeout());
             if (size == 0 || parser.doneReadingData()) {
                 break; // disconnected
             }
