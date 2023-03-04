@@ -15,10 +15,7 @@ namespace Express::Net {
 
         addrinfo *address_info;
         if (getaddrinfo(host.data(), port.data(), &hints, &address_info)) {
-            throw AddressError {
-                "Failed to initialize an endpoint. Check your hostname "
-                "and ensure the port you're requesting is free."
-            };
+            throw AddressError {"Failed to initialize an endpoint."};
         }
 
         address_.reset(address_info);

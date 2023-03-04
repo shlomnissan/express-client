@@ -4,13 +4,17 @@
 #include <express/request.h>
 
 namespace Express::Http {
-    Request::Request(const Net::URL& url, const RequestConfig& config) :
-        config_(config),
-        url_(url) {
+    Request::Request(const Net::URL& url, const RequestConfig& config)
+    : config_(config), url_(url) {
+        setHeaders();
+        writeRequest();
+    }
+
+    auto Request::setHeaders() -> void {
         config_.headers.add({"Host", url_.host()});
         config_.headers.add({"User-Agent", "express/0.1"});
         if (config_.data.size()) {
-            if (!allowedData(config.method)) {
+            if (!allowedData(config_.method)) {
                 throw RequestError {
                     "Request data can only be added "
                     "for PUT, POST, DELETE, and PATCH."
@@ -22,13 +26,13 @@ namespace Express::Http {
         config_.headers.add({"Connection", "close"});
     }
 
-    auto Request::writeRequest(std::stringstream& buffer) const -> void {
-        buffer << config_.method << " " << "/ HTTP/1.1" << crlf;
+    auto Request::writeRequest() -> void {
+        buffer_ << config_.method << " " << "/ HTTP/1.1" << crlf;
         for (const auto& header : config_.headers) {
-            buffer << header;
+            buffer_ << header;
         }
-        buffer << crlf;
-        buffer << config_.data.data();
+        buffer_ << crlf;
+        buffer_ << config_.data.data();
     }
 
     auto Request::allowedData(const Method method) const -> bool {

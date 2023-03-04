@@ -39,10 +39,7 @@ TEST(endpoint, throws_initialization_error) {
         try {
             Endpoint endpoint("invalid-address", "80");
         } catch (const AddressError& e) {
-            EXPECT_STREQ(e.what(),
-                "Failed to initialize an endpoint. Check your hostname "
-                "and ensure the port you're requesting is free."
-            );
+            EXPECT_STREQ(e.what(), "Failed to initialize an endpoint.");
             throw;
         }
     }, AddressError);

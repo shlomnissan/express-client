@@ -1,28 +1,24 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <iostream>
-#include <sstream>
 #include <string>
 
 #include <express/client.h>
 #include <express/request.h>
+#include <express/endpoint.h>
 #include <express/socket.h>
 #include <express/url.h>
 
 namespace Express {
     auto ExpressClient::request(const Http::RequestConfig& config) -> Http::Response {
         Net::URL url {config.url};
-
-        Net::Socket socket {{url.host(), url.port()}};
-        socket.connect();
-
-        // TODO: Remove writeRequest. Use constructor and an accessor instead
-        std::stringstream request_buffer;
         Http::Request request {url, config};
-        request.writeRequest(request_buffer);
+        
+        Net::Endpoint endpoint {url.host(), url.port()};
+        Net::Socket socket {std::move(endpoint)};
 
-        socket.send(request_buffer.str());
+        socket.connect();
+        socket.send(request.str());
 
         uint8_t temp_buffer[BUFSIZ];
         Http::ResponseParser parser;
@@ -34,7 +30,6 @@ namespace Express {
             parser.feed(temp_buffer, size);
         }
 
-        // response() will throw if we know the data transfer is incomplete
         return parser.response();
     }
 }

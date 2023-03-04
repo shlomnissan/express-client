@@ -16,10 +16,8 @@ TEST(request, creates_valid_request_object) {
         .method = Method::Get
     }};
 
-    std::stringstream buffer;
-    request.writeRequest(buffer);
     EXPECT_EQ(
-        buffer.str(),
+        request.str(),
         "GET / HTTP/1.1\r\n"
         "Host: example.com\r\n"
         "User-Agent: express/0.1\r\n"
@@ -45,10 +43,8 @@ TEST(request, creates_valid_request_object_with_form_data) {
         }}
     }};
 
-    std::stringstream buffer;
-    request.writeRequest(buffer);
     EXPECT_EQ(
-        buffer.str(),
+        request.str(),
         "POST / HTTP/1.1\r\n"
         "Content-Type: application/x-www-form-urlencoded\r\n"
         "Host: example.com\r\n"

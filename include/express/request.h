@@ -24,12 +24,15 @@ namespace Express::Http {
     public:
         Request(const Net::URL& url, const RequestConfig& config);
 
-        auto writeRequest(std::stringstream& buffer) const -> void;
+        [[nodiscard]] auto str() const -> std::string { return buffer_.str(); }
 
     private:
+        std::stringstream buffer_;
         RequestConfig config_;
         Net::URL url_;
 
+        auto setHeaders() -> void;
+        auto writeRequest() -> void;
         auto allowedData(const Method method) const -> bool;
     };
 

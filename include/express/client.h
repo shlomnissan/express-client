@@ -14,8 +14,4 @@ namespace Express {
     public:
         static auto request(const Http::RequestConfig& config) -> Http::Response;
     };
-
-    struct ExpressClientError : public std::logic_error {
-        using std::logic_error::logic_error;
-    };
 }

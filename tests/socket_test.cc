@@ -9,5 +9,13 @@
 using namespace Express::Net;
 
 TEST(socket, basic_test) {
-    // TODO: impl. 
+    Endpoint endpoint {"example.com", "80"};
+    Socket socket {std::move(endpoint)};
+
+    EXPECT_TRUE(socket.get() > 0);
 }
+
+// create stubs for C library functions
+// TODO: failed to connect
+// TODO: failed to initialize
+// TODO: timeout

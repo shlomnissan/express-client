@@ -18,6 +18,8 @@ namespace Express::Net {
         auto send(std::string_view buffer) const -> long;
         auto recv(uint8_t* buffer) const -> long;
 
+        [[nodiscard]] int get() const { return socket_fd; };
+
         ~Socket();
 
     private:
