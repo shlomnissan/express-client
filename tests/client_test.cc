@@ -16,8 +16,8 @@ TEST(client, simple_get) {
         .method = Http::Method::Get,
     });
 
-    EXPECT_EQ(response.status, 200);
-    EXPECT_EQ(response.status_text, "OK");
+    EXPECT_EQ(response.statusCode, 200);
+    EXPECT_EQ(response.statusText, "OK");
     EXPECT_EQ(response.headers.size(), 5);
     EXPECT_EQ(response.headers.has("Date"), true);
     EXPECT_EQ(response.headers.has("Server"), true);
@@ -39,8 +39,8 @@ TEST(client, simple_post_with_form_data) {
         }},
     });
 
-    EXPECT_EQ(response.status, 200);
-    EXPECT_EQ(response.status_text, "OK");
+    EXPECT_EQ(response.statusCode, 200);
+    EXPECT_EQ(response.statusText, "OK");
     EXPECT_EQ(response.headers.size(), 5);
     EXPECT_EQ(response.headers.has("Date"), true);
     EXPECT_EQ(response.headers.has("Server"), true);
@@ -62,8 +62,8 @@ TEST(client, simple_post_with_raw_string) {
         }}
     });
 
-    EXPECT_EQ(response.status, 200);
-    EXPECT_EQ(response.status_text, "OK");
+    EXPECT_EQ(response.statusCode, 200);
+    EXPECT_EQ(response.statusText, "OK");
     EXPECT_EQ(response.headers.size(), 5);
     EXPECT_EQ(response.headers.has("Date"), true);
     EXPECT_EQ(response.headers.has("Server"), true);

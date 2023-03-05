@@ -96,11 +96,11 @@ The response for a request contains the following information.
 
 ```cpp
 struct Response {
-    // `status` is the HTTP status code from the server response
-    int status_code;
+    // `statusCode` is the HTTP status code from the server response
+    int statusCode;
     
-    // `status_text` is the HTTP status message from the server response
-    std::string status_text;
+    // `statusText` is the HTTP status message from the server response
+    std::string statusText;
     
     // `data` is the response that was provided by the server
     std::vector<uint8_t> data;

@@ -21,8 +21,8 @@ namespace Express::Http {
     };
 
     struct Response {
-        int status;
-        std::string status_text;
+        int statusCode;
+        std::string statusText;
         std::vector<uint8_t> data;
         HeaderCollection headers;
     };

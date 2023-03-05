@@ -12,8 +12,8 @@ int main() {
     });
 
     std::cout << "Status: "
-              << response.status << " "
-              << response.status_text << "\n\n";
+              << response.statusCode << " "
+              << response.statusText << "\n\n";
 
     std::cout << "Headers: \n";
     for (const auto& header : response.headers) {

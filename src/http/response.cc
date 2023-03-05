@@ -38,14 +38,14 @@ namespace Express::Http {
         if (separator != 3 || !is_digit_range(status_code)) {
             throw ResponseError {"Invalid status code (" + status_code + ")"};
         }
-        response_.status = std::stoi(status_code);
+        response_.statusCode = std::stoi(status_code);
         
         // Reason phrase
         auto response_phrase = status.substr(separator + 1);
         if (!is_valid_char_range(response_phrase)) {
             throw ResponseError {"Invalid characters in reason phrase"};
         }
-        response_.status_text = status.substr(separator + 1);
+        response_.statusText = status.substr(separator + 1);
     }
 
     // RFC 7230, 3.2. Header Fields

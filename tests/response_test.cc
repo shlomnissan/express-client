@@ -36,8 +36,8 @@ TEST(response_parser, parses_a_valid_response_successfully) {
 
     auto response = parser.response();
 
-    EXPECT_EQ(response.status, 200);
-    EXPECT_EQ(response.status_text, "OK");
+    EXPECT_EQ(response.statusCode, 200);
+    EXPECT_EQ(response.statusText, "OK");
     EXPECT_EQ(response.headers.size(), 5);
     EXPECT_EQ(response.headers.get("Server"), "Werkzeug/2.2.2 Python/3.10.6");
     EXPECT_EQ(response.headers.get("Date"), "Sun, 12 Feb 2023 22:29:15 GMT");
