@@ -7,13 +7,11 @@ Promise based HTTP client for modern C++ development
 
   - [Express API](#express-api)
   - [Request Config](#request-config)
-  - [Response Schema](#response-schema)
+  - [Response Schema](#response)
 
 ## Express API
 
 Requests can be made by passing the relevant config to `ExpressClient::request`.
-
-##### ExpressClient::request(RequestConfig)
 
 ```cpp
 using namespace Express;
@@ -44,9 +42,8 @@ auto response = ExpressClient::request({
 These are the available config options for making requests. Only the `url` is required. Requests will default to `GET` if `method` is not specified.
 
 ```cpp
-struct RequestConfiguration {
+struct RequestConfig {
     // `url` is the server URL used for the request.
-    // `std::string_view` (C++17) is a non-owning reference to a char sequence.
     std::string_view url;
     
     // `method` is the request method to be used when making the request.
@@ -59,6 +56,10 @@ struct RequestConfiguration {
     
     // `headers` are custom headers to be sent.
     HeaderCollection headers {};
+    
+    // `timeout` specifies the number of milliseconds before the request times out.
+    // If the request takes longer than `timeout`, the request will be aborted.
+    uint64_t timeout {0}; // default is `0` (no timeout)
 };
 ```
 
@@ -78,7 +79,7 @@ auto response = ExpressClient::request({
 });
 ```
 
-## Response Schema
+## Response
 
 The response for a request contains the following information.
 
