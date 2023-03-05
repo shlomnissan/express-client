@@ -8,6 +8,7 @@ add_compile_options(-Wall -Wextra -Wpedantic -Wconversion -Wno-sign-conversion -
 
 option(BUILD_TESTS "build tests" ON)
 option(BUILD_SHARED_LIBS "build shared library" ON)
+option(BUILD_EXAMPLES "build examples" ON)
 
 include_directories(include)
 add_subdirectory(src)
@@ -32,4 +33,8 @@ if (BUILD_TESTS)
         endif()
     endif()
     add_subdirectory(tests)
+endif()
+
+if (BUILD_EXAMPLES)
+    add_subdirectory(examples)
 endif()
