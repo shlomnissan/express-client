@@ -29,7 +29,7 @@ TEST(client, simple_get) {
     EXPECT_EQ(body, "Hello World!");
 }
 
-TEST(client, simple_post) {
+TEST(client, simple_post_with_form_data) {
     auto response = ExpressClient::request({
         .url = "http://127.0.0.1:5000",
         .method = Http::Method::Post,
@@ -37,6 +37,29 @@ TEST(client, simple_post) {
             {"firstName", "Fred"},
             {"lastName", "Flintstone"}
         }},
+    });
+
+    EXPECT_EQ(response.status, 200);
+    EXPECT_EQ(response.status_text, "OK");
+    EXPECT_EQ(response.headers.size(), 5);
+    EXPECT_EQ(response.headers.has("Date"), true);
+    EXPECT_EQ(response.headers.has("Server"), true);
+    EXPECT_EQ(response.headers.get("Content-Type"), "text/html; charset=utf-8");
+    EXPECT_EQ(response.headers.get("Content-Length"), "22");
+    EXPECT_EQ(response.headers.get("Connection"), "close");
+
+    auto body = std::string {cbegin(response.data), cend(response.data)};
+    EXPECT_EQ(body, "Hello Fred Flintstone!");
+}
+
+TEST(client, simple_post_with_raw_string) {
+    auto response = ExpressClient::request({
+        .url = "http://127.0.0.1:5000",
+        .method = Http::Method::Post,
+        .data = {"firstName=Fred&lastName=Flintstone"},
+        .headers = {{
+            {"Content-Type", "application/x-www-form-urlencoded"}
+        }}
     });
 
     EXPECT_EQ(response.status, 200);

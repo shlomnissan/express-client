@@ -35,6 +35,7 @@ namespace Express::Http {
         Net::URL url_;
 
         auto setHeaders() -> void;
+        auto setBody() -> void;
         auto writeRequest() -> void;
         auto allowedData(const Method method) const -> bool;
     };

@@ -16,14 +16,4 @@ namespace Express::Http {
 
         // TODO: encode data
     }
-
-    auto Data::contentType() const -> std::string {
-        if (!content_type_hint_.empty()) {
-            return content_type_hint_;
-        }
-        throw DataError {
-            "Data was provided for this request, "
-            "but the ContentType header isn't set."
-        };
-    }
 }

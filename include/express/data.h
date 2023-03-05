@@ -28,7 +28,7 @@ namespace Express::Http {
         Data(std::string_view data);
         Data(const std::vector<FormField>& data);
 
-        [[nodiscard]] auto contentType() const -> std::string;
+        [[nodiscard]] auto contentTypeHint() const { return content_type_hint_; }
         [[nodiscard]] auto size() const { return data_.size(); }
         [[nodiscard]] auto data() const { return data_; }
 
