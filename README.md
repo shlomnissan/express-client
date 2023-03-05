@@ -72,12 +72,23 @@ auto response = ExpressClient::request({
     .data = {{
         {"firstName", "Fred"},
         {"lastName", "Flintstone"}
-    }},
-    .headers = {{
-        {"X-Requested-With", "XMLHttpRequest"}
     }}
 });
 ```
+
+The data field can be constructed using key/value pairs (like the example above) or a raw string. If you use key/value pairs, the default content type will be `application/x-www-form-urlencoded`. Using a raw string, you must specify the content type yourself. For example:
+
+```cpp
+auto response = ExpressClient::request({
+    .url = "http://example.com/user/12345",
+    .method = Http::Method::Post,
+    .data = {"firstName=Fred&lastName=Flintstone"},
+    .headers = {{
+        {"ContentType", "application/x-www-form-urlencoded"}
+    }}
+});
+```
+
 
 ## Response
 
