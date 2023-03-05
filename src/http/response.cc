@@ -88,17 +88,17 @@ namespace Express::Http {
 
     auto ResponseParser::processHeaders() {
         auto iter = std::search(
-            begin(data_), end(data_),
-            begin(HCRLF), end(HCRLF)
+            cbegin(data_), cend(data_),
+            cbegin(HCRLF), cend(HCRLF)
         );
         if (iter == end(data_)) return;
 
-        auto headers_begin = begin(data_);
+        auto headers_begin = cbegin(data_);
         auto headers_end = iter + 2;
         auto tokens = tokenzieHeaders(headers_begin, headers_end);
 
         parseStatusLine(tokens.front());
-        parseHeaders({begin(tokens) + 1, end(tokens)});
+        parseHeaders({cbegin(tokens) + 1, cend(tokens)});
         data_.erase(headers_begin, headers_end + 2);
 
         parsing_body_ = true;
@@ -148,23 +148,23 @@ namespace Express::Http {
                         // Every chunk must end with crlf
                         throw ResponseError {"Invalid chunk delimiter."};
                     }
-                    data_.erase(begin(data_), begin(data_) + 2);
+                    data_.erase(cbegin(data_), cbegin(data_) + 2);
                     finished_reading_chunk = false;
                 }
 
                 if (bytes_to_read == 0) {
                     auto iter {std::search(
-                        begin(data_), end(data_),
-                        begin(CRLF), end(CRLF)
+                        cbegin(data_), cend(data_),
+                        cbegin(CRLF), cend(CRLF)
                     )};
 
-                    auto chunk_size = std::string(begin(data_), iter);
+                    auto chunk_size = std::string(cbegin(data_), iter);
                     if (chunk_size.empty()) {
                         throw ResponseError {"Invalid chunk size."};
                     }
                     bytes_to_read = std::stoul(chunk_size, nullptr, 16);
 
-                    data_.erase(begin(data_), iter + 2);
+                    data_.erase(cbegin(data_), iter + 2);
 
                     if (bytes_to_read == 0) {
                         done_reading_data_ = true;
@@ -173,12 +173,12 @@ namespace Express::Http {
                 } else {
                     const auto to_read {std::min(bytes_to_read, data_.size())};
                     response_.data.insert(
-                        end(response_.data),
-                        begin(data_),
-                        begin(data_) + to_read
+                        cend(response_.data),
+                        cbegin(data_),
+                        cbegin(data_) + to_read
                     );
 
-                    data_.erase(begin(data_), begin(data_) + to_read);
+                    data_.erase(cbegin(data_), cbegin(data_) + to_read);
 
                     bytes_to_read -= to_read;
                     if (bytes_to_read == 0) {
@@ -191,7 +191,7 @@ namespace Express::Http {
         }
 
         if (body_parsing_method_ == ContentLength) {
-            response_.data.insert(end(response_.data), begin(data_), end(data_));
+            response_.data.insert(cend(response_.data), cbegin(data_), cend(data_));
             data_.clear();
             if (response_.data.size() >= content_length_) {
                 response_.data.resize(content_length_);
@@ -200,13 +200,13 @@ namespace Express::Http {
         }
 
         if (body_parsing_method_ == ConnectionClosed) {
-            response_.data.insert(end(response_.data), begin(data_), end(data_));
+            response_.data.insert(cend(response_.data), cbegin(data_), cend(data_));
             data_.clear();
         }
     }
 
     auto ResponseParser::feed(uint8_t* buffer, std::size_t size) -> void {
-        data_.insert(end(data_), buffer, buffer + size);
+        data_.insert(cend(data_), buffer, buffer + size);
         if (!parsing_body_) processHeaders();
         if (parsing_body_) processBody();
     }

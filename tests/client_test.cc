@@ -25,7 +25,7 @@ TEST(client, simple_get) {
     EXPECT_EQ(response.headers.get("Content-Length"), "12");
     EXPECT_EQ(response.headers.get("Connection"), "close");
 
-    auto body = std::string {begin(response.data), end(response.data)};
+    auto body = std::string {cbegin(response.data), cend(response.data)};
     EXPECT_EQ(body, "Hello World!");
 }
 
@@ -48,6 +48,6 @@ TEST(client, simple_post) {
     EXPECT_EQ(response.headers.get("Content-Length"), "22");
     EXPECT_EQ(response.headers.get("Connection"), "close");
 
-    auto body = std::string {begin(response.data), end(response.data)};
+    auto body = std::string {cbegin(response.data), cend(response.data)};
     EXPECT_EQ(body, "Hello Fred Flintstone!");
 }

@@ -12,11 +12,11 @@
 using namespace Express::Http;
 
 auto str_to_data(const std::string& str) {
-    return std::vector<std::uint8_t> {begin(str), end(str)};
+    return std::vector<std::uint8_t> {cbegin(str), cend(str)};
 }
 
 auto data_to_str(const std::vector<uint8_t>& data) {
-    return std::string {begin(data), end(data)};
+    return std::string {cbegin(data), cend(data)};
 }
 
 TEST(response_parser, parses_a_valid_response_successfully) {

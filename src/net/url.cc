@@ -19,15 +19,15 @@ namespace Express::Net {
         scheme_ = "http";
         port_ = "80";
 
-        auto authority_begin = begin(url) + scheme_.size() + 3;
-        auto authority_end = std::find_if(authority_begin, end(url), [](char c) {
+        auto authority_begin = cbegin(url) + scheme_.size() + 3;
+        auto authority_end = std::find_if(authority_begin, cend(url), [](char c) {
             return c == '/' || c == '?' || c == '#'; // authority delimiters
         });
 
         authority_ = std::string {authority_begin, authority_end};
         processAuthority();
 
-        path_ = std::string {authority_end, end(url)};
+        path_ = std::string {authority_end, cend(url)};
         processPath();
     }
 
