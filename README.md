@@ -110,6 +110,39 @@ struct Response {
 };
 ```
 
+Here's an example that inspects the response headers and data:
+
+```cpp
+auto response = ExpressClient::request({
+    .url = "http://example.com",
+    .method = Http::Method::Get,
+});
+
+std::cout << "Headers: \n";
+for (const auto& header : response.headers) {
+    std::cout << header.name() << ": " << header.value() << '\n';
+}
+
+std::string data {cbegin(response.data), cend(response.data)};
+std::cout << '\n' << data << '\n';
+    
+```
+
+The `HeaderCollection` type has public case-insensitive lookup methods for inspecting headers.
+
+```cpp
+auto response = ExpressClient::request({
+    .url = "http://example.com",
+    .method = Http::Method::Get,
+});
+
+if (response.headers.has("cache-control")) {
+    std::cout << response.headers.get("cache-control");
+}
+
+```
+
+
 ## MIT Licence
 ```
     ____       __                             __  
