@@ -1,14 +1,16 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
+#include <chrono>
 #include <string>
 
 #include <gtest/gtest.h>
 
 #include <express/client.h>
-#include <express/http_defs.h>
+#include <express/socket.h>
 
 using namespace Express;
+using namespace std::chrono_literals;
 
 TEST(client, simple_get) {
     auto response = ExpressClient::request({
@@ -73,4 +75,19 @@ TEST(client, simple_post_with_raw_string) {
 
     auto body = std::string {cbegin(response.data), cend(response.data)};
     EXPECT_EQ(body, "Hello Fred Flintstone!");
+}
+
+TEST(client, throws_if_request_timed_out) {
+    EXPECT_THROW({
+        try {
+            auto response = ExpressClient::request({
+                .url = "http://127.0.0.1:5000/slow",
+                .method = Http::Method::Get,
+                .timeout = 5ms,
+            });
+        } catch (const SocketError& e) {
+            EXPECT_STREQ("Request timed out.", e.what());
+            throw;
+        }
+    }, SocketError);
 }

@@ -43,24 +43,24 @@ namespace Express::Net {
         }
     }
 
-    auto Socket::send(std::string_view buffer, uint64_t timeout) const -> ssize_t {
+    auto Socket::send(std::string_view buffer, milliseconds timeout) const -> ssize_t {
         wait(EventType::ToWrite, timeout);
         return ::send(fd_socket, buffer.data(), buffer.size(), 0);
     }
 
-    auto Socket::recv(uint8_t* buffer, uint64_t timeout) const -> ssize_t {
+    auto Socket::recv(uint8_t* buffer, milliseconds timeout) const -> ssize_t {
         wait(EventType::ToRead, timeout);
         return ::recv(fd_socket, buffer, BUFSIZ, 0);
     }
 
-    auto Socket::wait(EventType event, const std::uint64_t timeout) const -> void {
+    auto Socket::wait(EventType event, milliseconds timeout) const -> void {
         fd_set fdset;
         FD_ZERO(&fdset);
         FD_SET(fd_socket, &fdset);
 
         timeval select_timeout {
-            .tv_sec = static_cast<time_t>(timeout / 1000),
-            .tv_usec = static_cast<suseconds_t>((timeout % 1000) * 1000),
+            .tv_sec = timeout.count() / 1000,
+            .tv_usec = (timeout.count() % 1000) * 1000,
         };
 
         auto result = ::select(
@@ -68,7 +68,7 @@ namespace Express::Net {
             event == EventType::ToRead ? &fdset : nullptr,
             event == EventType::ToWrite ? &fdset : nullptr,
             nullptr,
-            timeout > 0 ? &select_timeout : nullptr
+            timeout.count() > 0 ? &select_timeout : nullptr
         );
 
         while (result == -1 && errno == InterruptedBySystemSignal) {
@@ -77,7 +77,7 @@ namespace Express::Net {
                 event == EventType::ToRead ? &fdset : nullptr,
                 event == EventType::ToWrite ? &fdset : nullptr,
                 nullptr,
-                timeout > 0 ? &select_timeout : nullptr
+                timeout.count() > 0 ? &select_timeout : nullptr
             );
         }
 

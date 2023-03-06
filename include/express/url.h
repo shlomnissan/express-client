@@ -27,7 +27,7 @@ namespace Express::Net {
             [[nodiscard]] auto scheme() const { return scheme_; }
             [[nodiscard]] auto authority() const { return authority_; }
             [[nodiscard]] auto host() const { return host_; }
-            [[nodiscard]] auto user_information() const { return user_information_; }
+            [[nodiscard]] auto userInformation() const { return user_information_; }
             [[nodiscard]] auto port() const { return port_; }
             [[nodiscard]] auto path() const { return path_; }
             [[nodiscard]] auto query() const { return query_; }

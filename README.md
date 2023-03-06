@@ -59,7 +59,7 @@ struct RequestConfig {
     
     // `timeout` specifies the number of milliseconds before the request times out.
     // If the request takes longer than `timeout`, the request will be aborted.
-    uint64_t timeout {0}; // default is `0` (no timeout)
+    std::chrono::milliseconds timeout {0}; // default is `0` (no timeout)
 };
 ```
 

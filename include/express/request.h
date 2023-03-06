@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <chrono>
 #include <sstream>
 #include <string>
 #include <stdexcept>
@@ -19,7 +19,7 @@ namespace Express::Http {
         Method method {Method::Get};
         Data data {};
         HeaderCollection headers {};
-        uint64_t timeout {0};
+        std::chrono::milliseconds timeout {0};
     };
 
     class Request {

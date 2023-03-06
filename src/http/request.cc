@@ -28,7 +28,7 @@ namespace Express::Http {
         }
 
         if (!config_.headers.has("content-type")) {
-            auto content_type_hint = config_.data.contentTypeHint();
+            const auto content_type_hint = config_.data.contentTypeHint();
             if (!content_type_hint.empty()) {
                 config_.headers.add({"Content-Type", content_type_hint});
             } else {
@@ -46,7 +46,7 @@ namespace Express::Http {
     }
 
     auto Request::writeRequest() -> void {
-        buffer_ << config_.method << " " << "/ HTTP/1.1" << crlf;
+        buffer_ << config_.method << " /" << url_.path() << " HTTP/1.1" << crlf;
         for (const auto& header : config_.headers) {
             buffer_ << header;
         }
