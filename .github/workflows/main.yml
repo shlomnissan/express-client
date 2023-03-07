@@ -46,7 +46,7 @@ jobs:
         run: cmake --build . --config ${{ matrix.config.build_type }}
       - name: Test
         run: |
-          pip3 install -r tools/mock-server/requirements.txt
-          nohup python3 tools/mock-server/server.py &
+          pip3 install -r tests/mock-server/requirements.txt
+          nohup python3 tests/mock-server/server.py &
           sleep 1s
           ctest -V 
