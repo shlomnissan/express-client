@@ -16,16 +16,16 @@ namespace Express::Transformers {
         return output;
     }
 
-    auto trim_leading_whitespaces(std::string& str) noexcept -> void {
-        size_t i = 0;
-        while (i < str.size() && is_whitespace(str[i])) ++i;
-        if (i != 0) str.erase(0, i);
-    }
-
     auto trim_leading_whitespaces(std::string_view str) noexcept -> std::string {
         std::string output {str};
         trim_leading_whitespaces(output);
         return output;
+    }
+
+    auto trim_leading_whitespaces(std::string& str) noexcept -> void {
+        size_t i = 0;
+        while (i < str.size() && is_whitespace(str[i])) ++i;
+        if (i != 0) str.erase(0, i);
     }
 
     auto trim_trailing_whitespaces(std::string& str) noexcept -> void {

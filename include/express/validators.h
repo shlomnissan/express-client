@@ -4,32 +4,25 @@
 #pragma once
 
 namespace Express::Http::Validators {
-    // TODO: convert to C++20 templates
-
-    template<typename TChar>
-    [[nodiscard]] auto constexpr is_digit(TChar c) noexcept {
+    [[nodiscard]] auto constexpr is_digit(auto c) noexcept {
         return c >= 0x30 && c <= 0x39;
     }
 
-    template<typename T>
-    [[nodiscard]] auto constexpr is_digit_range(T range) noexcept {
+    [[nodiscard]] auto constexpr is_digit_range(auto range) noexcept {
         for (auto c : range) if (!is_digit(c)) return false;
         return true;
     }
 
-    template<typename TChar>
-    [[nodiscard]] auto constexpr is_alpha(TChar c) noexcept {
+    [[nodiscard]] auto constexpr is_alpha(auto c) noexcept {
         return (c >= 0x61 && c <= 0x7A) || // a - z
                (c >= 0x41 && c <= 0x5A);   // A - Z
     }
 
-    template<typename TChar>
-    [[nodiscard]] auto constexpr is_alnum(TChar c) noexcept {
+    [[nodiscard]] auto constexpr is_alnum(auto c) noexcept {
         return is_alpha(c) || is_digit(c);
     }
 
-    template<typename TChar>
-    [[nodiscard]] auto constexpr is_token(TChar c) noexcept {
+    [[nodiscard]] auto constexpr is_token(auto c) noexcept {
         return c == 0x21 || // =!
                c == 0x23 || // #
                c == 0x24 || // $
@@ -48,35 +41,29 @@ namespace Express::Http::Validators {
                is_alnum(c);
     }
 
-    template<typename T>
-    [[nodiscard]] auto constexpr is_token_range(T range) noexcept {
+    [[nodiscard]] auto constexpr is_token_range(auto range) noexcept {
         for (auto c : range) if (!is_token(c)) return false;
         return true;
     }
 
-    template<typename TChar>
-    [[nodiscard]] auto constexpr is_whitespace(TChar c) noexcept {
+    [[nodiscard]] auto constexpr is_whitespace(auto c) noexcept {
         return c == 0x20 || c == 0x09;
     }
 
-    template<typename TChar>
-    [[nodiscard]] auto constexpr is_visible(TChar c) noexcept {
+    [[nodiscard]] auto constexpr is_visible(auto c) noexcept {
         return c >= 0x21 && c <= 0x7E;
     }
 
-    template<typename TChar>
-    [[nodiscard]] auto constexpr is_obsolete_text(TChar c) noexcept {
+    [[nodiscard]] auto constexpr is_obsolete_text(auto c) noexcept {
         return static_cast<unsigned char>(c) >= 0x80 &&
                static_cast<unsigned char>(c) <= 0xFF;
     }
 
-    template<typename TChar>
-    [[nodiscard]] auto constexpr is_valid_char(TChar c) noexcept {
+    [[nodiscard]] auto constexpr is_valid_char(auto c) noexcept {
         return is_visible(c) || is_whitespace(c) || is_obsolete_text(c);
     }
 
-    template<typename T>
-    [[nodiscard]] auto constexpr is_valid_char_range(T range) noexcept {
+    [[nodiscard]] auto constexpr is_valid_char_range(auto range) noexcept {
         for (auto c : range) if (!is_valid_char(c)) return false;
         return true;
     }

@@ -9,8 +9,9 @@
 #include <express/validators.h>
 
 namespace Express::Transformers {
-    auto str_to_lower(std::string_view str) noexcept -> std::string;
-    auto trim_leading_whitespaces(std::string_view str) noexcept -> std::string;
+    [[nodiscard]] auto str_to_lower(std::string_view str) noexcept -> std::string;
+    [[nodiscard]] auto trim_leading_whitespaces(std::string_view str) noexcept -> std::string;
+
     auto trim_leading_whitespaces(std::string& str) noexcept -> void; 
     auto trim_trailing_whitespaces(std::string& str) noexcept -> void;
 }

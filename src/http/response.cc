@@ -133,7 +133,6 @@ namespace Express::Http {
         body_parsing_method_ = ConnectionClosed;
     }
 
-    // TODO: extract this to a separate object
     auto ResponseParser::processBody() {
         using enum MessageBodyParsingMethod;
 
