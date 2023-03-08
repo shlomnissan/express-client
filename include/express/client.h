@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <future>
 #include <string_view>
 #include <stdexcept>
 
@@ -16,9 +17,9 @@ namespace Express {
 
     class ExpressClient {
     public:
-        static auto request(const RequestConfig& config) -> Response;
+        static auto request(const RequestConfig& config) -> std::future<Response>;
 
     private:
-        static auto makeRequest(const URL& url, const Request& request) -> Response;
+        static auto makeRequest(const RequestConfig& config) -> Response;
     };
 }

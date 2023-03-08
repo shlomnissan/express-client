@@ -7,14 +7,13 @@
 #include <express/socket.h>
 
 namespace Express {
-    auto ExpressClient::request(const RequestConfig& config) -> Response {
-        URL url {config.url};
-        Request request {url, config};
-
-        return makeRequest(url, request);
+    auto ExpressClient::request(const RequestConfig& config) -> std::future<Response> {
+        return std::async(std::launch::async, makeRequest, config);
     }
 
-    auto ExpressClient::makeRequest(const URL& url, const Request& request) -> Response {
+    auto ExpressClient::makeRequest(const RequestConfig& config) -> Response {
+        URL url {config.url};
+        Request request {url, config};
         Endpoint endpoint {url.host(), url.port()};
         Socket socket {std::move(endpoint)};
 

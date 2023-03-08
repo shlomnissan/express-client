@@ -12,7 +12,7 @@ int main() {
     auto response = ExpressClient::request({
         .url = "http://example.com",
         .method = Http::Method::Get,
-    });
+    }).get();
 
     std::cout << "Status: "
               << response.statusCode << " "

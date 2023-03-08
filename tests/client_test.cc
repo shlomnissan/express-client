@@ -16,7 +16,7 @@ TEST(client, simple_get) {
     auto response = ExpressClient::request({
         .url = "http://127.0.0.1:5000",
         .method = Http::Method::Get,
-    });
+    }).get();
 
     EXPECT_EQ(response.statusCode, 200);
     EXPECT_EQ(response.statusText, "OK");
@@ -39,7 +39,7 @@ TEST(client, simple_post_with_form_data) {
             {"firstName", "Fred"},
             {"lastName", "Flintstone"}
         }},
-    });
+    }).get();
 
     EXPECT_EQ(response.statusCode, 200);
     EXPECT_EQ(response.statusText, "OK");
@@ -62,7 +62,7 @@ TEST(client, simple_post_with_raw_string) {
         .headers = {{
             {"Content-Type", "application/x-www-form-urlencoded"}
         }}
-    });
+    }).get();
 
     EXPECT_EQ(response.statusCode, 200);
     EXPECT_EQ(response.statusText, "OK");
@@ -80,11 +80,11 @@ TEST(client, simple_post_with_raw_string) {
 TEST(client, throws_if_request_timed_out) {
     EXPECT_THROW({
         try {
-            auto response = ExpressClient::request({
+            auto result = ExpressClient::request({
                 .url = "http://127.0.0.1:5000/slow",
                 .method = Http::Method::Get,
                 .timeout = 5ms,
-            });
+            }).get();
         } catch (const SocketError& e) {
             EXPECT_STREQ("Request timed out.", e.what());
             throw;
