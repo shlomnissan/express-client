@@ -11,23 +11,25 @@ Asynchronous HTTP client for modern C++ development.
 
 ## Express API
 
-Requests can be made by passing the relevant config to `ExpressClient::request`.
+HTTP requests can be made by passing a configuration object to `ExpressClient::request`. This method returns a non-blocking future.
 
 ```cpp
 using namespace Express;
 
 // A simple GET request
-auto response = ExpressClient::request({
+auto result = ExpressClient::request({
     .url = "http://example.com/user/12345",
     .method = Http::Method::Get,
 });
+
+auto response = result.get();
 ```
 
 ```cpp
 using namespace Express;
 
 // A simple POST request
-auto response = ExpressClient::request({
+auto result = ExpressClient::request({
     .url = "http://example.com/user/12345",
     .method = Http::Method::Post,
     .data = {{
@@ -35,6 +37,8 @@ auto response = ExpressClient::request({
         {"lastName", "Flintstone"}
     }}
 });
+
+auto response = result.get();
 ```
 
 ## Request Config
@@ -66,7 +70,7 @@ struct RequestConfig {
 The configuration object is an aggregate type; defining it inline it using Designated Initializers (C++20) is recommended.
 
 ```cpp
-auto response = ExpressClient::request({
+auto result = ExpressClient::request({
     .url = "http://example.com/user/12345",
     .method = Http::Method::Post,
     .data = {{
@@ -79,7 +83,7 @@ auto response = ExpressClient::request({
 The data field can be constructed using key/value pairs (like the example above) or a raw string. If you use key/value pairs, the default content type will be `application/x-www-form-urlencoded`. Using a raw string, you must specify the content type yourself. For example:
 
 ```cpp
-auto response = ExpressClient::request({
+auto result = ExpressClient::request({
     .url = "http://example.com/user/12345",
     .method = Http::Method::Post,
     .data = {"firstName=Fred&lastName=Flintstone"},
@@ -116,7 +120,7 @@ Here's an example that inspects the response headers and data:
 auto response = ExpressClient::request({
     .url = "http://example.com",
     .method = Http::Method::Get,
-});
+}).get();
 
 std::cout << "Headers: \n";
 for (const auto& header : response.headers) {
@@ -134,7 +138,7 @@ The `HeaderCollection` type has public case-insensitive lookup methods for inspe
 auto response = ExpressClient::request({
     .url = "http://example.com",
     .method = Http::Method::Get,
-});
+}).get();
 
 if (response.headers.has("cache-control")) {
     std::cout << response.headers.get("cache-control");
