@@ -11,7 +11,7 @@ Asynchronous HTTP client for modern C++ development.
 
 ## Express API
 
-HTTP requests can be made by passing a configuration object to `ExpressClient::request`. This method returns a non-blocking future.
+HTTP requests are made by passing a configuration object to `ExpressClient::request`. This method returns a non-blocking future.
 
 ```cpp
 using namespace Express;
