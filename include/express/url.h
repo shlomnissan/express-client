@@ -7,19 +7,9 @@
 #include <string_view>
 #include <stdexcept>
 
+#include <express/user_information.h>
+
 namespace Express::Net {
-    class UserInformation {
-        friend class URL;
-
-        public:
-            [[nodiscard]] auto username() const { return username_; }
-            [[nodiscard]] auto password() const { return password_; }
-
-        private:
-            std::string username_;
-            std::string password_;
-    };
-
     class URL {
         public:
             explicit URL(std::string_view url);

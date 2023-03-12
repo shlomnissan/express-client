@@ -101,6 +101,10 @@ TEST(request, request_object_content_type_overrides_hint) {
     );
 }
 
+// TODO: creates a valid request with auth
+// TODO: auth request overrides custom header
+// TODO: auth request overrides url user information
+
 TEST(request, throws_when_content_type_not_set_for_raw_string) {
     Express::Net::URL url {"http://example.com"};
 

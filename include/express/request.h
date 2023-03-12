@@ -12,6 +12,7 @@
 #include <express/http_defs.h>
 #include <express/url.h>
 #include <express/data.h>
+#include <express/user_information.h>
 
 namespace Express::Http {
     struct RequestConfig {
@@ -19,6 +20,7 @@ namespace Express::Http {
         Method method {Method::Get};
         Data data {};
         HeaderCollection headers {};
+        Net::UserInformation auth {};
         std::chrono::milliseconds timeout {0};
     };
 
