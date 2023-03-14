@@ -101,7 +101,27 @@ TEST(request, request_object_content_type_overrides_hint) {
     );
 }
 
-// TODO: authorization header is passed correctly
+TEST(request, passes_authorization_header_correctly) {
+    Express::Net::URL url {"http://example.com"};
+    Request request {url, {
+        .url = url.source(),
+        .method = Method::Get,
+        .headers = {{
+            {"Authorization", "b3BlbjpzZXNhbWU="}
+        }}
+    }};
+
+    EXPECT_EQ(
+        request.str(),
+        "GET / HTTP/1.1\r\n"
+        "Authorization: b3BlbjpzZXNhbWU=\r\n"
+        "Host: example.com\r\n"
+        "User-Agent: express/0.1\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+    );
+}
+
 // TODO: creates a valid request with basic auth through URL
 // TODO: creates a valid request with basic auth through config
 // TODO: config auth overrides url auth
