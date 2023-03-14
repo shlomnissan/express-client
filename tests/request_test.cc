@@ -101,9 +101,12 @@ TEST(request, request_object_content_type_overrides_hint) {
     );
 }
 
-// TODO: creates a valid request with auth
-// TODO: auth request overrides custom header
-// TODO: auth request overrides url user information
+// TODO: authorization header is passed correctly
+// TODO: creates a valid request with basic auth through URL
+// TODO: creates a valid request with basic auth through config
+// TODO: config auth overrides url auth
+// TODO: config auth overrides custom header
+// TODO: url auth overrides custom header
 
 TEST(request, throws_when_content_type_not_set_for_raw_string) {
     Express::Net::URL url {"http://example.com"};

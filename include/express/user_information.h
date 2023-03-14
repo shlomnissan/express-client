@@ -19,6 +19,10 @@ namespace Express::Net {
                 username_(username),
                 password_(password) {}
 
+            [[nodiscard]] auto empty() const {
+                return username_.empty() && password_.empty();
+            }
+
             [[nodiscard]] auto username() const { return username_; }
             [[nodiscard]] auto password() const { return password_; }
 

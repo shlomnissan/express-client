@@ -37,7 +37,8 @@ namespace Express::Http {
         Net::URL url_;
 
         auto setHeaders() -> void;
-        auto setBody() -> void;
+        auto setContentTypeAndSize() -> void;
+        auto setBasicAuth(const Net::UserInformation& user_info) const -> void;
         auto writeRequest() -> void;
         auto allowedData(const Method method) const -> bool;
     };

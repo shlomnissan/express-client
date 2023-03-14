@@ -4,6 +4,8 @@
 #include <express/request.h>
 
 namespace Express::Http {
+    using namespace Net;
+
     Request::Request(const Net::URL& url, const RequestConfig& config)
     : config_(config), url_(url) {
         setHeaders();
@@ -14,12 +16,27 @@ namespace Express::Http {
         config_.headers.add({"Host", url_.host()});
         config_.headers.add({"User-Agent", "express/0.1"});
 
-        if (config_.data.size()) setBody();
+        if (!config_.auth.empty()) {
+            setBasicAuth(config_.auth);
+        } else if (!url_.userInformation().empty()) {
+            setBasicAuth(url_.userInformation());
+        }
+
+        if (config_.data.size()) {
+            setContentTypeAndSize();
+        }
 
         config_.headers.add({"Connection", "close"});
     }
 
-    auto Request::setBody() -> void {
+    auto Request::setBasicAuth(const UserInformation& info) const -> void {
+        const auto auth = info.username() + ":" + info.password();
+        // TODO: If Authorization header exists, remove it 
+        // TODO: Base64 encoding
+        // TODO: Add Authorization header
+    }
+
+    auto Request::setContentTypeAndSize() -> void {
         if (!allowedData(config_.method)) {
             throw RequestError {
                 "Request data can only be added "
