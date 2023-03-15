@@ -54,7 +54,7 @@ TEST(client, simple_post_with_form_data) {
     EXPECT_EQ(body, "Hello Fred Flintstone!");
 }
 
-TEST(client, simple_post_with_raw_string) {
+TEST(client, post_with_raw_string) {
     auto response = ExpressClient::request({
         .url = "http://127.0.0.1:5000",
         .method = Http::Method::Post,
@@ -76,6 +76,10 @@ TEST(client, simple_post_with_raw_string) {
     auto body = std::string {cbegin(response.data), cend(response.data)};
     EXPECT_EQ(body, "Hello Fred Flintstone!");
 }
+
+// TODO: get_with_basic_authorization_config
+// TODO: get_with_basic_authorization_url
+// TODO: get_with_basic_authorization_custom_header
 
 TEST(client, throws_if_request_timed_out) {
     EXPECT_THROW({

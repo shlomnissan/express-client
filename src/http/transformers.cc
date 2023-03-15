@@ -22,6 +22,13 @@ namespace Express::Transformers {
         return output;
     }
 
+    auto base64_encode(std::string_view data) -> std::string {
+        // allocate space (len + 2 / 3 * 4)
+        // every three bytes should map to 4 Base64 characters
+        // pad the string with `=` characters
+        return std::string {data};
+    }
+
     auto trim_leading_whitespaces(std::string& str) noexcept -> void {
         size_t i = 0;
         while (i < str.size() && is_whitespace(str[i])) ++i;

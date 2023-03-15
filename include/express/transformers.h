@@ -11,6 +11,7 @@
 namespace Express::Transformers {
     [[nodiscard]] auto str_to_lower(std::string_view str) noexcept -> std::string;
     [[nodiscard]] auto trim_leading_whitespaces(std::string_view str) noexcept -> std::string;
+    [[nodiscard]] auto base64_encode(std::string_view data) -> std::string;
 
     auto trim_leading_whitespaces(std::string& str) noexcept -> void; 
     auto trim_trailing_whitespaces(std::string& str) noexcept -> void;

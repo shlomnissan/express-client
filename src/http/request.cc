@@ -1,6 +1,7 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
+#include "express/transformers.h"
 #include <express/request.h>
 
 namespace Express::Http {
@@ -29,11 +30,14 @@ namespace Express::Http {
         config_.headers.add({"Connection", "close"});
     }
 
-    auto Request::setBasicAuth(const UserInformation& info) const -> void {
-        const auto auth = info.username() + ":" + info.password();
-        // TODO: If Authorization header exists, remove it 
-        // TODO: Base64 encoding
-        // TODO: Add Authorization header
+    auto Request::setBasicAuth(const UserInformation& info) -> void {
+        if (config_.headers.has("authorization")) {
+            config_.headers.remove("authorization");
+        }
+        const auto auth = Transformers::base64_encode(
+            info.username() + ":" + info.password()
+        );
+        config_.headers.add({"Authorization", "Basic " + auth});
     }
 
     auto Request::setContentTypeAndSize() -> void {

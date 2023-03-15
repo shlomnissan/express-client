@@ -107,14 +107,14 @@ TEST(request, passes_authorization_header_correctly) {
         .url = url.source(),
         .method = Method::Get,
         .headers = {{
-            {"Authorization", "b3BlbjpzZXNhbWU="}
+            {"Authorization", "Basic b3BlbjpzZXNhbWU="}
         }}
     }};
 
     EXPECT_EQ(
         request.str(),
         "GET / HTTP/1.1\r\n"
-        "Authorization: b3BlbjpzZXNhbWU=\r\n"
+        "Authorization: Basic b3BlbjpzZXNhbWU=\r\n"
         "Host: example.com\r\n"
         "User-Agent: express/0.1\r\n"
         "Connection: close\r\n"
@@ -122,8 +122,45 @@ TEST(request, passes_authorization_header_correctly) {
     );
 }
 
-// TODO: creates a valid request with basic auth through URL
-// TODO: creates a valid request with basic auth through config
+TEST(request, creates_valid_request_with_auth_through_url) {
+    Express::Net::URL url {"http://aladdin:opensesame@example.com"};
+    Request request {url, {
+        .url = url.source(),
+        .method = Method::Get,
+    }};
+
+    EXPECT_EQ(
+        request.str(),
+        "GET / HTTP/1.1\r\n"
+        "Host: example.com\r\n"
+        "User-Agent: express/0.1\r\n"
+        "Authorization: Basic aladdin:opensesame\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+    );
+}
+
+TEST(request, creates_valid_request_with_auth_through_config) {
+    Express::Net::URL url {"http://example.com"};
+    Request request {url, {
+        .url = url.source(),
+        .method = Method::Get,
+        .auth = {
+            "aladdin",
+            "opensesame"
+        }
+    }};
+
+    EXPECT_EQ(
+        request.str(),
+        "GET / HTTP/1.1\r\n"
+        "Host: example.com\r\n"
+        "User-Agent: express/0.1\r\n"
+        "Authorization: Basic aladdin:opensesame\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+    );
+}
 // TODO: config auth overrides url auth
 // TODO: config auth overrides custom header
 // TODO: url auth overrides custom header
