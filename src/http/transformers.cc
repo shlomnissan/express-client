@@ -23,10 +23,36 @@ namespace Express::Transformers {
     }
 
     auto base64_encode(std::string_view data) -> std::string {
-        // allocate space (len + 2 / 3 * 4)
-        // every three bytes should map to 4 Base64 characters
-        // pad the string with `=` characters
-        return std::string {data};
+        constexpr auto chars =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz"
+            "0123456789+/";
+
+        size_t len = size(data);
+        size_t i = 0;
+        std::string output;
+        output.reserve((len + 2) / 3 * 4);
+
+        while (i < len) {
+            output += chars[data[i] >> 2];
+            if (i + 1 < len) {
+                output += chars[((data[i] & 0x03) << 4) + (data[i + 1] >> 4)];
+                if (i + 2 < len) {
+                    output += chars[((data[i + 1] & 0x0F) << 2) + (data[i + 2] >> 6)];
+                    output += chars[data[i + 2] & 0x3F];
+                } else {
+                    output += chars[(data[i + 1] & 0x0F) << 2];
+                    output += '=';
+                }
+            } else {
+                output += chars[(data[i] & 0x03) << 4];
+                output += '=';
+                output += '=';
+            }
+            i += 3;
+        }
+
+        return output;
     }
 
     auto trim_leading_whitespaces(std::string& str) noexcept -> void {

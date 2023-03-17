@@ -134,7 +134,7 @@ TEST(request, creates_valid_request_with_auth_through_url) {
         "GET / HTTP/1.1\r\n"
         "Host: example.com\r\n"
         "User-Agent: express/0.1\r\n"
-        "Authorization: Basic aladdin:opensesame\r\n"
+        "Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l\r\n"
         "Connection: close\r\n"
         "\r\n"
     );
@@ -156,7 +156,7 @@ TEST(request, creates_valid_request_with_auth_through_config) {
         "GET / HTTP/1.1\r\n"
         "Host: example.com\r\n"
         "User-Agent: express/0.1\r\n"
-        "Authorization: Basic aladdin:opensesame\r\n"
+        "Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l\r\n"
         "Connection: close\r\n"
         "\r\n"
     );
