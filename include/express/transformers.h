@@ -9,6 +9,11 @@
 #include <express/validators.h>
 
 namespace Express::Transformers {
+    static constexpr auto chars =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz"
+            "0123456789+/";
+
     [[nodiscard]] auto str_to_lower(std::string_view str) noexcept -> std::string;
     [[nodiscard]] auto trim_leading_whitespaces(std::string_view str) noexcept -> std::string;
     [[nodiscard]] auto base64_encode(std::string_view data) -> std::string;

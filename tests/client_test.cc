@@ -77,9 +77,61 @@ TEST(client, post_with_raw_string) {
     EXPECT_EQ(body, "Hello Fred Flintstone!");
 }
 
-// TODO: get_with_basic_authorization_config
-// TODO: get_with_basic_authorization_url
-// TODO: get_with_basic_authorization_custom_header
+TEST(client, get_with_basic_authorization_config) {
+    auto response = ExpressClient::request({
+        .url = "http://127.0.0.1:5000/auth",
+        .method = Http::Method::Get,
+        .auth = {
+            .username = "aladdin",
+            .password = "opensesame"
+        }
+    }).get();
+
+    EXPECT_EQ(response.statusCode, 200);
+    EXPECT_EQ(response.statusText, "OK");
+
+    auto body = std::string {cbegin(response.data), cend(response.data)};
+    EXPECT_EQ(body, "Hello Aladdin!");
+}
+
+TEST(client, get_with_basic_authorization_url) {
+    auto response = ExpressClient::request({
+        .url = "http://aladdin:opensesame@127.0.0.1:5000/auth",
+        .method = Http::Method::Get
+    }).get();
+
+    EXPECT_EQ(response.statusCode, 200);
+    EXPECT_EQ(response.statusText, "OK");
+
+    auto body = std::string {cbegin(response.data), cend(response.data)};
+    EXPECT_EQ(body, "Hello Aladdin!");
+}
+
+TEST(client, get_with_basic_authorization_custom_header) {
+    auto response = ExpressClient::request({
+        .url = "http://127.0.0.1:5000/auth",
+        .method = Http::Method::Get,
+        .headers = {{
+            {"Authorization", "Basic YWxhZGRpbjpvcGVuc2VzYW1l"}
+        }}
+    }).get();
+
+    EXPECT_EQ(response.statusCode, 200);
+    EXPECT_EQ(response.statusText, "OK");
+
+    auto body = std::string {cbegin(response.data), cend(response.data)};
+    EXPECT_EQ(body, "Hello Aladdin!");
+}
+
+TEST(client, get_with_basic_authorization_config_failure) {
+    auto response = ExpressClient::request({
+        .url = "http://127.0.0.1:5000/auth",
+        .method = Http::Method::Get,
+    }).get();
+
+    EXPECT_EQ(response.statusCode, 401);
+    EXPECT_EQ(response.statusText, "UNAUTHORIZED");
+}
 
 TEST(client, throws_if_request_timed_out) {
     EXPECT_THROW({

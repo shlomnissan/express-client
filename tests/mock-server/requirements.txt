@@ -1,1 +1,2 @@
 flask == 2.2.2
+flask_httpauth == 4.7.0

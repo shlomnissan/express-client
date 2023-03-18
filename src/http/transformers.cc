@@ -23,13 +23,9 @@ namespace Express::Transformers {
     }
 
     auto base64_encode(std::string_view data) -> std::string {
-        constexpr auto chars =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            "abcdefghijklmnopqrstuvwxyz"
-            "0123456789+/";
-
         size_t len = size(data);
         size_t i = 0;
+        
         std::string output;
         output.reserve((len + 2) / 3 * 4);
 

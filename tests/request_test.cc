@@ -161,9 +161,74 @@ TEST(request, creates_valid_request_with_auth_through_config) {
         "\r\n"
     );
 }
-// TODO: config auth overrides url auth
-// TODO: config auth overrides custom header
-// TODO: url auth overrides custom header
+
+TEST(request, config_auth_overrides_url_auth) {
+    Express::Net::URL url {"http://fred:flintstone@example.com"};
+    Request request {url, {
+        .url = url.source(),
+        .method = Method::Get,
+        .auth = {
+            .username = "aladdin",
+            .password = "opensesame"
+        }
+    }};
+
+    EXPECT_EQ(
+        request.str(),
+        "GET / HTTP/1.1\r\n"
+        "Host: example.com\r\n"
+        "User-Agent: express/0.1\r\n"
+        "Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+    );
+}
+
+TEST(request, config_auth_overrides_custom_header) {
+    Express::Net::URL url {"http://example.com"};
+    Request request {url, {
+        .url = url.source(),
+        .method = Method::Get,
+        .headers = {{
+            {"Authorization", "Basic ZnJlZDpmbGludHN0b25l"}
+        }},
+        .auth = {
+            .username = "aladdin",
+            .password = "opensesame"
+        }
+    }};
+
+    EXPECT_EQ(
+        request.str(),
+        "GET / HTTP/1.1\r\n"
+        "User-Agent: express/0.1\r\n"
+        "Host: example.com\r\n"
+        "Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+    );
+}
+
+TEST(request, url_auth_overrides_custom_header) {
+    Express::Net::URL url {"http://fred:flintstone@example.com"};
+    Request request {url, {
+        .url = url.source(),
+        .method = Method::Get,
+        .headers = {{
+            {"Authorization", "Basic YWxhZGRpbjpvcGVuc2VzYW1l"}
+        }}
+    }};
+
+    EXPECT_EQ(
+        request.str(),
+        "GET / HTTP/1.1\r\n"
+        "User-Agent: express/0.1\r\n"
+        "Host: example.com\r\n"
+        "Authorization: Basic ZnJlZDpmbGludHN0b25l\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+    );
+}
 
 TEST(request, throws_when_content_type_not_set_for_raw_string) {
     Express::Net::URL url {"http://example.com"};
