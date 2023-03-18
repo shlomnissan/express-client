@@ -146,8 +146,8 @@ TEST(request, creates_valid_request_with_auth_through_config) {
         .url = url.source(),
         .method = Method::Get,
         .auth = {
-            "aladdin",
-            "opensesame"
+            .username = "aladdin",
+            .password = "opensesame"
         }
     }};
 

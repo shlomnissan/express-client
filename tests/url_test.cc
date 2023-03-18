@@ -122,8 +122,8 @@ TEST(url, parses_url_with_empty_user_info) {
 
     EXPECT_EQ(url.scheme(), "http");
     EXPECT_EQ(url.authority(), "@example.com");
-    EXPECT_EQ(url.userInformation().username(), "");
-    EXPECT_EQ(url.userInformation().password(), "");
+    EXPECT_EQ(url.userInformation().username, "");
+    EXPECT_EQ(url.userInformation().password, "");
     EXPECT_EQ(url.host(), "example.com");
     EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "");
@@ -135,8 +135,8 @@ TEST(url, parses_url_with_username_and_no_password) {
 
     EXPECT_EQ(url.scheme(), "http");
     EXPECT_EQ(url.authority(), "user@example.com");
-    EXPECT_EQ(url.userInformation().username(), "user");
-    EXPECT_EQ(url.userInformation().password(), "");
+    EXPECT_EQ(url.userInformation().username, "user");
+    EXPECT_EQ(url.userInformation().password, "");
     EXPECT_EQ(url.host(), "example.com");
     EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "");
@@ -148,8 +148,8 @@ TEST(url, parses_url_with_password_and_no_username) {
 
     EXPECT_EQ(url.scheme(), "http");
     EXPECT_EQ(url.authority(), ":pass@example.com");
-    EXPECT_EQ(url.userInformation().username(), "");
-    EXPECT_EQ(url.userInformation().password(), "pass");
+    EXPECT_EQ(url.userInformation().username, "");
+    EXPECT_EQ(url.userInformation().password, "pass");
     EXPECT_EQ(url.host(), "example.com");
     EXPECT_EQ(url.port(), "80");
     EXPECT_EQ(url.path(), "");

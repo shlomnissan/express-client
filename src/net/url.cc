@@ -40,10 +40,10 @@ namespace Express::Net {
             auto user_info = authority_.substr(0, host_pos);
             auto password_pos = user_info.find(':');
             if (password_pos != std::string::npos) {
-                user_information_.username_ = user_info.substr(0, password_pos);
-                user_information_.password_ = user_info.substr(password_pos + 1);
+                user_information_.username = user_info.substr(0, password_pos);
+                user_information_.password = user_info.substr(password_pos + 1);
             } else {
-                user_information_.username_ = user_info;
+                user_information_.username = user_info;
             }
             host_.erase(0, host_pos + 1);
         }

@@ -35,7 +35,7 @@ namespace Express::Http {
             config_.headers.remove("authorization");
         }
         const auto auth = Transformers::base64_encode(
-            info.username() + ":" + info.password()
+            info.username + ":" + info.password
         );
         config_.headers.add({"Authorization", "Basic " + auth});
     }
