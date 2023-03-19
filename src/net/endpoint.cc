@@ -3,6 +3,8 @@
 
 #include <express/endpoint.h>
 
+#include <cstring>
+
 namespace Express::Net {
     Endpoint::Endpoint(std::string_view host, std::string_view port) {
         addrinfo hints;
