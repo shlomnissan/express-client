@@ -7,6 +7,7 @@
 #include <memory>
 #include <string_view>
 #include <netdb.h>
+#include <sys/socket.h>
 
 namespace Express::Net {
     class Endpoint {

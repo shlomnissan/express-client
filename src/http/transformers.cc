@@ -10,8 +10,8 @@ namespace Express::Transformers {
 
     auto str_to_lower(std::string_view str) noexcept -> std::string {
         std::string output {str};
-        std::ranges::transform(output, begin(output), [](auto c) {
-            return tolower(c);
+        std::ranges::transform(output, begin(output), [](const auto c) {
+            return static_cast<char>(tolower(c));
         });
         return output;
     }

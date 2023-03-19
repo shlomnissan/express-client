@@ -41,7 +41,7 @@ namespace Express::Http {
         Response response_ {};
         MessageBodyParsingMethod body_parsing_method_ {MessageBodyParsingMethod::Undetermined};
         size_t content_length_ {0};
-        unsigned long bytes_to_read {0};
+        size_t bytes_to_read {0};
         bool parsing_body_ {false};
         bool done_reading_data_ {false};
         bool finished_reading_chunk {false};

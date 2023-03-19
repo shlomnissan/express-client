@@ -3,10 +3,6 @@
 
 #include <express/endpoint.h>
 
-#include <cstring>
-#include <netdb.h>
-#include <sys/socket.h>
-
 namespace Express::Net {
     Endpoint::Endpoint(std::string_view host, std::string_view port) {
         addrinfo hints;

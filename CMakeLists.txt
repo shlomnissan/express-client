@@ -4,7 +4,11 @@ project(express VERSION 0.1)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_compile_options(-Wall -Wextra -Wpedantic -Wconversion -Wno-sign-conversion -Wno-missing-field-initializers -fPIC)
+if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Wextra -Wpedantic -fPIC)
+endif()
 
 option(BUILD_TESTS "build tests" ON)
 option(BUILD_SHARED_LIBS "build shared library" ON)
