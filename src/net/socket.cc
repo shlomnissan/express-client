@@ -13,7 +13,7 @@ namespace Express::Net {
             endpoint_.protocol()
         );
 
-        if (!fd_socket) {
+        if (fd_socket == INVALID_SOCKET) {
             throw SocketError {"Failed to initialize socket."};
         }
     }
@@ -25,7 +25,7 @@ namespace Express::Net {
             endpoint_.addressLength()
         );
 
-        while (fd_socket == INVALID_SOCKET && ERRNO() == SYS_EINTR) {
+        while (result == -1 && ERRNO() == SYS_EINTR) {
             result = ::connect(
                 fd_socket,
                 endpoint_.address(),
@@ -33,7 +33,7 @@ namespace Express::Net {
             ); 
         }
 
-        if (fd_socket == INVALID_SOCKET) {
+        if (result == -1) {
             throw SocketError {"Failed to connect."};
         }
     }
@@ -65,7 +65,7 @@ namespace Express::Net {
             };
         #endif
 
-        auto result = ::select(
+        auto count = ::select(
             fd_socket + 1,
             event == EventType::ToRead ? &fdset : nullptr,
             event == EventType::ToWrite ? &fdset : nullptr,
@@ -73,8 +73,8 @@ namespace Express::Net {
             timeout.count() > 0 ? &select_timeout : nullptr
         );
 
-        while (result == -1 && errno == InterruptedBySystemSignal) {
-            result = ::select(
+        while (count == -1 && errno == InterruptedBySystemSignal) {
+            count = ::select(
                 fd_socket + 1,
                 event == EventType::ToRead ? &fdset : nullptr,
                 event == EventType::ToWrite ? &fdset : nullptr,
@@ -83,12 +83,12 @@ namespace Express::Net {
             );
         }
 
-        if (result == -1) throw SocketError {"Failed to select socket."};
-        if (result == 0) throw SocketError {"Request timed out."};
+        if (count == -1) throw SocketError {"Failed to select socket."};
+        if (count == 0) throw SocketError {"Request timed out."};
     }
 
     Socket::~Socket() {
-        if (fd_socket) {
+        if (fd_socket != INVALID_SOCKET) {
             CLOSE(fd_socket);
         }
     }

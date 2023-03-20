@@ -29,8 +29,9 @@
     #include <sys/select.h>
     #include <sys/types.h>
 
-    #define SOCKET int
-    #define INVALID_SOCKET -1
+    using SOCKET = int;
+    constexpr auto INVALID_SOCKET = -1;
+
     #define SYS_EINTR EINTR
     #define CLOSE(s) close(s)
     #define ERRNO() (errno)
