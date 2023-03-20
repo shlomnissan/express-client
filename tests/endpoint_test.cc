@@ -4,7 +4,12 @@
 #include <gtest/gtest.h>
 
 #include <express/endpoint.h>
-#include <sys/socket.h>
+
+#if defined(_WIN32)
+    #include <winsock2.h>
+#else
+    #include <sys/socket.h>
+#endif
 
 using namespace Express::Net;
 

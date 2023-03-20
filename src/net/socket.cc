@@ -3,11 +3,6 @@
 
 #include <express/socket.h>
 
-#include <cerrno>
-#include <sys/socket.h>
-#include <sys/select.h>
-#include <sys/types.h>
-
 namespace Express::Net {
     constexpr auto InterruptedBySystemSignal = EINTR; 
 
@@ -30,7 +25,7 @@ namespace Express::Net {
             endpoint_.addressLength()
         );
 
-        while (result == -1 && errno == InterruptedBySystemSignal) {
+        while (fd_socket == INVALID_SOCKET && ERRNO() == SYS_EINTR) {
             result = ::connect(
                 fd_socket,
                 endpoint_.address(),
@@ -38,7 +33,7 @@ namespace Express::Net {
             ); 
         }
 
-        if (result == -1) {
+        if (fd_socket == INVALID_SOCKET) {
             throw SocketError {"Failed to connect."};
         }
     }
@@ -50,7 +45,7 @@ namespace Express::Net {
 
     auto Socket::recv(uint8_t* buffer, milliseconds timeout) const -> ssize_t {
         wait(EventType::ToRead, timeout);
-        return ::recv(fd_socket, buffer, BUFSIZ, 0);
+        return ::recv(fd_socket, reinterpret_cast<char*>(buffer), BUFSIZ, 0);
     }
 
     auto Socket::wait(EventType event, milliseconds timeout) const -> void {
@@ -58,10 +53,17 @@ namespace Express::Net {
         FD_ZERO(&fdset);
         FD_SET(fd_socket, &fdset);
 
-        timeval select_timeout {
-            .tv_sec = timeout.count() / 1000,
-            .tv_usec = (timeout.count() % 1000) * 1000,
-        };
+        #if defined(_WIN32)
+            TIMEVAL select_timeout {
+                static_cast<LONG>(timeout.count() / 1000),
+                static_cast<LONG>((timeout.count() % 1000) * 1000)
+            }; 
+        #else
+            timeval select_timeout {
+                .tv_sec = timeout.count() / 1000,
+                .tv_usec = (timeout.count() % 1000) * 1000,
+            };
+        #endif
 
         auto result = ::select(
             fd_socket + 1,
@@ -87,7 +89,7 @@ namespace Express::Net {
 
     Socket::~Socket() {
         if (fd_socket) {
-            close(fd_socket);
+            CLOSE(fd_socket);
         }
     }
 }

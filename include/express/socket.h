@@ -9,6 +9,33 @@
 #include <string_view>
 #include <stdexcept>
 
+#if defined(_WIN32)
+    #ifndef _WIN32_WINNT
+        #define _WIN32_WINNT 0x0600
+    #endif
+    #include <winsock2.h>
+    #include <BaseTsd.h>
+
+    #pragma comment(lib, "ws2_32.lib")
+
+    using ssize_t = SSIZE_T;
+
+    #define SYS_EINTR WSAEINTR
+    #define CLOSE(s) closesocket(s)
+    #define ERRNO() (WSAGetLastError())
+#else
+    #include <cerrno>
+    #include <sys/socket.h>
+    #include <sys/select.h>
+    #include <sys/types.h>
+
+    #define SOCKET int
+    #define INVALID_SOCKET -1
+    #define SYS_EINTR EINTR
+    #define CLOSE(s) close(s)
+    #define ERRNO() (errno)
+#endif
+
 namespace Express::Net {
     using namespace std::chrono;
 
@@ -27,7 +54,7 @@ namespace Express::Net {
         ~Socket();
 
     private:
-        int fd_socket = 0;
+        SOCKET fd_socket = 0;
         Endpoint endpoint_;
 
         auto wait(EventType event, milliseconds timeout) const -> void;
