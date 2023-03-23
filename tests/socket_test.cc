@@ -8,7 +8,18 @@
 
 using namespace Express::Net;
 
-TEST(socket, basic_test) {
+class SocketTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        // TODO: add setup
+    }
+
+    void TearDown() override {
+        // TODO: add teardown
+    }
+};
+
+TEST_F(SocketTest, basic_test) {
     Endpoint endpoint {"example.com", "80"};
     Socket socket {std::move(endpoint)};
 
