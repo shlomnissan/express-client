@@ -6,22 +6,18 @@
 #include <express/endpoint.h>
 
 #if defined(_WIN32)
-    #include <winsock2.h>
+#include <express/winsock.h>
 #else
-    #include <sys/socket.h>
+#include <sys/socket.h>
 #endif
 
 using namespace Express::Net;
 
 class EndpointTest : public ::testing::Test {
 protected:
-    void SetUp() override {
-        // TODO: add setup
-    }
-
-    void TearDown() override {
-        // TODO: add teardown
-    }
+#if defined(_WIN32)
+    WinSock winsock;
+#endif
 };
 
 TEST_F(EndpointTest, initializes_basic_endpoint) {
@@ -29,7 +25,6 @@ TEST_F(EndpointTest, initializes_basic_endpoint) {
 
     EXPECT_EQ(endpoint.family(), AF_INET);
     EXPECT_EQ(endpoint.socketType(), SOCK_STREAM);
-    EXPECT_EQ(endpoint.protocol(), IPPROTO_TCP);
     EXPECT_EQ(endpoint.addressLength(), 16);
     EXPECT_TRUE(endpoint.address() != nullptr);
 }

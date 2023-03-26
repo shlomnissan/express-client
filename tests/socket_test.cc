@@ -6,17 +6,17 @@
 #include <express/socket.h>
 #include <express/endpoint.h>
 
+#if defined(_WIN32)
+#include <express/winsock.h>
+#endif
+
 using namespace Express::Net;
 
 class SocketTest : public ::testing::Test {
 protected:
-    void SetUp() override {
-        // TODO: add setup
-    }
-
-    void TearDown() override {
-        // TODO: add teardown
-    }
+#if defined(_WIN32)
+    WinSock winsock;
+#endif
 };
 
 TEST_F(SocketTest, basic_test) {

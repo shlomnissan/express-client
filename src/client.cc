@@ -6,12 +6,20 @@
 #include <express/endpoint.h>
 #include <express/socket.h>
 
+#if defined(_WIN32)
+    #include <express/winsock.h>
+#endif
+
 namespace Express {
     auto ExpressClient::request(const RequestConfig& config) -> std::future<Response> {
         return std::async(std::launch::async, makeRequest, config);
     }
 
     auto ExpressClient::makeRequest(const RequestConfig& config) -> Response {
+        #if defined(_WIN32)
+            WinSock winsock;
+        #endif
+
         URL url {config.url};
         Request request {url, config};
         Endpoint endpoint {url.host(), url.port()};
