@@ -22,14 +22,14 @@ namespace Express::Net {
         auto result = ::connect(
             fd_socket,
             endpoint_.address(),
-            endpoint_.addressLength()
+            static_cast<int>(endpoint_.addressLength())
         );
 
         while (result == -1 && ERRNO() == SYS_EINTR) {
             result = ::connect(
                 fd_socket,
                 endpoint_.address(),
-                endpoint_.addressLength()
+                static_cast<int>(endpoint_.addressLength())
             ); 
         }
 
@@ -40,7 +40,7 @@ namespace Express::Net {
 
     auto Socket::send(std::string_view buffer, milliseconds timeout) const -> ssize_t {
         wait(EventType::ToWrite, timeout);
-        return ::send(fd_socket, buffer.data(), buffer.size(), 0);
+        return ::send(fd_socket, buffer.data(), static_cast<int>(buffer.size()), 0);
     }
 
     auto Socket::recv(uint8_t* buffer, milliseconds timeout) const -> ssize_t {
@@ -66,7 +66,7 @@ namespace Express::Net {
         #endif
 
         auto count = ::select(
-            fd_socket + 1,
+            static_cast<int>(fd_socket + 1),
             event == EventType::ToRead ? &fdset : nullptr,
             event == EventType::ToWrite ? &fdset : nullptr,
             nullptr,
@@ -75,7 +75,7 @@ namespace Express::Net {
 
         while (count == -1 && errno == InterruptedBySystemSignal) {
             count = ::select(
-                fd_socket + 1,
+                static_cast<int>(fd_socket + 1),
                 event == EventType::ToRead ? &fdset : nullptr,
                 event == EventType::ToWrite ? &fdset : nullptr,
                 nullptr,

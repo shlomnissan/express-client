@@ -11,7 +11,7 @@ jobs:
       matrix:
         config:
           - {
-              name: "Ubuntu GCC",
+              name: "Ubuntu Latest GCC",
               os: ubuntu-latest,
               artifact: "ubuntu_gcc.7z",
               build_type: "Release",
@@ -20,9 +20,21 @@ jobs:
               archiver: "7z a",
               generators: "Ninja"
             }
+          - {
+              name: "Windows Latest MSVC",
+              os: windows-latest,
+              artifact: "windows_msvc.7z",
+              build_type: "Release",
+              cc: "cl",
+              cxx: "cl",
+              environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
+              archiver: "7z a",
+              generators: "Visual Studio 17 2022"
+            }
     steps:
       - uses: actions/checkout@v3
-      - name: Install shared dependencies
+      - name: Install dependencies on Ubuntu
+        if: startsWith(matrix.config.os, 'Ubuntu')
         run: |
           sudo apt-get -yq update
           sudo apt-get install -yq cmake ninja-build python3-pip
@@ -31,16 +43,16 @@ jobs:
           gcc --version
           python3 --version
           pip3 --version
+      - name: Install dependencies on Windows
+        if: startsWith(matrix.config.os, 'Windows')
+        run: |
+          choco install ninja cmake python pip
+          ninja --version
+          cmake --version
       - name: Configure
         run: |
-          mkdir build
           mkdir instdir
-          cmake \
-            -S . \
-            -B . \
-            -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} \
-            -G "${{ matrix.config.generators }}" \
-            -DCMAKE_INSTALL_PREFIX:PATH=instdir
+          cmake -S . -B . -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -G "${{ matrix.config.generators }}" -DCMAKE_INSTALL_PREFIX:PATH=instdir
       - name: Build
         shell: bash
         run: cmake --build . --config ${{ matrix.config.build_type }}

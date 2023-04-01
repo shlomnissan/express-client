@@ -5,6 +5,8 @@
 #include <windef.h>
 #include <system_error>
 
+#pragma comment(lib, "ws2_32.lib")
+
 namespace Express::Net {
     class WinSock {
     public:
