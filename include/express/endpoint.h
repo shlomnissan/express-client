@@ -9,7 +9,6 @@
 
 #if defined(_WIN32)
     #include <ws2tcpip.h>
-    #pragma comment(lib, "ws2_32.lib")
 #else
     #include <netdb.h>
     #include <sys/socket.h>

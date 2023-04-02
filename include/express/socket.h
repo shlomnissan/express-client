@@ -16,8 +16,6 @@
     #include <winsock2.h>
     #include <BaseTsd.h>
 
-    #pragma comment(lib, "ws2_32.lib")
-
     using ssize_t = SSIZE_T;
 
     #define SYS_EINTR WSAEINTR
@@ -50,7 +48,7 @@ namespace Express::Net {
         auto send(std::string_view buffer, milliseconds timeout) const -> ssize_t;
         auto recv(uint8_t* buffer, milliseconds timeout) const -> ssize_t;
 
-        [[nodiscard]] int get() const { return fd_socket; };
+        [[nodiscard]] SOCKET get() const { return fd_socket; };
 
         ~Socket();
 
