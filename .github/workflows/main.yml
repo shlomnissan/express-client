@@ -80,5 +80,4 @@ jobs:
         run: |
           pip3 install -r tests/mock-server/requirements.txt
           nohup python3 tests/mock-server/server.py &
-          sleep 1s
           ctest -V 

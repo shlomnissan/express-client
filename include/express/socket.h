@@ -23,6 +23,7 @@
     #define ERRNO() (WSAGetLastError())
 #else
     #include <cerrno>
+    #include <unistd.h>
     #include <sys/socket.h>
     #include <sys/select.h>
     #include <sys/types.h>

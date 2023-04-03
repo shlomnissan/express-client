@@ -9,10 +9,11 @@ namespace Express::Transformers {
     using namespace Http::Validators;
 
     auto str_to_lower(std::string_view str) noexcept -> std::string {
-        std::string output {str};
-        std::ranges::transform(output, begin(output), [](const auto c) {
-            return static_cast<char>(tolower(c));
-        });
+        std::string output;
+        output.reserve(str.size());
+        for (const auto c : str) {
+            output += static_cast<char>(tolower(c));
+        }
         return output;
     }
 

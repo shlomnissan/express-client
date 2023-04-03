@@ -60,8 +60,8 @@ namespace Express::Net {
             }; 
         #else
             timeval select_timeout {
-                .tv_sec = timeout.count() / 1000,
-                .tv_usec = (timeout.count() % 1000) * 1000,
+                .tv_sec = static_cast<time_t>(timeout.count() / 1000),
+                .tv_usec = static_cast<suseconds_t>((timeout.count() % 1000) * 1000),
             };
         #endif
 

@@ -7,6 +7,10 @@
 
 using namespace Express::Transformers;
 
+TEST(str_to_lower, basic_test) {
+  EXPECT_EQ(str_to_lower("Hello World!"), "hello world!");
+}
+
 TEST(base64_encoding, basic_test) {
     EXPECT_EQ(base64_encode("a"), "YQ==");
     EXPECT_EQ(base64_encode("ab"), "YWI=");
