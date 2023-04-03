@@ -31,6 +31,16 @@ jobs:
               archiver: "7z a",
               generators: "Visual Studio 17 2022"
             }
+          - {
+              name: "MacOS Latest Clang",
+              os: macos-latest,
+              artifact: "macos_clang.7z",
+              build_type: "Release",
+              cc: "clang",
+              cxx: "clang++",
+              archiver: "7za a",
+              generators: "Ninja"
+            }
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies on Ubuntu
@@ -49,6 +59,16 @@ jobs:
           choco install ninja cmake python pip
           ninja --version
           cmake --version
+          python3 --version
+          pip3 --version
+      - name: Install dependencies on MacOS
+        if: startsWith(matrix.config.os, 'MacOS')
+        run: |
+          brew install p7zip cmake ninja python
+          ninja --version
+          cmake --version
+          python3 --version
+          pip3 --version
       - name: Configure
         run: |
           mkdir instdir
