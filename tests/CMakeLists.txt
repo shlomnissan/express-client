@@ -1,26 +1,44 @@
 cmake_minimum_required(VERSION 3.22)
 
-function(express_client_test test_name)
-    set(TEST_EXECUTABLE run_${test_name})
-    add_executable(${TEST_EXECUTABLE} ${test_name}.cc)
-    target_link_libraries(${TEST_EXECUTABLE} GTest::gtest GTest::gtest_main express_client_static)
-    add_test(${test_name} ${TEST_EXECUTABLE})
+find_package(GTest QUIET)
+if(NOT GTEST_FOUND)
+    message(STATUS "GoogleTest is not found. Consider installing it on your system.")
 
-    if (WIN32)
+    include(FetchContent)
+    FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG origin/main
+        GIT_SHALLOW true
+    )
+    set(BUILD_GMOCK OFF CACHE BOOL "")
+    FetchContent_GetProperties(googletest)
+
+    if(NOT googletest_POPULATED)
+        FetchContent_Populate(googletest)
+        add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+    endif()
+endif()
+
+file(GLOB TEST_SOURCES ${CMAKE_CURRENT_LIST_DIR}/*.cc)
+
+foreach(PATH IN LISTS TEST_SOURCES)
+    get_filename_component(FILE_NAME ${PATH} NAME)
+
+    string(REGEX REPLACE "\\.[^.]*$" "" NAME_NO_EXT ${FILE_NAME})
+
+    message(STATUS "Adding test ${FILE_NAME}")
+
+    set(TEST_TARGET run_${NAME_NO_EXT})
+    add_executable(${TEST_TARGET} ${FILE_NAME})
+    target_link_libraries(${TEST_TARGET} gtest_main express_client_static)
+    add_test(${NAME_NO_EXT} ${TEST_TARGET})
+
+    if(WIN32)
         add_custom_command(
-            TARGET ${TEST_EXECUTABLE} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:${TEST_EXECUTABLE}> $<TARGET_FILE_DIR:${TEST_EXECUTABLE}>
+            TARGET ${TEST_TARGET} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:${TEST_TARGET}> $<TARGET_FILE_DIR:${TEST_TARGET}>
             COMMAND_EXPAND_LISTS
         )
-    endif ()
-endfunction()
-
-express_client_test(data_test)
-express_client_test(client_test)
-express_client_test(endpoint_test)
-express_client_test(header_test)
-express_client_test(request_test)
-express_client_test(response_test)
-express_client_test(socket_test)
-express_client_test(url_test)
-express_client_test(transformers_test)
+    endif()
+endforeach()

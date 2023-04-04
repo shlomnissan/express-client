@@ -3,10 +3,6 @@ from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import time
-import logging    
-
-# Suppress warnings
-logging.getLogger('werkzeug').disabled = True
 
 app = Flask(__name__)
 

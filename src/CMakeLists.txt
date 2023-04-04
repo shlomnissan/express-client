@@ -10,11 +10,9 @@ set(SOURCE_FILES
     ${CLIENT_SOURCE_FILES}
 )
 
-message(STATUS, ${SOURCE_FILES})
 file(GLOB INCLUDE_FILES ${PROJECT_SOURCE_DIR}/include/*.h)
 
 add_library(express OBJECT ${SOURCE_FILES} ${INCLUDE_FILES})
-target_compile_features(express PRIVATE cxx_std_20)
 
 set(express_client_INCLUDE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
