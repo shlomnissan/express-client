@@ -45,19 +45,28 @@ namespace Express::Net {
     public:
         explicit Socket(Endpoint endpoint);
 
+        // implements move constructor and assignment
+        Socket(Socket&& rhs) noexcept;
+        auto operator=(Socket&& rhs) noexcept -> Socket&;
+
+        // deletes copy constructor and assignment
+        Socket(const Socket&) = delete;
+        auto operator=(const Socket&) -> Socket& = delete;
+
         auto connect() const -> void;
         auto send(std::string_view buffer, milliseconds timeout) const -> ssize_t;
         auto recv(uint8_t* buffer, milliseconds timeout) const -> ssize_t;
 
-        [[nodiscard]] SOCKET get() const { return fd_socket; };
+        [[nodiscard]] SOCKET get() const { return fd_socket_; };
 
         ~Socket();
 
     private:
-        SOCKET fd_socket = 0;
+        SOCKET fd_socket_ = INVALID_SOCKET;
         Endpoint endpoint_;
 
         auto wait(EventType event, milliseconds timeout) const -> void;
+        auto close_() -> void;
     };
 
     struct SocketError : public std::runtime_error {
