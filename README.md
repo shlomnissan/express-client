@@ -5,10 +5,23 @@ Asynchronous HTTP client for modern C++ development.
 
 ## Table of Contents
 
+  - [Features](#features)
   - [Platform Support](#platform-support)
   - [Express API](#express-api)
   - [Request Config](#request-config)
   - [Response Schema](#response)
+  - [Licence](#mit-licence)
+
+## Features
+
+- Written in modern memory-safe C++
+- Simple interface (loosely modeled after JavaScript Axios)
+- Uses the standard future API
+- No dependencies
+- Cross-platform support
+- Comprehensive tests
+- Basic HTTP authentication
+- HTTPS support
 
 ## Platform Support
 
@@ -20,7 +33,7 @@ Latest MSVC ✔ | Latest Clang ✔ | Latest GCC ✔ |
 
 ## Express API
 
-HTTP requests are made by passing a configuration object to `ExpressClient::request`. This method returns a non-blocking future
+HTTP requests are made by passing a configuration object to `ExpressClient::request`. This method returns a non-blocking `std::future`.
 
 ```cpp
 using namespace Express;
