@@ -5,9 +5,18 @@ Asynchronous HTTP client for modern C++ development.
 
 ## Table of Contents
 
+  - [Platform Support](#platform-support)
   - [Express API](#express-api)
   - [Request Config](#request-config)
   - [Response Schema](#response)
+
+## Platform Support
+
+Express Client is a cross-platform library that's actively tested on the following platforms and compilers:
+
+![Windows](https://raw.githubusercontent.com/EgoistDeveloper/operating-system-logos/master/src/48x48/WIN.png) | ![MacOS](https://raw.githubusercontent.com/EgoistDeveloper/operating-system-logos/master/src/48x48/MAC.png) | ![Ubuntu](https://raw.githubusercontent.com/EgoistDeveloper/operating-system-logos/master/src/48x48/UBT.png) |
+--- | --- | --- |
+Latest MSVC ✔ | Latest Clang ✔ | Latest GCC ✔ |
 
 ## Express API
 
