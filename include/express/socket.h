@@ -46,7 +46,7 @@ namespace Express::Net {
         explicit Socket(Endpoint endpoint);
 
         // implements move constructor and assignment
-        Socket(Socket&& rhs) noexcept;
+        Socket(Socket&& src) noexcept;
         auto operator=(Socket&& rhs) noexcept -> Socket&;
 
         // deletes copy constructor and assignment

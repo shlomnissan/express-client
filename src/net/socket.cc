@@ -19,19 +19,19 @@ namespace Express::Net {
         }
     }
 
-    Socket::Socket(Socket&& rhs) noexcept :
-      fd_socket_(rhs.fd_socket_),
-      endpoint_(std::move(rhs.endpoint_)) {
-        rhs.fd_socket_ = INVALID_SOCKET;
+    Socket::Socket(Socket&& src) noexcept :
+      fd_socket_{src.fd_socket_},
+      endpoint_{std::move(src.endpoint_)} {
+        src.fd_socket_ = INVALID_SOCKET;
     }
 
     auto Socket::operator=(Socket&& rhs) noexcept -> Socket& {
-        std::swap(fd_socket_, rhs.fd_socket_);
-        std::swap(endpoint_, rhs.endpoint_);
-
-        CLOSE(rhs.fd_socket_);
-        rhs.fd_socket_ = INVALID_SOCKET;
-
+        if (this != &rhs) {
+            std::swap(fd_socket_, rhs.fd_socket_);
+            std::swap(endpoint_, rhs.endpoint_);
+            CLOSE(rhs.fd_socket_);
+            rhs.fd_socket_ = INVALID_SOCKET;
+        }
         return *this;
     }
 

@@ -31,7 +31,7 @@ foreach(PATH IN LISTS TEST_SOURCES)
 
     set(TEST_TARGET run_${NAME_NO_EXT})
     add_executable(${TEST_TARGET} ${FILE_NAME})
-    target_link_libraries(${TEST_TARGET} gtest_main express_client_static)
+    target_link_libraries(${TEST_TARGET} gtest_main express_client)
     add_test(${NAME_NO_EXT} ${TEST_TARGET})
 
     if(WIN32)
