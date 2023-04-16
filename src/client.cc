@@ -21,6 +21,15 @@ namespace Express {
         #endif
 
         URL url {config.url};
+
+        #ifndef BUILD_SSL
+            if (url.scheme() == "https") {
+                throw ClientError {
+                    "You must build the library with BUILD_SSL=ON to use https."
+                };
+            }
+        #endif
+
         Request request {url, config};
         Endpoint endpoint {url.host(), url.port()};
         Socket socket {std::move(endpoint)};

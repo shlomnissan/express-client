@@ -22,4 +22,8 @@ namespace Express {
     private:
         static auto makeRequest(const RequestConfig& config) -> Response;
     };
+
+    struct ClientError : public std::logic_error {
+        using logic_error::logic_error;
+    };
 }

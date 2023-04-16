@@ -29,7 +29,6 @@ TEST(url, parses_simple_url) {
     EXPECT_EQ(url.query(), "");
 }
 
-#ifdef BUILD_SSL
 TEST(url, parses_url_with_https_scheme) {
     URL url("https://example.com");
 
@@ -40,7 +39,6 @@ TEST(url, parses_url_with_https_scheme) {
     EXPECT_EQ(url.path(), "");
     EXPECT_EQ(url.query(), "");
 }
-#endif
 
 TEST(url, parses_simple_url_with_path) {
     URL url("http://example.com/user");

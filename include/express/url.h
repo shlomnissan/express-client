@@ -10,6 +10,9 @@
 #include <express/user_information.h>
 
 namespace Express::Net {
+    static constexpr auto kDefaultPortHTTP = 80;
+    static constexpr auto kDefaultPortHTTPs = 443;
+
     class URL {
         public:
             explicit URL(std::string_view url);

@@ -23,15 +23,9 @@ namespace Express::Net {
             };
         }
 
-        #ifndef BUILD_SSL
-            if (scheme_ == "https") {
-                throw URLError {
-                    "You must build the library with BUILD_SSL=ON to use https."
-                };
-            }
-        #endif
-
-        port_ = (scheme_ == "http") ? "80" : "443";
+        port_ = (scheme_ == "http") ?
+            std::to_string(kDefaultPortHTTP) :
+            std::to_string(kDefaultPortHTTPs);
 
         auto authority_begin = cbegin(url) + scheme_.size() + 3;
         auto authority_end = std::find_if(authority_begin, cend(url), [](char c) {
