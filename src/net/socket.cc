@@ -4,6 +4,14 @@
 #include "express/endpoint.h"
 #include <express/socket.h>
 
+#ifdef BUILD_SSL
+    #include <iostream>
+    #include <openssl/crypto.h>
+    #include <openssl/x509.h>
+    #include <openssl/ssl.h>
+    #include <openssl/err.h>
+#endif
+
 namespace Express::Net {
     constexpr auto InterruptedBySystemSignal = EINTR; 
 
@@ -13,6 +21,8 @@ namespace Express::Net {
             endpoint_.socketType(),
             endpoint_.protocol()
         );
+
+        std::cout << OpenSSL_version(SSLEAY_VERSION) << '\n';
 
         if (fd_socket_ == INVALID_SOCKET) {
             throw SocketError {"Failed to initialize socket."};
