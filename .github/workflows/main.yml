@@ -73,9 +73,14 @@ jobs:
           python3 --version
           pip3 --version
       - name: Configure
+        shell: bash
         run: |
           mkdir instdir
-          cmake -S . -B . -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -G "${{ matrix.config.generators }}" -DCMAKE_INSTALL_PREFIX:PATH=instdir -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib
+          cmake -S . -B . -G "${{ matrix.config.generators }}" \
+            -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} \
+            -DCMAKE_INSTALL_PREFIX:PATH=instdir \
+            -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl \
+            -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib
       - name: Build
         shell: bash
         run: cmake --build . --config ${{ matrix.config.build_type }}
