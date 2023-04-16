@@ -22,7 +22,9 @@ namespace Express::Net {
             endpoint_.protocol()
         );
 
-        std::cout << OpenSSL_version(SSLEAY_VERSION) << '\n';
+        #ifdef BUILD_SSL
+            std::cout << OpenSSL_version(SSLEAY_VERSION) << '\n';
+        #endif
 
         if (fd_socket_ == INVALID_SOCKET) {
             throw SocketError {"Failed to initialize socket."};

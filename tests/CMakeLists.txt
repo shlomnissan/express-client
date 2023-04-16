@@ -34,6 +34,10 @@ foreach(PATH IN LISTS TEST_SOURCES)
     target_link_libraries(${TEST_TARGET} gtest_main express_client)
     add_test(${NAME_NO_EXT} ${TEST_TARGET})
 
+    if(BUILD_SSL)
+        target_compile_definitions(${TEST_TARGET} PUBLIC BUILD_SSL)
+    endif()
+
     if(WIN32)
         add_custom_command(
             TARGET ${TEST_TARGET} POST_BUILD

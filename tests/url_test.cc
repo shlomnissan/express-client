@@ -29,6 +29,19 @@ TEST(url, parses_simple_url) {
     EXPECT_EQ(url.query(), "");
 }
 
+#ifdef BUILD_SSL
+TEST(url, parses_url_with_https_scheme) {
+    URL url("https://example.com");
+
+    EXPECT_EQ(url.scheme(), "https");
+    EXPECT_EQ(url.authority(), "example.com");
+    EXPECT_EQ(url.host(), "example.com");
+    EXPECT_EQ(url.port(), "443");
+    EXPECT_EQ(url.path(), "");
+    EXPECT_EQ(url.query(), "");
+}
+#endif
+
 TEST(url, parses_simple_url_with_path) {
     URL url("http://example.com/user");
 
@@ -162,9 +175,8 @@ TEST(url, throws_if_the_url_is_empty) {
             URL url("");
         } catch (const URLError& e) {
             EXPECT_STREQ(
-                "Unsupported URL scheme. "
-                "The client currently supports only HTTP."
-                , e.what()
+                "Missing URL scheme. Use 'http://' or 'https://'.",
+                e.what()
             );
             throw;
         }
@@ -177,9 +189,8 @@ TEST(url, throws_if_theres_no_scheme) {
             URL url("example.com");
         } catch (const URLError& e) {
             EXPECT_STREQ(
-                "Unsupported URL scheme. "
-                "The client currently supports only HTTP."
-                , e.what()
+                "Missing URL scheme. Use 'http://' or 'https://'.",
+                e.what()
             );
             throw;
         }
@@ -192,9 +203,8 @@ TEST(url, throws_if_theres_an_invalid_scheme_delimiter) {
             URL url("http:/example.com");
         } catch (const URLError& e) {
             EXPECT_STREQ(
-                "Unsupported URL scheme. "
-                "The client currently supports only HTTP."
-                , e.what()
+                "Missing URL scheme. Use 'http://' or 'https://'.",
+                e.what()
             );
             throw;
         }
@@ -204,12 +214,11 @@ TEST(url, throws_if_theres_an_invalid_scheme_delimiter) {
 TEST(url, throws_if_url_scheme_is_unsupported) {
     EXPECT_THROW({
         try {
-            URL url("https://example.com");
+            URL url("ftp://example.com");
         } catch (const URLError& e) {
             EXPECT_STREQ(
-                "Unsupported URL scheme. "
-                "The client currently supports only HTTP."
-                , e.what()
+                "Unsupported URL scheme. Use 'http://' or 'https://'.",
+                e.what()
             );
             throw;
         }

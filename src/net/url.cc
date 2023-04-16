@@ -9,15 +9,29 @@ namespace Express::Net {
     }
 
     auto URL::parseURL(std::string_view url) -> void {
-        if (!url.starts_with("http://")) {
+        auto idx = url.find("://");
+        if (idx == std::string::npos) {
             throw URLError {
-                "Unsupported URL scheme. "
-                "The client currently supports only HTTP."
+                "Missing URL scheme. Use 'http://' or 'https://'."
             };
         }
 
-        scheme_ = "http";
-        port_ = "80";
+        scheme_ = url.substr(0, idx);
+        if (scheme_ != "http" && scheme_ != "https") {
+            throw URLError {
+                "Unsupported URL scheme. Use 'http://' or 'https://'."
+            };
+        }
+
+        #ifndef BUILD_SSL
+            if (scheme_ == "https") {
+                throw URLError {
+                    "You must build the library with BUILD_SSL=ON to use https."
+                };
+            }
+        #endif
+
+        port_ = (scheme_ == "http") ? "80" : "443";
 
         auto authority_begin = cbegin(url) + scheme_.size() + 3;
         auto authority_end = std::find_if(authority_begin, cend(url), [](char c) {
