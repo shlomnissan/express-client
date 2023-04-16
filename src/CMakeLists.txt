@@ -13,3 +13,12 @@ set(SOURCE_FILES
 file(GLOB INCLUDE_FILES ${PROJECT_SOURCE_DIR}/include/*.h)
 
 add_library(express_client OBJECT ${SOURCE_FILES} ${INCLUDE_FILES})
+
+if(BUILD_SSL)
+    find_package(OpenSSL REQUIRED)
+    target_compile_definitions(express_client PUBLIC BUILD_SSL)
+    target_link_libraries(express_client PRIVATE
+        OpenSSL::SSL
+        OpenSSL::Crypto
+    )
+endif()

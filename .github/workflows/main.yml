@@ -6,6 +6,9 @@ jobs:
   build:
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
+    env:
+      OPENSSL_ROOT_DIR: "/usr/local/opt/openssl@1.1/lib"
+      OPENSSL_INCLUDE_DIR: "/usr/local/opt/openssl@1.1/include"
     strategy:
       fail-fast: false
       matrix:
@@ -47,7 +50,7 @@ jobs:
         if: startsWith(matrix.config.os, 'Ubuntu')
         run: |
           sudo apt-get -yq update
-          sudo apt-get install -yq cmake ninja-build python3-pip
+          sudo apt-get install -yq cmake libssl-dev ninja-build python3-pip
           cmake --version
           ninja --version
           gcc --version
@@ -64,7 +67,7 @@ jobs:
       - name: Install dependencies on MacOS
         if: startsWith(matrix.config.os, 'MacOS')
         run: |
-          brew install p7zip cmake ninja python
+          brew install ninja
           ninja --version
           cmake --version
           python3 --version
@@ -72,7 +75,7 @@ jobs:
       - name: Configure
         run: |
           mkdir instdir
-          cmake -S . -B . -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -G "${{ matrix.config.generators }}" -DCMAKE_INSTALL_PREFIX:PATH=instdir
+          cmake -S . -B . -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -G "${{ matrix.config.generators }}" -DCMAKE_INSTALL_PREFIX:PATH=instdir -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib
       - name: Build
         shell: bash
         run: cmake --build . --config ${{ matrix.config.build_type }}
