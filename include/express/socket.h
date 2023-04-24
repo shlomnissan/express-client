@@ -55,6 +55,7 @@ namespace Express::Net {
 
         auto connect() const -> void;
         auto send(std::string_view buffer, milliseconds timeout) const -> ssize_t;
+        auto sendAll(std::string_view buffer, milliseconds timeout) const -> void;
         auto recv(uint8_t* buffer, milliseconds timeout) const -> ssize_t;
 
         [[nodiscard]] SOCKET get() const { return fd_socket_; };

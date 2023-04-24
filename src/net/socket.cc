@@ -60,6 +60,19 @@ namespace Express::Net {
         return ::send(fd_socket_, buffer.data(), static_cast<int>(buffer.size()), 0);
     }
 
+    auto Socket::sendAll(std::string_view buffer, milliseconds timeout) const -> void {
+        auto data_ptr = buffer.data();
+        ssize_t bytes_remaining = buffer.size();
+        while (bytes_remaining > 0) {
+            auto bytes_sent = this->send(data_ptr, timeout);
+            if (bytes_sent == -1) {
+                throw SocketError {"Failed to send data to the server."};
+            }
+            data_ptr += bytes_sent;
+            bytes_remaining -= bytes_sent;
+        }
+    }
+
     auto Socket::recv(uint8_t* buffer, milliseconds timeout) const -> ssize_t {
         wait(EventType::ToRead, timeout);
         return ::recv(fd_socket_, reinterpret_cast<char*>(buffer), BUFSIZ, 0);

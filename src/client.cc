@@ -35,7 +35,7 @@ namespace Express {
         Socket socket {std::move(endpoint)};
 
         socket.connect();
-        socket.send(request.str(), request.timeout());
+        socket.sendAll(request.str(), request.timeout());
 
         uint8_t temp_buffer[BUFSIZ];
         ResponseParser parser;
