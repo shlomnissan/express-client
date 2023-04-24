@@ -7,12 +7,7 @@
 #include <memory>
 #include <string_view>
 
-#if defined(_WIN32)
-    #include <ws2tcpip.h>
-#else
-    #include <netdb.h>
-    #include <sys/socket.h>
-#endif
+#include <express/socket_defs.h>
 
 namespace Express::Net {
     class Endpoint {

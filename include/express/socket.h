@@ -3,38 +3,10 @@
 
 #pragma once
 
-#include <express/endpoint.h>
-
 #include <chrono>
-#include <string_view>
-#include <stdexcept>
 
-#if defined(_WIN32)
-    #ifndef _WIN32_WINNT
-        #define _WIN32_WINNT 0x0600
-    #endif
-    #include <winsock2.h>
-    #include <BaseTsd.h>
-
-    using ssize_t = SSIZE_T;
-
-    #define SYS_EINTR WSAEINTR
-    #define CLOSE(s) closesocket(s)
-    #define ERRNO() (WSAGetLastError())
-#else
-    #include <cerrno>
-    #include <unistd.h>
-    #include <sys/socket.h>
-    #include <sys/select.h>
-    #include <sys/types.h>
-
-    using SOCKET = int;
-    constexpr auto INVALID_SOCKET = -1;
-
-    #define SYS_EINTR EINTR
-    #define CLOSE(s) close(s)
-    #define ERRNO() (errno)
-#endif
+#include <express/socket_defs.h>
+#include <express/endpoint.h>
 
 namespace Express::Net {
     using namespace std::chrono;

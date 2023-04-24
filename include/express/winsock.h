@@ -1,11 +1,8 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <winsock2.h>
-#include <windef.h>
 #include <system_error>
-
-#pragma comment(lib, "ws2_32.lib")
+#include <express/socket_defs.h>
 
 namespace Express::Net {
     class WinSock {
