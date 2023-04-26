@@ -57,7 +57,27 @@ namespace Express::Net {
 
     auto Socket::send(std::string_view buffer, const Timeout& timeout) const -> ssize_t {
         wait(EventType::ToWrite, timeout);
-        return ::send(fd_socket_, buffer.data(), static_cast<int>(buffer.size()), 0);
+        auto result = ::send(
+            fd_socket_,
+            buffer.data(),
+            static_cast<int>(buffer.size()),
+            0
+        );
+
+        while (result == -1 && ERRNO() == SYS_EINTR) {
+            result = ::send(
+                fd_socket_,
+                buffer.data(),
+                static_cast<int>(buffer.size()),
+                0
+            );
+        }
+
+        if (result == -1) {
+            throw SocketError {"Failed to send data to the server."};
+        }
+
+        return result;
     }
 
     auto Socket::sendAll(std::string_view buffer, const Timeout& timeout) const -> void {
@@ -65,9 +85,6 @@ namespace Express::Net {
         ssize_t bytes_remaining = buffer.size();
         while (bytes_remaining > 0) {
             auto bytes_sent = this->send(data_ptr, timeout);
-            if (bytes_sent == -1) {
-                throw SocketError {"Failed to send data to the server."};
-            }
             data_ptr += bytes_sent;
             bytes_remaining -= bytes_sent;
         }
@@ -75,7 +92,27 @@ namespace Express::Net {
 
     auto Socket::recv(uint8_t* buffer, const Timeout& timeout) const -> ssize_t {
         wait(EventType::ToRead, timeout);
-        return ::recv(fd_socket_, reinterpret_cast<char*>(buffer), BUFSIZ, 0);
+        auto result = ::recv(
+            fd_socket_,
+            reinterpret_cast<char*>(buffer),
+            BUFSIZ,
+            0
+        );
+
+        while (result == -1 && ERRNO() == SYS_EINTR) {
+            result = ::recv(
+                fd_socket_,
+                reinterpret_cast<char*>(buffer),
+                BUFSIZ,
+                0
+            );
+        }
+
+        if (result == -1) {
+            throw SocketError {"Failed to receive data from the server."};
+        }
+
+        return result;
     }
 
     auto Socket::wait(EventType event, const Timeout& timeout) const -> void {
