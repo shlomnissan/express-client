@@ -55,12 +55,12 @@ namespace Express::Net {
         }
     }
 
-    auto Socket::send(std::string_view buffer, milliseconds timeout) const -> ssize_t {
+    auto Socket::send(std::string_view buffer, const Timeout& timeout) const -> ssize_t {
         wait(EventType::ToWrite, timeout);
         return ::send(fd_socket_, buffer.data(), static_cast<int>(buffer.size()), 0);
     }
 
-    auto Socket::sendAll(std::string_view buffer, milliseconds timeout) const -> void {
+    auto Socket::sendAll(std::string_view buffer, const Timeout& timeout) const -> void {
         auto data_ptr = buffer.data();
         ssize_t bytes_remaining = buffer.size();
         while (bytes_remaining > 0) {
@@ -73,25 +73,25 @@ namespace Express::Net {
         }
     }
 
-    auto Socket::recv(uint8_t* buffer, milliseconds timeout) const -> ssize_t {
+    auto Socket::recv(uint8_t* buffer, const Timeout& timeout) const -> ssize_t {
         wait(EventType::ToRead, timeout);
         return ::recv(fd_socket_, reinterpret_cast<char*>(buffer), BUFSIZ, 0);
     }
 
-    auto Socket::wait(EventType event, milliseconds timeout) const -> void {
+    auto Socket::wait(EventType event, const Timeout& timeout) const -> void {
         fd_set fdset;
         FD_ZERO(&fdset);
         FD_SET(fd_socket_, &fdset);
 
         #if defined(_WIN32)
             TIMEVAL select_timeout {
-                static_cast<LONG>(timeout.count() / 1000),
-                static_cast<LONG>((timeout.count() % 1000) * 1000)
+                static_cast<LONG>(timeout.get() / 1000),
+                static_cast<LONG>((timeout.get() % 1000) * 1000)
             }; 
         #else
             timeval select_timeout {
-                .tv_sec = static_cast<time_t>(timeout.count() / 1000),
-                .tv_usec = static_cast<suseconds_t>((timeout.count() % 1000) * 1000),
+                .tv_sec = static_cast<time_t>(timeout.get() / 1000),
+                .tv_usec = static_cast<suseconds_t>((timeout.get() % 1000) * 1000),
             };
         #endif
 
@@ -100,7 +100,7 @@ namespace Express::Net {
             event == EventType::ToRead ? &fdset : nullptr,
             event == EventType::ToWrite ? &fdset : nullptr,
             nullptr,
-            timeout.count() > 0 ? &select_timeout : nullptr
+            timeout.hasTimeout() ? &select_timeout : nullptr
         );
 
         while (count == -1 && errno == InterruptedBySystemSignal) {
@@ -109,7 +109,7 @@ namespace Express::Net {
                 event == EventType::ToRead ? &fdset : nullptr,
                 event == EventType::ToWrite ? &fdset : nullptr,
                 nullptr,
-                timeout.count() > 0 ? &select_timeout : nullptr
+                timeout.hasTimeout() ? &select_timeout : nullptr
             );
         }
 

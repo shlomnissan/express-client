@@ -5,6 +5,7 @@
 
 #include <express/endpoint.h>
 #include <express/socket.h>
+#include <express/timeout.h>
 
 #if defined(_WIN32)
     #include <express/winsock.h>
@@ -33,14 +34,15 @@ namespace Express {
         Request request {url, config};
         Endpoint endpoint {url.host(), url.port()};
         Socket socket {std::move(endpoint)};
+        Timeout timeout {request.timeout()};
 
         socket.connect();
-        socket.sendAll(request.str(), request.timeout());
+        socket.sendAll(request.str(), timeout);
 
         uint8_t temp_buffer[BUFSIZ];
         ResponseParser parser;
         while (true) {
-            auto size = socket.recv(temp_buffer, request.timeout());
+            auto size = socket.recv(temp_buffer, timeout);
             if (size == 0 || parser.doneReadingData()) {
                 break; // disconnected
             }

@@ -3,14 +3,11 @@
 
 #pragma once
 
-#include <chrono>
-
 #include <express/socket_defs.h>
 #include <express/endpoint.h>
+#include <express/timeout.h>
 
 namespace Express::Net {
-    using namespace std::chrono;
-
     enum class EventType {ToRead, ToWrite};
 
     class Socket {
@@ -26,9 +23,9 @@ namespace Express::Net {
         auto operator=(const Socket&) -> Socket& = delete;
 
         auto connect() const -> void;
-        auto send(std::string_view buffer, milliseconds timeout) const -> ssize_t;
-        auto sendAll(std::string_view buffer, milliseconds timeout) const -> void;
-        auto recv(uint8_t* buffer, milliseconds timeout) const -> ssize_t;
+        auto send(std::string_view buffer, const Timeout& timeout) const -> ssize_t;
+        auto sendAll(std::string_view buffer, const Timeout& timeout) const -> void;
+        auto recv(uint8_t* buffer, const Timeout& timeout) const -> ssize_t;
 
         [[nodiscard]] SOCKET get() const { return fd_socket_; };
 
@@ -38,7 +35,7 @@ namespace Express::Net {
         SOCKET fd_socket_ = INVALID_SOCKET;
         Endpoint endpoint_;
 
-        auto wait(EventType event, milliseconds timeout) const -> void;
+        auto wait(EventType event, const Timeout& timeout) const -> void;
         auto close_() -> void;
     };
 
