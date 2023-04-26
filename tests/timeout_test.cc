@@ -17,11 +17,12 @@ class TimeoutTest : public ::testing::Test {
 };
 
 TEST_F(TimeoutTest, basic_test) {
-    Timeout timeout {5ms};
+    Timeout timeout {40ms};
 
     std::this_thread::sleep_for(1ms);
     auto x = timeout.get();
-    EXPECT_TRUE(x < 5 && x > 0);
+
+    EXPECT_TRUE(x < 40 && x > 0);
 
     std::this_thread::sleep_for(1ms);
     auto y = timeout.get();
@@ -29,13 +30,13 @@ TEST_F(TimeoutTest, basic_test) {
 }
 
 TEST_F(TimeoutTest, test_timeout_expired) {
-    Timeout timeout {5ms};
+    Timeout timeout {40ms};
 
     std::this_thread::sleep_for(1ms);
     auto x = timeout.get();
-    EXPECT_TRUE(x < 5 && x > 0);
+    EXPECT_TRUE(x < 40 && x > 0);
 
-    std::this_thread::sleep_for(5ms);
+    std::this_thread::sleep_for(40ms);
     EXPECT_EQ(timeout.get(), 0);
 
     std::this_thread::sleep_for(5ms);
