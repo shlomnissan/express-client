@@ -8,20 +8,26 @@ Promise based HTTP client for modern C++ development.
   - [Features](#features)
   - [Platform Support](#platform-support)
   - [Express API](#express-api)
+  - [HTTPS and Certificate Verification](#https-and-certificate-verification)
   - [Request Config](#request-config)
   - [Response Schema](#response)
   - [Licence](#mit-licence)
 
 ## Features
 
-- Written in modern memory-safe C++
+- Written in modern C++
 - Simple interface (loosely modeled after JavaScript Axios)
-- Uses the standard future API
-- No dependencies
-- Cross-platform support
-- Comprehensive tests
-- Basic HTTP authentication
 - HTTPS support
+- Uses std::future for async requests
+- Single optional dependency (OpenSSL)
+- Cross-platform (Linux, Windows, and MacOS)
+- Basic HTTP authentication
+- Comprehensive tests
+
+**Upcoming features**
+- File upload/download with progress tracking
+- Connection pooling
+
 
 ## Platform Support
 
@@ -62,6 +68,14 @@ auto result = ExpressClient::request({
 
 auto response = result.get();
 ```
+
+## HTTPS and certificate verification
+
+Every operating system provides a list of trusted Certificate Authorities (CAs) that can be used to verify server certificates. However, there is no general way to import these lists.
+
+Mozilla maintains its own trusted CA store, which is frequently used by HTTP clients. [curl](https://curl.se/) has developed tools to extract these certificates from Firefox and convert them to a file containing the CAs' digital signatures suitable for server certificate verification. This file can be downloaded directly from their servers at https://curl.se/docs/caextract.html.
+
+The **express-client** library executable requires a trusted CAs PEM file named `ca-bundle.crt` to be placed in the same directory. This project includes a CMake option called `FETCH_MOZ_TRUSTED_CA` (enabled by default) that downloads the Mozilla CA store into the build's binary directory. If you prefer to use a different store, turn off this option and place your own `ca-bundle.crt` file alongside the **express-client** library executable.
 
 ## Request Config
 
@@ -167,7 +181,6 @@ if (response.headers.has("cache-control")) {
 }
 
 ```
-
 
 ## MIT Licence
 ```
