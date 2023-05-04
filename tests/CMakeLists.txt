@@ -37,12 +37,4 @@ foreach(PATH IN LISTS TEST_SOURCES)
     if(BUILD_SSL)
         target_compile_definitions(${TEST_TARGET} PUBLIC BUILD_SSL)
     endif()
-
-    if(WIN32)
-        add_custom_command(
-            TARGET ${TEST_TARGET} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:${TEST_TARGET}> $<TARGET_FILE_DIR:${TEST_TARGET}>
-            COMMAND_EXPAND_LISTS
-        )
-    endif()
 endforeach()
