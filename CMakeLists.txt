@@ -13,7 +13,6 @@ else()
 endif()
 
 option(BUILD_TESTS "build tests" ON)
-option(BUILD_SHARED_LIBS "build shared library" ON)
 option(BUILD_EXAMPLES "build examples" ON)
 option(BUILD_SSL "build with ssl support" ON)
 option(FETCH_MOZ_TRUSTED_CA "fetch mozilla's trusted certificate authorities" ON)
