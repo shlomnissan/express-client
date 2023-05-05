@@ -19,22 +19,6 @@ namespace Express::Net {
         }
     }
 
-    Socket::Socket(Socket&& src) noexcept :
-      fd_socket_{src.fd_socket_},
-      endpoint_{std::move(src.endpoint_)} {
-        src.fd_socket_ = INVALID_SOCKET;
-    }
-
-    auto Socket::operator=(Socket&& rhs) noexcept -> Socket& {
-        if (this != &rhs) {
-            std::swap(fd_socket_, rhs.fd_socket_);
-            std::swap(endpoint_, rhs.endpoint_);
-            CLOSE(rhs.fd_socket_);
-            rhs.fd_socket_ = INVALID_SOCKET;
-        }
-        return *this;
-    }
-
     auto Socket::connect() const -> void {
         auto result = ::connect(
             fd_socket_,
@@ -154,14 +138,10 @@ namespace Express::Net {
         if (count == 0) throw SocketError {"Request timed out."};
     }
 
-    auto Socket::close_() -> void {
+    Socket::~Socket() {
         if (fd_socket_ != INVALID_SOCKET) {
             CLOSE(fd_socket_);
             fd_socket_ = INVALID_SOCKET;
         }
-    }
-
-    Socket::~Socket() {
-        close_();
     }
 }

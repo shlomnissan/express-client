@@ -14,7 +14,6 @@
 using namespace Express::Net;
 
 class EndpointTest : public ::testing::Test {
-protected:
 #if defined(_WIN32)
     WinSock winsock;
 #endif
