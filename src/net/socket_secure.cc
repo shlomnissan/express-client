@@ -50,7 +50,7 @@ namespace Express::Net {
 
         // Create a new SSL object and bind it to the socket
         ssl_.reset(SSL_new(ctx_.get()));
-        SSL_set_fd(ssl_.get(), fd_socket_);
+        SSL_set_fd(ssl_.get(), static_cast<int>(fd_socket_));
 
         // Enable SNI
         if (!SSL_set_tlsext_host_name(ssl_.get(), host.data())) {
