@@ -20,7 +20,7 @@ namespace Express::Net {
         Socket(const Socket&) = delete;
         auto operator=(const Socket&) -> Socket& = delete;
 
-        virtual auto connect() const -> void;
+        virtual auto connect(std::string_view) -> void;
         virtual auto send(std::string_view buffer, const Timeout& timeout) const -> ssize_t;
         virtual auto recv(uint8_t* buffer, const Timeout& timeout) const -> ssize_t;
 
@@ -30,11 +30,12 @@ namespace Express::Net {
 
         virtual ~Socket();
 
-    private:
+    protected:
         SOCKET fd_socket_ = INVALID_SOCKET;
-        Endpoint endpoint_;
-
         auto wait(EventType event, const Timeout& timeout) const -> void;
+
+    private:
+        Endpoint endpoint_;
     };
 
     struct SocketError : public std::runtime_error {

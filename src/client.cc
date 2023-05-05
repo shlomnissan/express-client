@@ -1,10 +1,11 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <express/client.h>
+#include <memory>
 
+#include <express/client.h>
 #include <express/endpoint.h>
-#include <express/socket.h>
+#include <express/socket_secure.h>
 #include <express/timeout.h>
 
 #if defined(_WIN32)
@@ -22,7 +23,6 @@ namespace Express {
         #endif
 
         URL url {config.url};
-
         #ifndef BUILD_SSL
             if (url.scheme() == "https") {
                 throw ClientError {
@@ -31,18 +31,18 @@ namespace Express {
             }
         #endif
 
+        auto socket = getSocket(url); 
+
         Request request {url, config};
-        Endpoint endpoint {url.host(), url.port()};
-        Socket socket {std::move(endpoint)};
         Timeout timeout {request.timeout()};
 
-        socket.connect();
-        socket.sendAll(request.str(), timeout);
+        socket->connect(url.host());
+        socket->sendAll(request.str(), timeout);
 
         uint8_t temp_buffer[BUFSIZ];
         ResponseParser parser;
         while (true) {
-            auto size = socket.recv(temp_buffer, timeout);
+            auto size = socket->recv(temp_buffer, timeout);
             if (size == 0 || parser.doneReadingData()) {
                 break; // disconnected
             }
@@ -50,5 +50,13 @@ namespace Express {
         }
 
         return parser.response();
+    }
+
+    auto ExpressClient::getSocket(const URL& url) -> std::unique_ptr<Socket> {
+        Endpoint endpoint {url.host(), url.port()};
+        if (url.scheme() == "https") {
+            return std::make_unique<SocketSecure>(std::move(endpoint));
+        }
+        return std::make_unique<Socket>(std::move(endpoint));
     }
 }

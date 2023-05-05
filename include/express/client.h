@@ -4,12 +4,13 @@
 #pragma once
 
 #include <future>
-#include <string_view>
 #include <stdexcept>
+#include <memory>
 
+#include <express/socket.h>
 #include <express/request.h>
-#include <express/url.h>
 #include <express/response.h>
+#include <express/url.h>
 
 namespace Express {
     using namespace Net;
@@ -21,6 +22,7 @@ namespace Express {
 
     private:
         static auto makeRequest(const RequestConfig& config) -> Response;
+        static auto getSocket(const URL& url) -> std::unique_ptr<Socket>; 
     };
 
     struct ClientError : public std::logic_error {

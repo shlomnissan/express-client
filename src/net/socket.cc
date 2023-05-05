@@ -19,7 +19,7 @@ namespace Express::Net {
         }
     }
 
-    auto Socket::connect() const -> void {
+    auto Socket::connect(std::string_view) -> void {
         auto result = ::connect(
             fd_socket_,
             endpoint_.address(),
