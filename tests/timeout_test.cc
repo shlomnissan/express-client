@@ -11,7 +11,6 @@ using namespace Express;
 using namespace std::chrono_literals;
 
 class TimeoutTest : public ::testing::Test {
-//protected:
     // void SetUp() override { }
     // void void TearDown() override { }
 };

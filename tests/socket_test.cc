@@ -24,7 +24,11 @@ TEST_F(SocketTest, basic_test) {
     EXPECT_TRUE(socket.get() > 0);
 }
 
-// create stubs for C library functions
-// TODO: failed to connect
+// TODO: provides complete example
+
 // TODO: failed to initialize
+// TODO: failed to connect
+// TODO: failed to send
+// TODO: failed to receive
+// TODO: failed to select
 // TODO: timeout
