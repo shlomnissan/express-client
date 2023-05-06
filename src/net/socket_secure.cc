@@ -45,22 +45,22 @@ namespace Express::Net {
         }
     }
 
-    void SocketSecure::connect(std::string_view host) {
-        Socket::connect(host);
+    void SocketSecure::connect() {
+        Socket::connect();
 
         // Create a new SSL object and bind it to the socket
         ssl_.reset(SSL_new(ctx_.get()));
         SSL_set_fd(ssl_.get(), static_cast<int>(fd_socket_));
 
         // Enable SNI
-        if (!SSL_set_tlsext_host_name(ssl_.get(), host.data())) {
+        if (!SSL_set_tlsext_host_name(ssl_.get(), endpoint_.host().c_str())) {
             throw SocketSecureError {
                 "Servername Indication request failed"
             };
         }
 
         // Enable hostname verification
-        if (!X509_VERIFY_PARAM_set1_host(SSL_get0_param(ssl_.get()), host.data(), 0)) {
+        if (!X509_VERIFY_PARAM_set1_host(SSL_get0_param(ssl_.get()), endpoint_.host().c_str(), 0)) {
             throw SocketSecureError {
                 "Failed to enable hostname verification"
             };

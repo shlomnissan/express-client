@@ -5,27 +5,29 @@
 
 #include <stdexcept>
 #include <memory>
-#include <string_view>
+#include <string>
 
 #include <express/socket_defs.h>
 
 namespace Express::Net {
+    struct addrinfo_deleter {
+        void operator()(addrinfo* address) const { freeaddrinfo(address); }
+    };
+
     class Endpoint {
     public:
-        Endpoint(std::string_view host, std::string_view port);
+        Endpoint(const std::string& host, const std::string& port);
 
         [[nodiscard]] auto family() const { return address_->ai_family; }
         [[nodiscard]] auto socketType() const { return address_->ai_socktype; }
         [[nodiscard]] auto protocol() const { return address_->ai_protocol; }
         [[nodiscard]] auto address() const { return address_->ai_addr; }
         [[nodiscard]] auto addressLength() const { return address_->ai_addrlen; }
+        [[nodiscard]] auto host() const { return host_; }
 
     private:
-        struct addrinfo_deleter {
-            void operator()(addrinfo* address) const {
-                freeaddrinfo(address);
-            }
-        };
+        std::string host_;
+        std::string port_;
         std::unique_ptr<addrinfo, addrinfo_deleter> address_ {nullptr};
     };
 

@@ -28,7 +28,7 @@ namespace Express::Net {
     public:
         explicit SocketSecure(Endpoint endpoint);
 
-        void connect(std::string_view host) override;
+        void connect() override;
         ssize_t send(std::string_view buffer, const Timeout& timeout) const override;
         ssize_t recv(uint8_t* buffer, const Timeout& timeout) const override;
 

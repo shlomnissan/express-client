@@ -15,8 +15,6 @@ file(GLOB INCLUDE_FILES ${PROJECT_SOURCE_DIR}/include/*.h)
 add_library(express_client ${SOURCE_FILES} ${INCLUDE_FILES})
 
 if(BUILD_SSL)
-    set(CA_BUNDLE_FILENAME ca-bundle.crt)
-
     # Downloads Mozilla's Trusted CAs for HTTPS certificate verification
     if (FETCH_MOZ_TRUSTED_CA)
         file(

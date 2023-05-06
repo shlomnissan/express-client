@@ -31,10 +31,23 @@ foreach(PATH IN LISTS TEST_SOURCES)
 
     set(TEST_TARGET run_${NAME_NO_EXT})
     add_executable(${TEST_TARGET} ${FILE_NAME})
-    target_link_libraries(${TEST_TARGET} gtest_main express_client)
+    target_link_libraries(${TEST_TARGET} PRIVATE gtest_main express_client)
     add_test(${NAME_NO_EXT} ${TEST_TARGET})
 
     if(BUILD_SSL)
+        find_package(OpenSSL REQUIRED)
         target_compile_definitions(${TEST_TARGET} PUBLIC BUILD_SSL)
+        target_link_libraries(${TEST_TARGET} PRIVATE OpenSSL::SSL)
+
+        # Copy ca-bundle.crt from the project directory into the target's
+        # binary directory if it exists.
+        if(EXISTS "${PROJECT_SOURCE_DIR}/${CA_BUNDLE_FILENAME}")
+            add_custom_command(
+                TARGET ${TEST_TARGET} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy
+                ${PROJECT_SOURCE_DIR}/${CA_BUNDLE_FILENAME}
+                $<TARGET_FILE_DIR:${TEST_TARGET}>
+            )
+        endif()
     endif()
 endforeach()

@@ -36,7 +36,7 @@ namespace Express {
         Request request {url, config};
         Timeout timeout {request.timeout()};
 
-        socket->connect(url.host());
+        socket->connect();
         socket->sendAll(request.str(), timeout);
 
         uint8_t temp_buffer[BUFSIZ];

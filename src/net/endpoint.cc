@@ -6,13 +6,14 @@
 #include <cstring>
 
 namespace Express::Net {
-    Endpoint::Endpoint(std::string_view host, std::string_view port) {
+    Endpoint::Endpoint(const std::string& host, const std::string& port)
+      : host_(host), port_(port) {
         addrinfo hints;
         memset(&hints, 0, sizeof(hints));
         hints.ai_socktype = SOCK_STREAM;
 
         addrinfo *address_info;
-        if (getaddrinfo(host.data(), port.data(), &hints, &address_info)) {
+        if (getaddrinfo(host_.c_str(), port_.c_str(), &hints, &address_info)) {
             throw AddressError {"Failed to initialize an endpoint."};
         }
 
