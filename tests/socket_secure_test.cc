@@ -23,3 +23,19 @@ TEST_F(SocketSecureTest, basic_test) {
     socket_sec.connect();
     EXPECT_TRUE(socket_sec.get() > 0);
 }
+
+TEST_F(SocketSecureTest, throws_error_bad_ssl_certificate) {
+    SocketSecure socket_sec {{"expired.badssl.com", "443"}};
+
+    EXPECT_THROW({
+        try {
+            socket_sec.connect();
+        } catch (const SocketSecureError& e) {
+            EXPECT_STREQ(
+                "Failed to verify SSL certificate.",
+                e.what()
+            );
+            throw e;
+        }
+    }, SocketSecureError);
+}
