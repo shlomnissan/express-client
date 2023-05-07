@@ -6,7 +6,7 @@
 #include <cstring>
 
 namespace Express::Net {
-    Endpoint::Endpoint(const std::string& host, const std::string& port)
+    Endpoint::Endpoint(std::string_view host, std::string_view port)
       : host_(host), port_(port) {
         addrinfo hints;
         memset(&hints, 0, sizeof(hints));

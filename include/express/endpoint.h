@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <memory>
 #include <string>
+#include <string_view>
 
 #include <express/socket_defs.h>
 
@@ -16,7 +17,7 @@ namespace Express::Net {
 
     class Endpoint {
     public:
-        Endpoint(const std::string& host, const std::string& port);
+        Endpoint(std::string_view host, std::string_view port);
 
         [[nodiscard]] auto family() const { return address_->ai_family; }
         [[nodiscard]] auto socketType() const { return address_->ai_socktype; }
