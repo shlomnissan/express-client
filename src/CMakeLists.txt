@@ -10,9 +10,8 @@ set(SOURCE_FILES
     ${CLIENT_SOURCE_FILES}
 )
 
-file(GLOB INCLUDE_FILES ${PROJECT_SOURCE_DIR}/include/*.h)
-
-add_library(express_client ${SOURCE_FILES} ${INCLUDE_FILES})
+add_library(express_client ${SOURCE_FILES})
+target_include_directories(express_client PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
 if(BUILD_SSL)
     # Downloads Mozilla's Trusted CAs for HTTPS certificate verification

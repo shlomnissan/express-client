@@ -21,7 +21,6 @@ if (BUILD_SSL)
     set(CA_BUNDLE_FILENAME ca-bundle.crt)
 endif()
 
-include_directories(include)
 add_subdirectory(src)
 
 if (BUILD_TESTS)
