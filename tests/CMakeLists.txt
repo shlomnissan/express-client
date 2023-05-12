@@ -44,7 +44,7 @@ foreach(PATH IN LISTS TEST_SOURCES)
         if(EXISTS "${PROJECT_SOURCE_DIR}/${CA_BUNDLE_FILENAME}")
             add_custom_command(
                 TARGET ${TEST_TARGET} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different 
                 ${PROJECT_SOURCE_DIR}/${CA_BUNDLE_FILENAME}
                 $<TARGET_FILE_DIR:${TEST_TARGET}>
             )
