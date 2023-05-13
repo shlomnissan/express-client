@@ -11,33 +11,20 @@ set(SOURCE_FILES
 )
 
 add_library(express_client ${SOURCE_FILES})
-target_include_directories(express_client PUBLIC ${PROJECT_SOURCE_DIR}/include)
+
+target_include_directories(express_client PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
+)
+
+target_compile_options(express_client PRIVATE
+    $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic -fPIC>
+    $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+)
 
 if(BUILD_SSL)
-    # Downloads Mozilla's Trusted CAs for HTTPS certificate verification
-    if (FETCH_MOZ_TRUSTED_CA)
-        file(
-            DOWNLOAD
-            https://curl.se/ca/cacert.pem
-            ${PROJECT_SOURCE_DIR}/${CA_BUNDLE_FILENAME}
-            TLS_VERIFY TRUE
-        )
-    endif()
-
-    # Copy ca-bundle.crt from the project directory into the target's
-    # binary directory if it exists.
-    if(EXISTS "${PROJECT_SOURCE_DIR}/${CA_BUNDLE_FILENAME}")
-        add_custom_command(
-            TARGET express_client POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            ${PROJECT_SOURCE_DIR}/${CA_BUNDLE_FILENAME}
-            $<TARGET_FILE_DIR:express_client>
-        )
-    endif()
-
     find_package(OpenSSL REQUIRED)
     target_compile_definitions(express_client PUBLIC BUILD_SSL)
-    target_link_libraries(express_client PRIVATE
+    target_link_libraries(express_client PUBLIC 
         OpenSSL::SSL
         OpenSSL::Crypto
     )

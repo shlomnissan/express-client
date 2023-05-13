@@ -22,6 +22,17 @@ endif()
 
 file(GLOB TEST_SOURCES ${CMAKE_CURRENT_LIST_DIR}/*.cc)
 
+# Downloads Mozilla's Trusted CAs for HTTPS certificate verification
+if (BUILD_SSL AND FETCH_MOZ_TRUSTED_CA)
+    set(CA_BUNDLE_FILENAME ca-bundle.crt)
+    file(
+        DOWNLOAD
+        https://curl.se/ca/cacert.pem
+        ${PROJECT_SOURCE_DIR}/${CA_BUNDLE_FILENAME}
+        TLS_VERIFY TRUE
+    )
+endif()
+
 foreach(PATH IN LISTS TEST_SOURCES)
     get_filename_component(FILE_NAME ${PATH} NAME)
 
@@ -34,17 +45,13 @@ foreach(PATH IN LISTS TEST_SOURCES)
     target_link_libraries(${TEST_TARGET} PRIVATE gtest_main express_client)
     add_test(${NAME_NO_EXT} ${TEST_TARGET})
 
-    if(BUILD_SSL)
-        find_package(OpenSSL REQUIRED)
-        target_compile_definitions(${TEST_TARGET} PUBLIC BUILD_SSL)
-        target_link_libraries(${TEST_TARGET} PRIVATE OpenSSL::SSL)
-
+    if(BUILD_SSL AND FETCH_MOZ_TRUSTED_CA)
         # Copy ca-bundle.crt from the project directory into the target's
         # binary directory if it exists.
         if(EXISTS "${PROJECT_SOURCE_DIR}/${CA_BUNDLE_FILENAME}")
             add_custom_command(
                 TARGET ${TEST_TARGET} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
                 ${PROJECT_SOURCE_DIR}/${CA_BUNDLE_FILENAME}
                 $<TARGET_FILE_DIR:${TEST_TARGET}>
             )
