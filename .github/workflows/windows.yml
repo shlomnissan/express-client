@@ -18,7 +18,7 @@ jobs:
         shell: bash
         run: |
           mkdir build
-          cmake -B ./build \
+          cmake -B . \
             -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
             -G "Visual Studio 17 2022"
 
@@ -32,5 +32,4 @@ jobs:
           pip3 install -r tests/mock-server/requirements.txt
           nohup python3 tests/mock-server/server.py &
           sleep 1
-          cd build
           ctest -V
