@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.22)
-
 function(express_client_example example_name)
     set(EXAMPLE_TARGET run_${example_name})
     add_executable(${EXAMPLE_TARGET} ${example_name}.cc)

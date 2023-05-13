@@ -1,9 +1,5 @@
-cmake_minimum_required(VERSION 3.22)
-
 find_package(GTest QUIET)
 if(NOT GTEST_FOUND)
-    message(STATUS "GoogleTest is not found. Consider installing it on your system.")
-
     include(FetchContent)
     FetchContent_Declare(
         googletest
@@ -13,32 +9,27 @@ if(NOT GTEST_FOUND)
     )
     set(BUILD_GMOCK OFF CACHE BOOL "")
     FetchContent_GetProperties(googletest)
-
     if(NOT googletest_POPULATED)
         FetchContent_Populate(googletest)
         add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
     endif()
 endif()
 
-file(GLOB TEST_SOURCES ${CMAKE_CURRENT_LIST_DIR}/*.cc)
-
 if (BUILD_SSL AND FETCH_MOZ_TRUSTED_CA)
-    # Downloads Mozilla's Trusted CAs for HTTPS certificate verification
-    set(CA_BUNDLE_FILENAME ca-bundle.crt)
+    # Downloads Mozilla's Trusted CAs for certificate verification
     file(
         DOWNLOAD
         https://curl.se/ca/cacert.pem
-        ${CMAKE_CURRENT_BINARY_DIR}/${CA_BUNDLE_FILENAME}
+        ${CMAKE_CURRENT_BINARY_DIR}/ca-bundle.crt
         TLS_VERIFY TRUE
     )
 endif()
 
+file(GLOB TEST_SOURCES ${CMAKE_CURRENT_LIST_DIR}/*.cc)
 foreach(PATH IN LISTS TEST_SOURCES)
     get_filename_component(FILE_NAME ${PATH} NAME)
-
     string(REGEX REPLACE "\\.[^.]*$" "" NAME_NO_EXT ${FILE_NAME})
-
-    message(STATUS "Adding test ${FILE_NAME}")
+    message(STATUS "🧪 Adding test ${FILE_NAME}")
 
     set(TEST_TARGET run_${NAME_NO_EXT})
     
