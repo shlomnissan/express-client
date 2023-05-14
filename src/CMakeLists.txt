@@ -17,7 +17,7 @@ target_include_directories(${TARGET} PUBLIC
 )
 
 target_compile_options(${TARGET} PRIVATE
-    $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic -fPIC>
+    $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic -Werror -fPIC>
     $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
 )
 
