@@ -94,8 +94,6 @@ namespace Express::Net {
         auto result = SSL_write(
             ssl_.get(),
             buffer.data(),
-            // static_cast<int> requires to silence a warning about
-            // implict conversion from SOCKET to int on window
             static_cast<int>(buffer.size())
         );
         if (result < 0) {

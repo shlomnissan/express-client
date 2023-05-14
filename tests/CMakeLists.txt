@@ -35,5 +35,6 @@ foreach(PATH IN LISTS TEST_SOURCES)
     
     add_executable(${TEST_TARGET} ${FILE_NAME})
     target_link_libraries(${TEST_TARGET} PRIVATE gtest_main express_client)
+    target_include_directories(${TEST_TARGET} PRIVATE helpers)
     add_test(${NAME_NO_EXT} ${TEST_TARGET})
 endforeach()
