@@ -17,9 +17,21 @@ namespace Express::Transformers {
         return output;
     }
 
+    auto trim_leading_whitespaces_in_place(std::string& str) noexcept -> void {
+        size_t i = 0;
+        while (i < str.size() && is_whitespace(str[i])) ++i;
+        if (i != 0) str.erase(0, i);
+    }
+
+    auto trim_trailing_whitespaces_in_place(std::string& str) noexcept -> void {
+        size_t i = size(str) - 1;
+        while (i != 0 && is_whitespace(str[i])) --i;
+        if (i != size(str) - 1) str.erase(i + 1);
+    }
+
     auto trim_leading_whitespaces(std::string_view str) noexcept -> std::string {
         std::string output {str};
-        trim_leading_whitespaces(output);
+        trim_leading_whitespaces_in_place(output);
         return output;
     }
 
@@ -50,17 +62,5 @@ namespace Express::Transformers {
         }
 
         return output;
-    }
-
-    auto trim_leading_whitespaces(std::string& str) noexcept -> void {
-        size_t i = 0;
-        while (i < str.size() && is_whitespace(str[i])) ++i;
-        if (i != 0) str.erase(0, i);
-    }
-
-    auto trim_trailing_whitespaces(std::string& str) noexcept -> void {
-        size_t i = size(str) - 1;
-        while (i != 0 && is_whitespace(str[i])) --i;
-        if (i != size(str) - 1) str.erase(i + 1);
     }
 }
