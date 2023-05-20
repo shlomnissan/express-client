@@ -48,10 +48,3 @@ TEST_F(SocketTest, basic_test) {
 
     EXPECT_TRUE(response.starts_with("HTTP/1.1 200 OK"));    
 }
-
-// TODO: failed to initialize
-// TODO: failed to connect
-// TODO: failed to send
-// TODO: failed to receive
-// TODO: failed to select
-// TODO: timeout
