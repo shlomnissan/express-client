@@ -1,8 +1,10 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include "express/transformers.h"
+#include <express/transformers.h>
+#include <express/version.h>
 #include <express/request.h>
+#include <string>
 
 namespace Express::Http {
     using namespace Net;
@@ -14,8 +16,13 @@ namespace Express::Http {
     }
 
     auto Request::setHeaders() -> void {
+        auto version {
+            std::to_string(Version::Major) + "." +
+            std::to_string(Version::Minor)
+        };
+
         config_.headers.add({"Host", url_.host()});
-        config_.headers.add({"User-Agent", "express/0.1"});
+        config_.headers.add({"User-Agent", "express/" + version});
 
         if (!config_.auth.empty()) {
             setBasicAuth(config_.auth);

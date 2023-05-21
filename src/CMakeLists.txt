@@ -9,17 +9,19 @@ set(SOURCE_FILES
 )
 
 set(TARGET express_client)
-
 add_library(${TARGET} ${SOURCE_FILES})
-
-target_include_directories(${TARGET} PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
-)
-
+target_include_directories(${TARGET} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_compile_options(${TARGET} PRIVATE
     $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic -Werror -fPIC>
     $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
 )
+
+if (BUILD_SHARED_LIBS)
+    set_target_properties(${TARGET} PROPERTIES
+        VERSION ${express_VERSION}
+        SOVERSION ${express_VERSION_MAJOR}
+    )
+endif()
 
 if(BUILD_SSL)
     find_package(OpenSSL REQUIRED)
