@@ -18,7 +18,7 @@ target_compile_options(${TARGET} PRIVATE
 
 if (BUILD_SHARED_LIBS)
     set_target_properties(${TARGET} PROPERTIES
-        VERSION ${express_VERSION}
+        VERSION ${express_VERSION_MAJOR}.${express_VERSION_MINOR}.${express_VERSION_PATCH}
         SOVERSION ${express_VERSION_MAJOR}
     )
 endif()
