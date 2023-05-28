@@ -11,8 +11,9 @@ set(SOURCE_FILES
 set(TARGET express_client)
 add_library(${TARGET} ${SOURCE_FILES})
 target_include_directories(${TARGET} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+set_target_properties(${TARGET} PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_PIC})
 target_compile_options(${TARGET} PRIVATE
-    $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic -Werror -fPIC>
+    $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic -Werror>
     $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
 )
 

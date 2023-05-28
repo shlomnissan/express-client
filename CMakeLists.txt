@@ -10,6 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(BUILD_TESTS "build tests" ON)
 option(BUILD_EXAMPLES "build examples" ON)
 option(BUILD_SSL "build with ssl support" ON)
+option(BUILD_PIC "build position independent code" ON)
 option(FETCH_MOZ_TRUSTED_CA "fetch mozilla's trusted certificate authorities" ON)
 
 add_subdirectory(src)
