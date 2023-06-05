@@ -1,0 +1,33 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
+{
+    "name": "Existing Dockerfile",
+    "build": {
+        "context": "..",
+        "dockerfile": "../Dockerfile"
+    },
+    "postCreateCommand": "pip3 install -r /workspaces/express-client/tests/mock_server/requirements.txt",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "SonarSource.sonarlint-vscode",
+                "josetr.cmake-language-support-vscode",
+                "llvm-vs-code-extensions.vscode-clangd",
+                "matepek.vscode-catch2-test-adapter",
+                "ms-vscode.cmake-tools",
+                "notskm.clang-tidy",
+                "twxs.cmake",
+                "vadimcn.vscode-lldb",
+                "xaver.clang-format"
+            ]
+        }
+    }
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    // "features": {},
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+    // Configure tool-specific properties.
+    // "customizations": {},
+    // Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "devcontainer"
+}

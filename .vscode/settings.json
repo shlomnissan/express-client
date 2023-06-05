@@ -1,0 +1,7 @@
+{
+    "cmake.debugConfig": {
+        "type": "lldb",
+        "request": "launch"
+    },
+    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json"
+}
