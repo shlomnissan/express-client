@@ -8,17 +8,30 @@ set(SOURCE_FILES
     ${CLIENT_SOURCE_FILES}
 )
 
-set(TARGET express_client)
-add_library(${TARGET} ${SOURCE_FILES})
-target_include_directories(${TARGET} PUBLIC ${PROJECT_SOURCE_DIR}/include)
-set_target_properties(${TARGET} PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_PIC})
-target_compile_options(${TARGET} PRIVATE
+set(NAMESPACE Express)
+set(EXPORT_NAME Client)
+set(TARGET_NAME express_client)
+
+add_library(${TARGET_NAME} ${SOURCE_FILES})
+add_library(${NAMESPACE}::${EXPORT_NAME} ALIAS ${TARGET_NAME})
+
+target_include_directories(${TARGET_NAME} PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
+)
+
+set_target_properties(${TARGET_NAME} PROPERTIES
+    POSITION_INDEPENDENT_CODE ${BUILD_PIC}
+    OUTPUT_NAME ${TARGET_NAME} 
+    EXPORT_NAME ${EXPORT_NAME}
+)
+
+target_compile_options(${TARGET_NAME} PRIVATE
     $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic -Werror>
     $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
 )
 
 if (BUILD_SHARED_LIBS)
-    set_target_properties(${TARGET} PROPERTIES
+    set_target_properties(${TARGET_NAME} PROPERTIES
         VERSION ${express_VERSION_MAJOR}.${express_VERSION_MINOR}.${express_VERSION_PATCH}
         SOVERSION ${express_VERSION_MAJOR}
     )
@@ -26,8 +39,8 @@ endif()
 
 if(BUILD_SSL)
     find_package(OpenSSL REQUIRED)
-    target_compile_definitions(${TARGET} PRIVATE BUILD_SSL)
-    target_link_libraries(${TARGET} PUBLIC 
+    target_compile_definitions(${TARGET_NAME} PRIVATE BUILD_SSL)
+    target_link_libraries(${TARGET_NAME} PUBLIC 
         OpenSSL::SSL
         OpenSSL::Crypto
     )

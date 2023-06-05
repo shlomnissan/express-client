@@ -1,4 +1,8 @@
 find_package(GTest QUIET)
+
+set(BUILD_GMOCK OFF CACHE BOOL "")
+set(INSTALL_GTEST OFF CACHE BOOL "")
+
 if(NOT GTEST_FOUND)
     include(FetchContent)
     FetchContent_Declare(
@@ -7,7 +11,6 @@ if(NOT GTEST_FOUND)
         GIT_TAG origin/main
         GIT_SHALLOW true
     )
-    set(BUILD_GMOCK OFF CACHE BOOL "")
     FetchContent_GetProperties(googletest)
     if(NOT googletest_POPULATED)
         FetchContent_Populate(googletest)
@@ -34,6 +37,6 @@ foreach(PATH IN LISTS TEST_SOURCES)
     set(TEST_TARGET run_${NAME_NO_EXT})
     
     add_executable(${TEST_TARGET} ${FILE_NAME})
-    target_link_libraries(${TEST_TARGET} PRIVATE gtest_main express_client)
+    target_link_libraries(${TEST_TARGET} PRIVATE gtest_main Express::Client)
     add_test(${NAME_NO_EXT} ${TEST_TARGET})
 endforeach()
