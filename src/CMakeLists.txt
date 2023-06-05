@@ -16,7 +16,7 @@ add_library(${TARGET_NAME} ${SOURCE_FILES})
 add_library(${NAMESPACE}::${EXPORT_NAME} ALIAS ${TARGET_NAME})
 
 target_include_directories(${TARGET_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
 
 set_target_properties(${TARGET_NAME} PROPERTIES
@@ -45,3 +45,15 @@ if(BUILD_SSL)
         OpenSSL::Crypto
     )
 endif()
+
+include(GNUInstallDirs)
+
+install(TARGETS ${TARGET_NAME}
+    EXPORT ${NAMESPACE}
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(EXPORT ${NAMESPACE}
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${NAMESPACE}
+  NAMESPACE ${NAMESPACE}::
+)
