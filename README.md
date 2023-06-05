@@ -9,6 +9,7 @@ Promise based HTTP client for modern C++ development.
 
   - [Features](#features)
   - [Platform Support](#platform-support)
+  - [Getting Started with CMake](#getting-started-with-cmake)
   - [HTTPS and Certificate Verification](#https-and-certificate-verification)
   - [Express API](#express-api)
   - [Request Config](#request-config)
@@ -34,6 +35,92 @@ Express Client is a cross-platform library that's actively tested on the followi
 --- | --- | --- |
 MSVC 19.34 ✔ | Clang 14.0.0 ✔ | GCC 11.3.0 ✔ |
 
+## Getting Started: with CMake
+
+### Setting up a project
+
+CMake uses a file named `CMakeLists.txt` to configure the build system for a project. You’ll use this file to set up your project and declare a dependency on Express Client.
+
+First, create a directory for your project:
+
+```
+$ mkdir my_project && cd my_project
+```
+Next, you’ll create the `CMakeLists.txt` file and declare a dependency on Express Client. There are many ways to express dependencies in the CMake ecosystem; in this guide, you’ll use the [`FetchContent` CMake module](https://cmake.org/cmake/help/latest/module/FetchContent.html). To do this, in your project directory (`my_project`), create a file named `CMakeLists.txt` with the following contents:
+
+```cmake
+cmake_minimum_required(VERSION 3.20)
+
+project(my_project)
+
+# ExpressClient requires C++20
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
+include(FetchContent)
+FetchContent_Declare(
+    express 
+    GIT_REPOSITORY https://github.com/shlomnissan/express-client.git
+    GIT_TAG origin/main
+)
+
+set(BUILD_TESTS OFF CACHE BOOL "")
+FetchContent_MakeAvailable(express)
+
+add_executable(app main.cc)
+
+target_link_libraries(app PRIVATE Express::Client)
+
+```
+The configuration above declares a dependency on Express Client, which is downloaded from GitHub. It also adds a target executable called app with a single source file that we can use to test Express Client.
+
+### Create and run a binary
+
+Now that we have the project set up, create a file named `main.cc` in your `my_project` directory with the following contents:
+```cpp
+#include <iostream>
+#include <string>
+#include <express/client.h>
+
+auto main() -> int {
+    // make a simple HTTP GET request to example.com
+    auto result = Express::ExpressClient::request({
+        .url = "http://example.com/",
+        .method = Express::Http::Method::Get,
+    });
+
+    // request() returns a std::future. calling get will block until the
+    // future has valid results
+    auto response = result.get();
+
+    // check if the request was successful and print the data
+    if (response.statusCode == 200) {
+        std::string data {cbegin(response.data), cend(response.data)};
+        std::cout << '\n' << data << '\n';
+    }
+
+    return 0;
+}
+```
+Now you can build and run the application:
+
+<pre>
+<strong>my_project$ cmake -S . -B build</strong>
+-- The C compiler identification is GNU 10.2.1
+-- The CXX compiler identification is GNU 10.2.1
+...
+-- Build files have been written to: .../my_project/build
+
+<strong>my_project$ cmake --build build</strong>
+-- Scanning dependencies of target gtest
+...
+-- [100%] Built target app
+
+<strong>my_project$ ./build/app</strong>
+-- HTML output
+</pre>
+
+Congratulations! You have successfully added the Express Client library to your project and performed a simple HTTP request.
 
 ## HTTPS and certificate verification
 
