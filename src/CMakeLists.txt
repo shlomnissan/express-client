@@ -1,11 +1,15 @@
-file (GLOB HTTP_SOURCE_FILES "http/*.cc")
-file (GLOB NET_SOURCE_FILES "net/*.cc")
-file (GLOB CLIENT_SOURCE_FILES "*.cc")
-
 set(SOURCE_FILES
-    ${HTTP_SOURCE_FILES}
-    ${NET_SOURCE_FILES}
-    ${CLIENT_SOURCE_FILES}
+    "http/data.cc"
+    "http/header.cc"
+    "http/http_defs.cc"
+    "http/request.cc"
+    "http/response.cc"
+    "http/transformers.cc"
+    "net/endpoint.cc"
+    "net/socket_secure.cc"
+    "net/socket.cc"
+    "net/url.cc"
+    "client.cc"
 )
 
 set(NAMESPACE Express)
@@ -16,13 +20,15 @@ add_library(${TARGET_NAME} ${SOURCE_FILES})
 add_library(${NAMESPACE}::${EXPORT_NAME} ALIAS ${TARGET_NAME})
 
 target_include_directories(${TARGET_NAME} PUBLIC
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
 )
 
 set_target_properties(${TARGET_NAME} PROPERTIES
     POSITION_INDEPENDENT_CODE ${BUILD_PIC}
     OUTPUT_NAME ${TARGET_NAME} 
     EXPORT_NAME ${EXPORT_NAME}
+    PUBLIC_HEADER
+        ${CMAKE_SOURCE_DIR}/include/express/client.h
 )
 
 target_compile_options(${TARGET_NAME} PRIVATE
@@ -51,6 +57,7 @@ include(GNUInstallDirs)
 install(TARGETS ${TARGET_NAME}
     EXPORT ${NAMESPACE}
     DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/express
 )
 
 install(EXPORT ${NAMESPACE}

@@ -16,7 +16,7 @@ namespace Express {
     using namespace Net;
     using namespace Http;
 
-    class ExpressClient {
+    class Client {
     public:
         static auto request(const RequestConfig& config) -> std::future<Response>;
 

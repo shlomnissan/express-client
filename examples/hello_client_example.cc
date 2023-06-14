@@ -6,12 +6,10 @@
 
 #include <express/client.h>
 
-using namespace Express;
-
 int main() {
-    auto response = ExpressClient::request({
+    auto response = Express::Client::request({
         .url = "http://example.com",
-        .method = Http::Method::Get,
+        .method = Express::Http::Method::Get,
     }).get();
 
     std::cout << "Status: "

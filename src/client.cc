@@ -13,11 +13,11 @@
 #endif
 
 namespace Express {
-    auto ExpressClient::request(const RequestConfig& config) -> std::future<Response> {
+    auto Client::request(const RequestConfig& config) -> std::future<Response> {
         return std::async(std::launch::async, makeRequest, config);
     }
 
-    auto ExpressClient::makeRequest(const RequestConfig& config) -> Response {
+    auto Client::makeRequest(const RequestConfig& config) -> Response {
         #if defined(_WIN32)
             WinSock winsock;
         #endif
@@ -52,7 +52,7 @@ namespace Express {
         return parser.response();
     }
 
-    auto ExpressClient::getSocket(const URL& url) -> std::unique_ptr<Socket> {
+    auto Client::getSocket(const URL& url) -> std::unique_ptr<Socket> {
         Endpoint endpoint {url.host(), url.port()};
         if (url.scheme() == "https") {
             return std::make_unique<SocketSecure>(std::move(endpoint));

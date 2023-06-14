@@ -9,13 +9,12 @@
 #include <express/client.h>
 #include <express/socket.h>
 
-using namespace Express;
 using namespace std::chrono_literals;
 
 TEST(client, simple_get) {
-    auto response = ExpressClient::request({
+    auto response = Express::Client::request({
         .url = "http://127.0.0.1:5000",
-        .method = Http::Method::Get,
+        .method = Express::Http::Method::Get,
     }).get();
 
     EXPECT_EQ(response.statusCode, 200);
@@ -32,9 +31,9 @@ TEST(client, simple_get) {
 }
 
 TEST(client, simple_post_with_form_data) {
-    auto response = ExpressClient::request({
+    auto response = Express::Client::request({
         .url = "http://127.0.0.1:5000",
-        .method = Http::Method::Post,
+        .method = Express::Http::Method::Post,
         .data = {{
             {"firstName", "Fred"},
             {"lastName", "Flintstone"}
@@ -55,9 +54,9 @@ TEST(client, simple_post_with_form_data) {
 }
 
 TEST(client, post_with_raw_string) {
-    auto response = ExpressClient::request({
+    auto response = Express::Client::request({
         .url = "http://127.0.0.1:5000",
-        .method = Http::Method::Post,
+        .method = Express::Http::Method::Post,
         .data = {"firstName=Fred&lastName=Flintstone"},
         .headers = {{
             {"Content-Type", "application/x-www-form-urlencoded"}
@@ -78,9 +77,9 @@ TEST(client, post_with_raw_string) {
 }
 
 TEST(client, get_with_basic_authorization_config) {
-    auto response = ExpressClient::request({
+    auto response = Express::Client::request({
         .url = "http://127.0.0.1:5000/auth",
-        .method = Http::Method::Get,
+        .method = Express::Http::Method::Get,
         .auth = {
             .username = "aladdin",
             .password = "opensesame"
@@ -95,9 +94,9 @@ TEST(client, get_with_basic_authorization_config) {
 }
 
 TEST(client, get_with_basic_authorization_url) {
-    auto response = ExpressClient::request({
+    auto response = Express::Client::request({
         .url = "http://aladdin:opensesame@127.0.0.1:5000/auth",
-        .method = Http::Method::Get
+        .method = Express::Http::Method::Get
     }).get();
 
     EXPECT_EQ(response.statusCode, 200);
@@ -108,9 +107,9 @@ TEST(client, get_with_basic_authorization_url) {
 }
 
 TEST(client, get_with_basic_authorization_custom_header) {
-    auto response = ExpressClient::request({
+    auto response = Express::Client::request({
         .url = "http://127.0.0.1:5000/auth",
-        .method = Http::Method::Get,
+        .method = Express::Http::Method::Get,
         .headers = {{
             {"Authorization", "Basic YWxhZGRpbjpvcGVuc2VzYW1l"}
         }}
@@ -124,9 +123,9 @@ TEST(client, get_with_basic_authorization_custom_header) {
 }
 
 TEST(client, get_with_basic_authorization_config_failure) {
-    auto response = ExpressClient::request({
+    auto response = Express::Client::request({
         .url = "http://127.0.0.1:5000/auth",
-        .method = Http::Method::Get,
+        .method = Express::Http::Method::Get,
     }).get();
 
     EXPECT_EQ(response.statusCode, 401);
@@ -136,14 +135,14 @@ TEST(client, get_with_basic_authorization_config_failure) {
 TEST(client, throws_if_request_timed_out) {
     EXPECT_THROW({
         try {
-            auto result = ExpressClient::request({
+            auto result = Express::Client::request({
                 .url = "http://127.0.0.1:5000/slow",
-                .method = Http::Method::Get,
+                .method = Express::Http::Method::Get,
                 .timeout = 5ms,
             }).get();
-        } catch (const SocketError& e) {
+        } catch (const Express::SocketError& e) {
             EXPECT_STREQ("Request timed out.", e.what());
             throw;
         }
-    }, SocketError);
+    }, Express::SocketError);
 }
