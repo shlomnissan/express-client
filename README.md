@@ -3,7 +3,6 @@ Promise based HTTP client for modern C++ development.
 
 [![Ubuntu](https://github.com/shlomnissan/express-client/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/ubuntu.yml)
 [![MacOS](https://github.com/shlomnissan/express-client/actions/workflows/macos.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/macos.yml)
-[![Windows](https://github.com/shlomnissan/express-client/actions/workflows/windows.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/windows.yml)
 
 ## Table of Contents
 
@@ -23,17 +22,15 @@ Promise based HTTP client for modern C++ development.
 - HTTPS support
 - Uses std::future for async requests
 - Single optional dependency (OpenSSL)
-- Cross-platform (Linux, Windows, and MacOS)
 - Basic HTTP authentication
 - Comprehensive tests
 
 ## Platform Support
 
-Express Client is a cross-platform library that's actively tested on the following platforms and compilers
+For now, Express Client only supports Unix-based operating systems. If there is demand, I will add support for Windows. The project is currently being tested on the following operating systems and compilers:
 
-![Windows](https://raw.githubusercontent.com/EgoistDeveloper/operating-system-logos/master/src/48x48/WIN.png) | ![MacOS](https://raw.githubusercontent.com/EgoistDeveloper/operating-system-logos/master/src/48x48/MAC.png) | ![Ubuntu](https://raw.githubusercontent.com/EgoistDeveloper/operating-system-logos/master/src/48x48/UBT.png) |
---- | --- | --- |
-MSVC 19.34 ✔ | Clang 14.0.0 ✔ | GCC 11.3.0 ✔ |
+- Ubuntu 22.04 and GCC 11.3.0
+- macOS 12 and Clang 14.0.0
 
 ## Getting Started: with CMake
 
