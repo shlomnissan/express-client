@@ -101,8 +101,10 @@ namespace Express::Net {
         FD_SET(fd_socket_, &fdset);
 
         timeval select_timeout {
-            .tv_sec = timeout.get() / 1000,
-            .tv_usec = (timeout.get() % 1000) * 1000,
+            // casts are needed for portability. timeout.get() returns a 64-bit
+            // value, but time_t and suseconds_t are smaller on some platforms
+            .tv_sec = static_cast<time_t>(timeout.get() / 1000),
+            .tv_usec = static_cast<suseconds_t>((timeout.get() % 1000) * 1000),
         };
 
         auto count = ::select(
