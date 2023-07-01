@@ -1,12 +1,16 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include "express/endpoint.h"
 #include <express/socket.h>
+#include <express/endpoint.h>
+
+#include <cerrno>
+#include <unistd.h>
+#include <sys/select.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 
 namespace Express::Net {
-    constexpr auto InterruptedBySystemSignal = EINTR; 
-
     Socket::Socket(Endpoint endpoint) : endpoint_(std::move(endpoint)) {
         fd_socket_ = socket(
             endpoint_.family(),
@@ -14,7 +18,7 @@ namespace Express::Net {
             endpoint_.protocol()
         );
 
-        if (fd_socket_ == INVALID_SOCKET) {
+        if (fd_socket_ < 0) {
             throw SocketError {"Failed to initialize socket."};
         }
     }
@@ -23,18 +27,10 @@ namespace Express::Net {
         auto result = ::connect(
             fd_socket_,
             endpoint_.address(),
-            static_cast<int>(endpoint_.addressLength())
+            endpoint_.addressLength()
         );
 
-        while (result == -1 && ERRNO() == SYS_EINTR) {
-            result = ::connect(
-                fd_socket_,
-                endpoint_.address(),
-                static_cast<int>(endpoint_.addressLength())
-            ); 
-        }
-
-        if (result == -1) {
+        if (result < 0) {
             throw SocketError {"Failed to connect."};
         }
     }
@@ -48,7 +44,7 @@ namespace Express::Net {
             0
         );
 
-        while (result == -1 && ERRNO() == SYS_EINTR) {
+        while (result == -1 && errno == EINTR) {
             result = ::send(
                 fd_socket_,
                 buffer.data(),
@@ -83,7 +79,7 @@ namespace Express::Net {
             0
         );
 
-        while (result == -1 && ERRNO() == SYS_EINTR) {
+        while (result == -1 && errno == EINTR) {
             result = ::recv(
                 fd_socket_,
                 reinterpret_cast<char*>(buffer),
@@ -104,29 +100,22 @@ namespace Express::Net {
         FD_ZERO(&fdset);
         FD_SET(fd_socket_, &fdset);
 
-        #if defined(_WIN32)
-            TIMEVAL select_timeout {
-                static_cast<LONG>(timeout.get() / 1000),
-                static_cast<LONG>((timeout.get() % 1000) * 1000)
-            }; 
-        #else
-            timeval select_timeout {
-                .tv_sec = static_cast<time_t>(timeout.get() / 1000),
-                .tv_usec = static_cast<suseconds_t>((timeout.get() % 1000) * 1000),
-            };
-        #endif
+        timeval select_timeout {
+            .tv_sec = timeout.get() / 1000,
+            .tv_usec = (timeout.get() % 1000) * 1000,
+        };
 
         auto count = ::select(
-            static_cast<int>(fd_socket_ + 1),
+            fd_socket_ + 1,
             event == EventType::ToRead ? &fdset : nullptr,
             event == EventType::ToWrite ? &fdset : nullptr,
             nullptr,
             timeout.hasTimeout() ? &select_timeout : nullptr
         );
 
-        while (count == -1 && errno == InterruptedBySystemSignal) {
+        while (count == -1 && errno == EINTR) {
             count = ::select(
-                static_cast<int>(fd_socket_ + 1),
+                fd_socket_ + 1,
                 event == EventType::ToRead ? &fdset : nullptr,
                 event == EventType::ToWrite ? &fdset : nullptr,
                 nullptr,
@@ -139,9 +128,9 @@ namespace Express::Net {
     }
 
     Socket::~Socket() {
-        if (fd_socket_ != INVALID_SOCKET) {
-            CLOSE(fd_socket_);
-            fd_socket_ = INVALID_SOCKET;
+        if (fd_socket_ != -1) {
+            close(fd_socket_);
+            fd_socket_ = -1;
         }
     }
 }

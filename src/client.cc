@@ -8,20 +8,12 @@
 #include <express/socket_secure.h>
 #include <express/timeout.h>
 
-#if defined(_WIN32)
-    #include <express/winsock.h>
-#endif
-
 namespace Express {
     auto Client::request(const RequestConfig& config) -> std::future<Response> {
         return std::async(std::launch::async, makeRequest, config);
     }
 
     auto Client::makeRequest(const RequestConfig& config) -> Response {
-        #if defined(_WIN32)
-            WinSock winsock;
-        #endif
-
         URL url {config.url};
         #ifndef BUILD_SSL
             if (url.scheme() == "https") {

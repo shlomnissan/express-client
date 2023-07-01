@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <express/socket_defs.h>
 #include <express/endpoint.h>
 #include <express/timeout.h>
 
@@ -26,12 +25,12 @@ namespace Express::Net {
 
         auto sendAll(std::string_view buffer, const Timeout& timeout) const -> void;
 
-        [[nodiscard]] SOCKET get() const { return fd_socket_; };
+        [[nodiscard]] int get() const { return fd_socket_; };
 
         virtual ~Socket();
 
     protected:
-        SOCKET fd_socket_ = INVALID_SOCKET;
+        int fd_socket_ = -1;
         Endpoint endpoint_;
 
         auto wait(EventType event, const Timeout& timeout) const -> void;

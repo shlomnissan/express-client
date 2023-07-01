@@ -7,8 +7,8 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#include <netdb.h>
 
-#include <express/socket_defs.h>
 
 namespace Express::Net {
     struct addrinfo_deleter {

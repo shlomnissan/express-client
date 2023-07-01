@@ -9,21 +9,11 @@
 #include <express/socket_secure.h>
 #include <express/endpoint.h>
 
-#if defined(_WIN32)
-#include <express/winsock.h>
-#endif
-
 using namespace Express;
 using namespace Express::Net;
 using namespace std::chrono_literals;
 
-class SocketSecureTest : public ::testing::Test {
-#if defined(_WIN32)
-    WinSock winsock;
-#endif
-};
-
-TEST_F(SocketSecureTest, basic_test) {
+TEST(secured_socket, basic_test) {
     SocketSecure socket_sec {{"example.com", "443"}};
     socket_sec.connect();
     EXPECT_TRUE(socket_sec.get() > 0);
@@ -48,7 +38,7 @@ TEST_F(SocketSecureTest, basic_test) {
     EXPECT_TRUE(response.starts_with("HTTP/1.1 200 OK"));    
 }
 
-TEST_F(SocketSecureTest, throws_error_bad_ssl_certificate) {
+TEST(secured_socket, throws_error_bad_ssl_certificate) {
     SocketSecure socket_sec {{"expired.badssl.com", "443"}};
 
     EXPECT_THROW({

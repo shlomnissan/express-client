@@ -10,21 +10,11 @@
 #include <express/endpoint.h>
 #include <express/timeout.h>
 
-#if defined(_WIN32)
-#include <express/winsock.h>
-#endif
-
 using namespace Express;
 using namespace Express::Net;
 using namespace std::chrono_literals;
 
-class SocketTest : public ::testing::Test {
-#if defined(_WIN32)
-    WinSock winsock;
-#endif
-};
-
-TEST_F(SocketTest, basic_test) {
+TEST(socket, basic_test) {
     Socket socket {{"example.com", "80"}};
     socket.connect();
     EXPECT_TRUE(socket.get() > 0);

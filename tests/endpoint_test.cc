@@ -4,22 +4,11 @@
 #include <gtest/gtest.h>
 
 #include <express/endpoint.h>
-
-#if defined(_WIN32)
-#include <express/winsock.h>
-#else
 #include <sys/socket.h>
-#endif
 
 using namespace Express::Net;
 
-class EndpointTest : public ::testing::Test {
-#if defined(_WIN32)
-    WinSock winsock;
-#endif
-};
-
-TEST_F(EndpointTest, initializes_basic_endpoint) {
+TEST(endpoint, initializes_basic_endpoint) {
     Endpoint endpoint {"example.com", "80"};
 
     EXPECT_EQ(endpoint.family(), AF_INET);
@@ -28,7 +17,7 @@ TEST_F(EndpointTest, initializes_basic_endpoint) {
     EXPECT_TRUE(endpoint.address() != nullptr);
 }
 
-TEST_F(EndpointTest, initializes_ipv4_endpoint) {
+TEST(endpoint, initializes_ipv4_endpoint) {
     Endpoint endpoint {"93.184.216.34", "80"};
 
     EXPECT_EQ(endpoint.family(), AF_INET);
@@ -36,7 +25,7 @@ TEST_F(EndpointTest, initializes_ipv4_endpoint) {
     EXPECT_TRUE(endpoint.address() != nullptr);
 }
 
-TEST_F(EndpointTest, initializes_ipv6_endpoint) {
+TEST(endpoint, initializes_ipv6_endpoint) {
     Endpoint endpoint {"2606:2800:220:1:248:1893:25c8:1946", "80"};
 
     EXPECT_EQ(endpoint.family(), AF_INET6);
@@ -44,7 +33,7 @@ TEST_F(EndpointTest, initializes_ipv6_endpoint) {
     EXPECT_TRUE(endpoint.address() != nullptr);
 }
 
-TEST_F(EndpointTest, throws_initialization_error) {
+TEST(endpoint, throws_initialization_error) {
     EXPECT_THROW({
         try {
             Endpoint endpoint("invalid-address", "80");
