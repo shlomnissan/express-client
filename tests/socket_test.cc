@@ -28,7 +28,7 @@ TEST(socket, basic_test) {
 
     Express::Timeout timeout {0s};
 
-    socket.sendAll(ss.str(), timeout);
+    socket.send(ss.str(), timeout);
 
     uint8_t buffer[BUFSIZ];
     socket.recv(buffer, timeout);

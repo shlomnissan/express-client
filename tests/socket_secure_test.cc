@@ -27,7 +27,7 @@ TEST(secured_socket, basic_test) {
 
     Express::Timeout timeout {0s};
 
-    socket_sec.sendAll(ss.str(), timeout);
+    socket_sec.send(ss.str(), timeout);
 
     uint8_t buffer[BUFSIZ];
     socket_sec.recv(buffer, timeout);

@@ -50,17 +50,17 @@ namespace Express::Net {
 
         // Create a new SSL object and bind it to the socket
         ssl_.reset(SSL_new(ctx_.get()));
-        SSL_set_fd(ssl_.get(), static_cast<int>(fd_socket_));
+        SSL_set_fd(ssl_.get(), static_cast<int>(sock_));
 
         // Enable SNI
-        if (!SSL_set_tlsext_host_name(ssl_.get(), endpoint_.host().c_str())) {
+        if (!SSL_set_tlsext_host_name(ssl_.get(), ep_.host().c_str())) {
             throw SocketSecureError {
                 "Servername Indication request failed."
             };
         }
 
         // Enable hostname verification
-        if (!X509_VERIFY_PARAM_set1_host(SSL_get0_param(ssl_.get()), endpoint_.host().c_str(), 0)) {
+        if (!X509_VERIFY_PARAM_set1_host(SSL_get0_param(ssl_.get()), ep_.host().c_str(), 0)) {
             throw SocketSecureError {
                 "Failed to enable hostname verification."
             };
@@ -89,17 +89,26 @@ namespace Express::Net {
         }
     }
 
-    ssize_t SocketSecure::send(std::string_view buffer, const Timeout& timeout) const {
+    size_t SocketSecure::send(std::string_view buffer, const Timeout& timeout) const {
         wait(EventType::ToWrite, timeout);
-        auto result = SSL_write(
-            ssl_.get(),
-            buffer.data(),
-            static_cast<int>(buffer.size())
-        );
-        if (result < 0) {
-            throw SocketSecureError {"Failed to send data to the server."};
+
+        auto ptr = buffer.data();
+        auto bytes_left = buffer.size();
+
+        while (bytes_left > 0) {
+            auto bytes_written = SSL_write(
+                ssl_.get(), ptr, static_cast<int>(bytes_left)
+            );
+
+            if (bytes_written < 0) {
+                throw SocketSecureError {"Failed to send data to the server."};
+            }
+
+            bytes_left -= bytes_written;
+            ptr += bytes_written;
         }
-        return result;
+
+        return buffer.size();
     }
 
     ssize_t SocketSecure::recv(uint8_t *buffer, const Timeout& timeout) const {

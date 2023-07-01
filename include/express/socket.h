@@ -20,18 +20,16 @@ namespace Express::Net {
         auto operator=(const Socket&) -> Socket& = delete;
 
         virtual auto connect() -> void;
-        virtual auto send(std::string_view buffer, const Timeout& timeout) const -> ssize_t;
+        virtual auto send(std::string_view buffer, const Timeout& timeout) const -> size_t;
         virtual auto recv(uint8_t* buffer, const Timeout& timeout) const -> ssize_t;
 
-        auto sendAll(std::string_view buffer, const Timeout& timeout) const -> void;
-
-        [[nodiscard]] int get() const { return fd_socket_; };
+        [[nodiscard]] int get() const { return sock_; };
 
         virtual ~Socket();
 
     protected:
-        int fd_socket_ = -1;
-        Endpoint endpoint_;
+        Endpoint ep_;
+        int sock_ = -1;
 
         auto wait(EventType event, const Timeout& timeout) const -> void;
     };

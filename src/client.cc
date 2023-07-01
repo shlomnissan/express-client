@@ -29,7 +29,7 @@ namespace Express {
         Timeout timeout {request.timeout()};
 
         socket->connect();
-        socket->sendAll(request.str(), timeout);
+        socket->send(request.str(), timeout);
 
         uint8_t temp_buffer[BUFSIZ];
         ResponseParser parser;
