@@ -29,8 +29,9 @@ Promise based HTTP client for modern C++ development.
 
 For now, Express Client only supports Unix-based operating systems. If there is demand, I will add support for Windows. The project is currently being tested on the following operating systems and compilers:
 
-- Ubuntu 22.04 and GCC 11.3.0
-- macOS 12 and Clang 14.0.0
+![Ubuntu](https://raw.githubusercontent.com/EgoistDeveloper/operating-system-logos/master/src/16x16/UBT.png) Ubuntu 22.04 and GCC 11.3.0
+
+![macOS](https://raw.githubusercontent.com/EgoistDeveloper/operating-system-logos/master/src/16x16/MAC.png) macOS 12 and Clang 14.0.0
 
 ## Getting Started: with CMake
 
