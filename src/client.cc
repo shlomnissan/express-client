@@ -1,6 +1,8 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
+#include <array>
+#include <cstdint>
 #include <memory>
 
 #include <express/client.h>
@@ -31,14 +33,14 @@ namespace Express {
         socket->connect();
         socket->send(request.str(), timeout);
 
-        uint8_t temp_buffer[BUFSIZ];
+        std::array<uint8_t, BUFSIZ> buffer;
         ResponseParser parser;
         while (true) {
-            auto size = socket->recv(temp_buffer, timeout);
+            auto size = socket->recv(buffer.data(), buffer.size(), timeout);
             if (size == 0 || parser.doneReadingData()) {
                 break; // disconnected
             }
-            parser.feed(temp_buffer, size);
+            parser.feed(buffer.data(), size);
         }
 
         return parser.response();

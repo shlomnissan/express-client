@@ -21,7 +21,7 @@ namespace Express::Net {
 
         virtual auto connect() -> void;
         virtual auto send(std::string_view buffer, const Timeout& timeout) const -> size_t;
-        virtual auto recv(uint8_t* buffer, const Timeout& timeout) const -> ssize_t;
+        virtual auto recv(uint8_t* buffer, const size_t size, const Timeout& timeout) const -> size_t;
 
         [[nodiscard]] int get() const { return sock_; };
 

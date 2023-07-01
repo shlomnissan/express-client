@@ -46,21 +46,15 @@ namespace Express::Net {
         return buffer.size();
     }
 
-    auto Socket::recv(uint8_t* buffer, const Timeout& timeout) const -> ssize_t {
+    auto Socket::recv(uint8_t* buffer, const size_t size, const Timeout& timeout) const -> size_t {
         wait(EventType::ToRead, timeout);
 
-        auto result = ::recv(
-            sock_,
-            buffer,
-            BUFSIZ,
-            0
-        );
-
-        if (result < 0) {
+        auto bytes_read = ::recv(sock_, buffer, size, 0);
+        if (bytes_read < 0) {
             throw SocketError {"Failed to receive data from the server."};
         }
 
-        return result;
+        return bytes_read;
     }
 
     auto Socket::wait(EventType event, const Timeout& timeout) const -> void {

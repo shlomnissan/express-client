@@ -111,16 +111,17 @@ namespace Express::Net {
         return buffer.size();
     }
 
-    ssize_t SocketSecure::recv(uint8_t *buffer, const Timeout& timeout) const {
+    size_t SocketSecure::recv(uint8_t* buffer, const size_t size, const Timeout& timeout) const {
         wait(EventType::ToRead, timeout);
-        auto result = SSL_read(
-            ssl_.get(),
-            reinterpret_cast<char*>(buffer),
-            BUFSIZ
+
+        auto bytes_read = SSL_read(
+            ssl_.get(), buffer, static_cast<int>(size)
         );
-        if (result < 0) {
+
+        if (bytes_read < 0) {
             throw SocketSecureError {"Failed to receive data from the server."};
         }
-        return result;
+
+        return bytes_read;
     }
 }

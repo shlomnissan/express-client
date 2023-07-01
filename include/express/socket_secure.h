@@ -30,7 +30,7 @@ namespace Express::Net {
 
         void connect() override;
         size_t send(std::string_view buffer, const Timeout& timeout) const override;
-        ssize_t recv(uint8_t* buffer, const Timeout& timeout) const override;
+        size_t recv(uint8_t* buffer, const size_t size, const Timeout& timeout) const override;
 
     private:
         SSL_ptr ssl_ {nullptr};

@@ -1,6 +1,7 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
+#include <array>
 #include <sstream>
 #include <chrono>
 
@@ -30,10 +31,10 @@ TEST(socket, basic_test) {
 
     socket.send(ss.str(), timeout);
 
-    uint8_t buffer[BUFSIZ];
-    socket.recv(buffer, timeout);
+    std::array<uint8_t, BUFSIZ> buffer;
+    socket.recv(buffer.data(), buffer.size(), timeout);
     std::string response {
-        reinterpret_cast<const char*>(buffer)
+        reinterpret_cast<const char*>(buffer.data())
     };
 
     EXPECT_TRUE(response.starts_with("HTTP/1.1 200 OK"));    
