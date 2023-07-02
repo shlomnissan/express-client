@@ -28,7 +28,9 @@ namespace Express::Net {
     }
 
     auto Socket::send(std::string_view buffer, const Timeout& timeout) const -> size_t {
-        wait(EventType::ToWrite, timeout);
+        if (select(EventType::ToWrite, timeout) == 0) {
+            throw SocketError {"Request timed out. Failed to send data to the server."};
+        }
 
         auto ptr = buffer.data();
         auto bytes_left = buffer.size();
@@ -47,7 +49,9 @@ namespace Express::Net {
     }
 
     auto Socket::recv(uint8_t* buffer, const size_t size, const Timeout& timeout) const -> size_t {
-        wait(EventType::ToRead, timeout);
+        if (select(EventType::ToRead, timeout) == 0) {
+            throw SocketError {"Request timed out. Failed to receive data from the server."};
+        }
 
         auto bytes_read = ::recv(sock_, buffer, size, 0);
         if (bytes_read < 0) {
@@ -57,7 +61,7 @@ namespace Express::Net {
         return bytes_read;
     }
 
-    auto Socket::wait(EventType event, const Timeout& timeout) const -> void {
+    auto Socket::select(EventType event, const Timeout& timeout) const -> int {
         fd_set fdset;
         FD_ZERO(&fdset);
         FD_SET(sock_, &fdset);
@@ -69,7 +73,7 @@ namespace Express::Net {
             .tv_usec = static_cast<suseconds_t>((timeout.get() % 1000) * 1000),
         };
 
-        auto count = ::select(
+        auto result = ::select(
             sock_ + 1,
             event == EventType::ToRead ? &fdset : nullptr,
             event == EventType::ToWrite ? &fdset : nullptr,
@@ -77,13 +81,11 @@ namespace Express::Net {
             timeout.hasTimeout() ? &select_timeout : nullptr
         );
 
-        if (count == 0) {
-            throw SocketError {"Request timed out."};
-        }
-
-        if (count < 0) {
+        if (result < 0) {
             throw SocketError {"Failed to select socket."};
         }
+
+        return result;
     }
 
     Socket::~Socket() {

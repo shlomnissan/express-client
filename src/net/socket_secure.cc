@@ -90,7 +90,9 @@ namespace Express::Net {
     }
 
     size_t SocketSecure::send(std::string_view buffer, const Timeout& timeout) const {
-        wait(EventType::ToWrite, timeout);
+        if (select(EventType::ToWrite, timeout) == 0) {
+            throw SocketError {"Request timed out. Failed to send data to the server."};
+        }
 
         auto ptr = buffer.data();
         auto bytes_left = buffer.size();
@@ -112,7 +114,9 @@ namespace Express::Net {
     }
 
     size_t SocketSecure::recv(uint8_t* buffer, const size_t size, const Timeout& timeout) const {
-        wait(EventType::ToRead, timeout);
+        if (select(EventType::ToRead, timeout) == 0) {
+            throw SocketError {"Request timed out. Failed to receive data from the server."};
+        }
 
         auto bytes_read = SSL_read(
             ssl_.get(), buffer, static_cast<int>(size)

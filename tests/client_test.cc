@@ -141,7 +141,10 @@ TEST(client, throws_if_request_timed_out) {
                 .timeout = 5ms,
             }).get();
         } catch (const Express::SocketError& e) {
-            EXPECT_STREQ("Request timed out.", e.what());
+            EXPECT_STREQ(
+                "Request timed out. Failed to receive data from the server.",
+                e.what()
+            );
             throw;
         }
     }, Express::SocketError);

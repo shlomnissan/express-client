@@ -31,7 +31,7 @@ namespace Express::Net {
         Endpoint ep_;
         int sock_ = -1;
 
-        auto wait(EventType event, const Timeout& timeout) const -> void;
+        auto select(EventType event, const Timeout& timeout) const -> int;
     };
 
     struct SocketError : public std::runtime_error {
