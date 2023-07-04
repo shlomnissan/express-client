@@ -25,11 +25,10 @@ namespace Express {
             }
         #endif
 
-        auto socket = getSocket(url); 
-
         Request request {url, config};
         Timeout timeout {request.timeout()};
 
+        auto socket = getSocket(url);
         socket->connect(timeout);
         socket->send(request.str(), timeout);
 

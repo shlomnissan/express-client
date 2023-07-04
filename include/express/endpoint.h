@@ -31,8 +31,4 @@ namespace Express::Net {
         std::string port_;
         std::unique_ptr<addrinfo, addrinfo_deleter> address_ {nullptr};
     };
-
-    struct AddressError : public std::runtime_error {
-        using std::runtime_error::runtime_error;
-    };
 }

@@ -2,7 +2,6 @@
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
 #include "express/socket.h"
-#include <cstdlib>
 #include <express/socket_secure.h>
 
 #include <openssl/ssl.h>

@@ -5,6 +5,7 @@
 
 #include <express/endpoint.h>
 #include <sys/socket.h>
+#include <system_error>
 
 using namespace Express::Net;
 
@@ -37,9 +38,12 @@ TEST(endpoint, throws_initialization_error) {
     EXPECT_THROW({
         try {
             Endpoint endpoint("invalid-address", "80");
-        } catch (const AddressError& e) {
-            EXPECT_STREQ(e.what(), "Failed to initialize an endpoint.");
+        } catch (const std::system_error& e) {
+            EXPECT_STREQ(
+                e.what(),
+                "Endpoint error: Resource temporarily unavailable"
+            );
             throw;
         }
-    }, AddressError);
+    }, std::system_error);
 }
