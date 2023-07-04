@@ -16,8 +16,10 @@ using namespace Express::Net;
 using namespace std::chrono_literals;
 
 TEST(socket, basic_test) {
+    Express::Timeout timeout {0s};
+
     Socket socket {{"example.com", "80"}};
-    socket.connect();
+    socket.connect(timeout);
     EXPECT_TRUE(socket.get() > 0);
     
     std::stringstream ss;
@@ -26,8 +28,6 @@ TEST(socket, basic_test) {
     ss << "Connection: close\r\n";
     ss << "User-Agent: express\r\n";
     ss << "\r\n";
-
-    Express::Timeout timeout {0s};
 
     socket.send(ss.str(), timeout);
 

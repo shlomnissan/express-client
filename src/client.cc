@@ -30,7 +30,7 @@ namespace Express {
         Request request {url, config};
         Timeout timeout {request.timeout()};
 
-        socket->connect();
+        socket->connect(timeout);
         socket->send(request.str(), timeout);
 
         std::array<uint8_t, BUFSIZ> buffer;

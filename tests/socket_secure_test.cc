@@ -15,8 +15,10 @@ using namespace Express::Net;
 using namespace std::chrono_literals;
 
 TEST(secured_socket, basic_test) {
+    Express::Timeout timeout {0s};
+
     SocketSecure socket_sec {{"example.com", "443"}};
-    socket_sec.connect();
+    socket_sec.connect(timeout);
     EXPECT_TRUE(socket_sec.get() > 0);
 
     std::stringstream ss;
@@ -25,8 +27,6 @@ TEST(secured_socket, basic_test) {
     ss << "Connection: close\r\n";
     ss << "User-Agent: express\r\n";
     ss << "\r\n";
-
-    Express::Timeout timeout {0s};
 
     socket_sec.send(ss.str(), timeout);
 
@@ -44,7 +44,7 @@ TEST(secured_socket, throws_error_bad_ssl_certificate) {
 
     EXPECT_THROW({
         try {
-            socket_sec.connect();
+            socket_sec.connect(Express::Timeout {1s});
         } catch (const SocketSecureError& e) {
             EXPECT_STREQ(
                 "Failed to verify SSL certificate.",

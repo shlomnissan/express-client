@@ -4,6 +4,7 @@
 #pragma once
 
 #include <express/socket.h>
+#include <express/timeout.h>
 
 #include <openssl/ssl.h>
 
@@ -28,13 +29,15 @@ namespace Express::Net {
     public:
         explicit SocketSecure(Endpoint endpoint);
 
-        void connect() override;
+        void connect(const Timeout& timeout) override;
         size_t send(std::string_view buffer, const Timeout& timeout) const override;
         size_t recv(uint8_t* buffer, const size_t size, const Timeout& timeout) const override;
 
     private:
         SSL_ptr ssl_ {nullptr};
         SSL_CTX_ptr ctx_ {nullptr};
+
+        auto handleOpenSSLError(int rval, const Timeout& timeout) const -> void;
     };
 
     struct SocketSecureError : public std::runtime_error {

@@ -1,9 +1,13 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
+#include "express/socket.h"
+#include <cstdlib>
 #include <express/socket_secure.h>
 
+#include <openssl/ssl.h>
 #include <openssl/x509.h>
+#include <openssl/err.h>
 
 namespace Express::Net {
     constexpr auto kOpenSSLMinVersion = 0x1000200fL; // v1.0.2
@@ -37,7 +41,9 @@ namespace Express::Net {
         }
         ctx_.reset(context);
 
-        // Load trusted CAs
+        // TODO: use filesystem::exists to check if the certificate
+        // authorities exists before calling verify
+
         if (!SSL_CTX_load_verify_locations(context, "ca-bundle.crt", nullptr)) {
             throw SocketSecureError {
                 "Failed to load trusted certificate authorities."
@@ -45,12 +51,28 @@ namespace Express::Net {
         }
     }
 
-    void SocketSecure::connect() {
-        Socket::connect();
+    auto SocketSecure::handleOpenSSLError(int rval, const Timeout& timeout) const -> void {
+        auto error = SSL_get_error(ssl_.get(), rval);
+        if (error == SSL_ERROR_WANT_READ || error == SSL_ERROR_WANT_WRITE) {
+            auto event_type = error == SSL_ERROR_WANT_READ
+                ? EventType::ToRead
+                : EventType::ToWrite;
+            auto select_result = select(event_type, timeout);
+            if (select_result == 0) {
+                throw SocketError {"Request timed out. Failed to connect."};
+            }
+        } else {
+            // TODO: replace with error message
+            throw SocketSecureError {"Failed to connect SSL socket."};
+        }
+    }
+
+    void SocketSecure::connect(const Timeout& timeout) {
+        Socket::connect(timeout);
 
         // Create a new SSL object and bind it to the socket
         ssl_.reset(SSL_new(ctx_.get()));
-        SSL_set_fd(ssl_.get(), static_cast<int>(sock_));
+        SSL_set_fd(ssl_.get(), sock_);
 
         // Enable SNI
         if (!SSL_set_tlsext_host_name(ssl_.get(), ep_.host().c_str())) {
@@ -67,17 +89,18 @@ namespace Express::Net {
         }
 
         // Perform SSL handshake
-        if (SSL_connect(ssl_.get()) <= 0) {
-            throw SocketSecureError {
-                "Failed to connect SSL socket."
-            };
+        auto res = 0;
+        while (res <= 0) {
+            res = SSL_connect(ssl_.get());
+            if (res <= 0) {
+                handleOpenSSLError(res, timeout);
+            }
         }
 
         // Verify certificate
         X509_ptr cert {SSL_get_peer_certificate(ssl_.get())};
         if (cert) {
-            const auto res = SSL_get_verify_result(ssl_.get());
-            if (res != X509_V_OK) {
+            if (SSL_get_verify_result(ssl_.get()) != X509_V_OK) {
                 throw SocketSecureError {
                     "Failed to verify SSL certificate."
                 };
@@ -90,40 +113,33 @@ namespace Express::Net {
     }
 
     size_t SocketSecure::send(std::string_view buffer, const Timeout& timeout) const {
-        if (select(EventType::ToWrite, timeout) == 0) {
-            throw SocketError {"Request timed out. Failed to send data to the server."};
-        }
-
-        auto ptr = buffer.data();
+        auto data_ptr = buffer.data();
         auto bytes_left = buffer.size();
 
         while (bytes_left > 0) {
             auto bytes_written = SSL_write(
-                ssl_.get(), ptr, static_cast<int>(bytes_left)
+                ssl_.get(),
+                data_ptr,
+                static_cast<int>(bytes_left)
             );
 
             if (bytes_written < 0) {
-                throw SocketSecureError {"Failed to send data to the server."};
+                handleOpenSSLError(bytes_written, timeout);
             }
 
             bytes_left -= bytes_written;
-            ptr += bytes_written;
+            data_ptr += bytes_written;
         }
-
         return buffer.size();
     }
 
     size_t SocketSecure::recv(uint8_t* buffer, const size_t size, const Timeout& timeout) const {
-        if (select(EventType::ToRead, timeout) == 0) {
-            throw SocketError {"Request timed out. Failed to receive data from the server."};
-        }
-
-        auto bytes_read = SSL_read(
-            ssl_.get(), buffer, static_cast<int>(size)
-        );
-
-        if (bytes_read < 0) {
-            throw SocketSecureError {"Failed to receive data from the server."};
+        auto bytes_read = -1;
+        while (bytes_read < 0) {
+            bytes_read = SSL_read(ssl_.get(), buffer, static_cast<int>(size));
+            if (bytes_read < 0) {
+                handleOpenSSLError(bytes_read, timeout);
+            }
         }
 
         return bytes_read;

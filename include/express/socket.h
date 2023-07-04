@@ -19,7 +19,7 @@ namespace Express::Net {
         Socket(const Socket&) = delete;
         auto operator=(const Socket&) -> Socket& = delete;
 
-        virtual auto connect() -> void;
+        virtual auto connect(const Timeout& timeout) -> void;
         virtual auto send(std::string_view buffer, const Timeout& timeout) const -> size_t;
         virtual auto recv(uint8_t* buffer, const size_t size, const Timeout& timeout) const -> size_t;
 
@@ -31,6 +31,8 @@ namespace Express::Net {
         Endpoint ep_;
         int sock_ = -1;
 
+        auto makeNonBlocking() const -> void;
+        auto getPendingError() const -> int;
         auto select(EventType event, const Timeout& timeout) const -> int;
     };
 
