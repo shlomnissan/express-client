@@ -8,6 +8,7 @@
 
 #include <express/client.h>
 #include <express/socket.h>
+#include <express/exceptions.h>
 
 using namespace std::chrono_literals;
 
@@ -140,12 +141,12 @@ TEST(client, throws_if_request_timed_out) {
                 .method = Express::Http::Method::Get,
                 .timeout = 5ms,
             }).get();
-        } catch (const Express::SocketError& e) {
+        } catch (const Express::ResponseError& e) {
             EXPECT_STREQ(
-                "Request timed out. Failed to receive data from the server.",
+                "Timeout error: Failed to receive data from the server",
                 e.what()
             );
             throw;
         }
-    }, Express::SocketError);
+    }, Express::ResponseError);
 }

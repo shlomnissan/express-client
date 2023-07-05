@@ -1,8 +1,8 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include "express/socket.h"
 #include <express/socket_secure.h>
+#include <express/error.h>
 
 #include <openssl/ssl.h>
 #include <openssl/x509.h>
@@ -58,7 +58,7 @@ namespace Express::Net {
                 : EventType::ToWrite;
             auto select_result = select(event_type, timeout);
             if (select_result == 0) {
-                throw SocketError {"Request timed out. Failed to connect."};
+                Error::runtime("OpenSSL error", "Request timed out");
             }
         } else {
             // TODO: replace with error message

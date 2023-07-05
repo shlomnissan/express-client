@@ -35,8 +35,4 @@ namespace Express::Net {
         auto getPendingError() const -> int;
         auto select(EventType event, const Timeout& timeout) const -> int;
     };
-
-    struct SocketError : public std::runtime_error {
-        using std::runtime_error::runtime_error;
-    };
 }

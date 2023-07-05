@@ -10,6 +10,7 @@ set(SOURCE_FILES
     "net/socket.cc"
     "net/url.cc"
     "client.cc"
+    "error.cc"
 )
 
 set(NAMESPACE Express)

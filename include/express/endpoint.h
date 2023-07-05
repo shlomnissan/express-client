@@ -3,12 +3,10 @@
 
 #pragma once
 
-#include <stdexcept>
 #include <memory>
 #include <string>
 #include <string_view>
 #include <netdb.h>
-
 
 namespace Express::Net {
     struct addrinfo_deleter {

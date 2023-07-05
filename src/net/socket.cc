@@ -3,21 +3,19 @@
 
 #include <express/socket.h>
 #include <express/endpoint.h>
+#include <express/error.h>
 
-#include <cerrno>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <system_error>
 
 namespace Express::Net {
     Socket::Socket(Endpoint endpoint) : ep_(std::move(endpoint)) {
         sock_ = socket(ep_.family(), ep_.socketType(), ep_.protocol());
-
         if (sock_ < 0) {
-            throw SocketError {"Failed to initialize socket."};
+            Error::system("Socket error");
         }
 
         makeNonBlocking(); 
@@ -27,11 +25,11 @@ namespace Express::Net {
         const auto flags = fcntl(sock_, F_GETFL, 0);
         if (flags < 0) {
             close(sock_);
-            throw SocketError {"Failed to get socket flags."};
+            Error::system("Socket flags error");
         }
         if (fcntl(sock_, F_SETFL, flags | O_NONBLOCK) < 0) {
             close(sock_);
-            throw SocketError {"Failed to set socket flags."};
+            Error::system("Socket flags error");
         }
     }
 
@@ -39,9 +37,7 @@ namespace Express::Net {
         auto option_value = 0;
         socklen_t option_length = sizeof(option_value);
         if (getsockopt(sock_, SOL_SOCKET, SO_ERROR, &option_value, &option_length) < 0) {
-            throw std::system_error {errno, std::system_category(),
-                "Failed to get socket option"
-            };
+           Error::system("Socket options error");
         }
         return option_value;
     }
@@ -53,28 +49,24 @@ namespace Express::Net {
             if (errno == EINPROGRESS) {
                 auto select_result = select(EventType::ToWrite, timeout);
                 if (select_result == 0) {
-                    throw SocketError {"Request timed out. Failed to connect."};
+                    Error::runtime("Timeout error", "Failed to connect");
                 }
 
                 // Check for any pending errors.
                 // If there are none, the connection was successful
                 auto pending_error = getPendingError();
                 if (pending_error != 0) {
-                    throw std::system_error {pending_error, std::system_category(),
-                        "Failed to connect"
-                    };
+                    Error::system("Socket connect error");
                 }
             } else {
-                throw std::system_error{errno, std::system_category(),
-                    "Failed to connect."
-                };
+                Error::system("Socket connect error");
             }
         }
     }
 
     auto Socket::send(std::string_view buffer, const Timeout& timeout) const -> size_t {
         if (select(EventType::ToWrite, timeout) == 0) {
-            throw SocketError {"Request timed out. Failed to send data to the server."};
+            Error::runtime("Timeout error", "Failed to send data to the server");
         }
 
         auto data_ptr = buffer.data();
@@ -83,7 +75,7 @@ namespace Express::Net {
         while (bytes_left > 0) {
             auto bytes_written = ::send(sock_, data_ptr, bytes_left, 0);
             if (bytes_written < 0) {
-                throw SocketError {"Failed to send data to the server."};
+                Error::system("Socket send error");
             }
 
             bytes_left -= bytes_written;
@@ -95,12 +87,12 @@ namespace Express::Net {
 
     auto Socket::recv(uint8_t* buffer, const size_t size, const Timeout& timeout) const -> size_t {
         if (select(EventType::ToRead, timeout) == 0) {
-            throw SocketError {"Request timed out. Failed to receive data from the server."};
+            Error::runtime("Timeout error", "Failed to receive data from the server");
         }
 
         auto bytes_read = ::recv(sock_, buffer, size, 0);
         if (bytes_read < 0) {
-            throw SocketError {"Failed to receive data from the server."};
+            Error::system("Socket recv error");
         }
 
         return bytes_read;
@@ -127,7 +119,7 @@ namespace Express::Net {
         );
 
         if (result < 0) {
-            throw SocketError {"Failed to select socket."};
+            Error::system("Socket select error");
         }
 
         return result;
