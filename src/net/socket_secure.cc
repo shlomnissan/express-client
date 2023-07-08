@@ -2,8 +2,9 @@
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
 #include <express/socket_secure.h>
-#include <express/error.h>
 
+#include <filesystem>
+#include <express/error.h>
 #include <openssl/ssl.h>
 #include <openssl/x509.h>
 #include <openssl/err.h>
@@ -40,8 +41,14 @@ namespace Express::Net {
         }
         ctx_.reset(context);
 
-        // TODO: use filesystem::exists to check if the certificate
-        // authorities exists before calling verify
+        if (!std::filesystem::exists("ca-bundle.crt")) {
+            Error::logic("OpenSSL error", "The ca-bundle.crt file is missing. "
+                "You can download it from https://curl.se/docs/caextract.html, "
+                "rename it to ca-bundle.crt, and place it in the executable directory. "
+                "Alternatively, you can provide your own certificate authority store, or disable "
+                "SSL altogether during compilation by using CMake's -DBUILD_SSL=OFF option."
+            );
+        }
 
         if (!SSL_CTX_load_verify_locations(context, "ca-bundle.crt", nullptr)) {
             throw SocketSecureError {
