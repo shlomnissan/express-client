@@ -1,8 +1,10 @@
-# ⚡ express-client
-Promise based HTTP client for modern C++ development.
+Promised-based HTTP client for modern C++
+
+![express-small](https://github.com/shlomnissan/express-client/assets/3165988/770e9458-d774-4f81-a0ee-64be1b168ca7)
 
 [![Ubuntu](https://github.com/shlomnissan/express-client/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/ubuntu.yml)
 [![MacOS](https://github.com/shlomnissan/express-client/actions/workflows/macos.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/macos.yml)
+
 
 ## Table of Contents
 
