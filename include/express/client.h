@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <memory>
 
+#include <express/error.h>
 #include <express/socket.h>
 #include <express/request.h>
 #include <express/response_parser.h>
@@ -23,9 +24,5 @@ namespace Express {
     private:
         static auto makeRequest(const RequestConfig& config) -> Response;
         static auto getSocket(const URL& url) -> std::unique_ptr<Socket>; 
-    };
-
-    struct ClientError : public std::logic_error {
-        using logic_error::logic_error;
     };
 }

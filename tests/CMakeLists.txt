@@ -29,6 +29,11 @@ if (BUILD_SSL AND FETCH_MOZ_TRUSTED_CA)
 endif()
 
 file(GLOB TEST_SOURCES ${CMAKE_CURRENT_LIST_DIR}/*.cc)
+
+if (NOT BUILD_SSL)
+    list(REMOVE_ITEM TEST_SOURCES "${CMAKE_CURRENT_LIST_DIR}/socket_secure_test.cc")
+endif()
+
 foreach(PATH IN LISTS TEST_SOURCES)
     get_filename_component(FILE_NAME ${PATH} NAME)
     string(REGEX REPLACE "\\.[^.]*$" "" NAME_NO_EXT ${FILE_NAME})

@@ -6,12 +6,15 @@ set(SOURCE_FILES
     "http/response_parser.cc"
     "http/transformers.cc"
     "net/endpoint.cc"
-    "net/socket_secure.cc"
     "net/socket.cc"
     "net/url.cc"
     "client.cc"
     "error.cc"
 )
+
+if (BUILD_SSL)
+    list(APPEND SOURCE_FILES "net/socket_secure.cc")
+endif()
 
 set(NAMESPACE Express)
 set(EXPORT_NAME Client)
@@ -44,7 +47,7 @@ if (BUILD_SHARED_LIBS)
     )
 endif()
 
-if(BUILD_SSL)
+if (BUILD_SSL)
     find_package(OpenSSL REQUIRED)
     target_compile_definitions(${TARGET_NAME} PRIVATE BUILD_SSL)
     target_link_libraries(${TARGET_NAME} PUBLIC 
