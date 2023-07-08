@@ -1,10 +1,17 @@
-Promised-based HTTP client for modern C++
+<h1 align="center">
+   <b>
+        <a href="https://axios-http.com"><img src="https://user-images.githubusercontent.com/3165988/252059904-90120f3a-0d9e-42a4-8a50-69e2cd4a4a7b.svg" /></a><br>
+    </b>
+</h1>
 
-![express-small](https://github.com/shlomnissan/express-client/assets/3165988/90120f3a-0d9e-42a4-8a50-69e2cd4a4a7b)
+<p align="center">Promised-based HTTP client for modern C++</p>
+
+<div align="center">
 
 [![Ubuntu](https://github.com/shlomnissan/express-client/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/ubuntu.yml)
 [![MacOS](https://github.com/shlomnissan/express-client/actions/workflows/macos.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/macos.yml)
 
+</div>
 
 ## Table of Contents
 
