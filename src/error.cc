@@ -2,7 +2,7 @@
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
 #include <express/error.h>
-#include <express/exceptions.h>
+#include <express/exception.h>
 
 #include <cerrno>
 #include <stdexcept>
@@ -19,7 +19,7 @@ namespace Express::Error {
 
     void system(std::string_view what_arg) {
         throw std::system_error {errno, std::system_category(), what_arg.data()};
-    } 
+    }
 
     void logic(std::string_view type, std::string_view what_arg) {
         throw Express::RequestError { format_string(type, what_arg) };

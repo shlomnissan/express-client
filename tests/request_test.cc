@@ -3,9 +3,9 @@
 
 
 #include <gtest/gtest.h>
-
 #include <express/request.h>
-#include <express/response.h>
+
+#include <express/exception.h>
 
 using namespace Express::Http;
 
@@ -263,7 +263,7 @@ TEST(request, throws_if_http_method_should_not_include_data) {
                     {"lastName", "Flintstone"}
                 }},
             });
-        } catch (const ResponseError& e) {
+        } catch (const RequestError& e) {
             EXPECT_STREQ(e.what(),
                 "Request data can only be added "
                 "for PUT, POST, DELETE, and PATCH."

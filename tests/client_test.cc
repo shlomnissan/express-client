@@ -8,7 +8,7 @@
 
 #include <express/client.h>
 #include <express/socket.h>
-#include <express/exceptions.h>
+#include <express/exception.h>
 
 using namespace std::chrono_literals;
 

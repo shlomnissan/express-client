@@ -1,13 +1,14 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <cstdint>
-#include <string>
-#include <vector>
-
 #include <gtest/gtest.h>
 #include <express/response.h>
+
+#include <cstdint>
+#include <express/exception.h>
 #include <express/header.h>
+#include <string>
+#include <vector>
 
 using namespace Express::Http;
 
@@ -60,11 +61,11 @@ TEST(response_parser_status_line, throws_error_malformed_status_line) {
     EXPECT_THROW({
         try {
             parser.feed(input.data(), input.size());
-        } catch (const ResponseError& e) {
-            EXPECT_STREQ(e.what(), "Malformed status line");
+        } catch (const Express::ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Response error: Malformed status line");
             throw;
         }
-    }, ResponseError);
+    }, Express::ResponseError);
 }
 
 TEST(response_parser_status_line, throws_error_unsupported_version) {
@@ -78,11 +79,11 @@ TEST(response_parser_status_line, throws_error_unsupported_version) {
     EXPECT_THROW({
         try {
             parser.feed(input.data(), input.size());
-        } catch (const ResponseError& e) {
-            EXPECT_STREQ(e.what(), "Unsupported HTML version (2.0)");
+        } catch (const Express:: ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Response error: Unsupported HTML version (2.0)");
             throw;
         }
-    }, ResponseError);
+    }, Express::ResponseError);
 }
 
 TEST(response_parser_status_line, throws_error_unsupported_code) {
@@ -96,11 +97,11 @@ TEST(response_parser_status_line, throws_error_unsupported_code) {
     EXPECT_THROW({
         try {
             parser.feed(input.data(), input.size());
-        } catch (const ResponseError& e) {
-            EXPECT_STREQ(e.what(), "Invalid status code (2999)");
+        } catch (const Express:: ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Response error: Invalid status code (2999)");
             throw;
         }
-    }, ResponseError);
+    }, Express::ResponseError);
 
     input = str_to_data(
         "HTTP/1.0 32X OK\r\n"
@@ -112,11 +113,11 @@ TEST(response_parser_status_line, throws_error_unsupported_code) {
     EXPECT_THROW({
         try {
             another_parser.feed(input.data(), input.size());
-        } catch (const ResponseError& e) {
-            EXPECT_STREQ(e.what(), "Invalid status code (32X)");
+        } catch (const Express:: ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Response error: Invalid status code (32X)");
             throw;
         }
-    }, ResponseError);
+    }, Express::ResponseError);
 }
 
 TEST(response_parser_status_line, throws_error_invalid_char_reason_phrase) {
@@ -130,11 +131,11 @@ TEST(response_parser_status_line, throws_error_invalid_char_reason_phrase) {
     EXPECT_THROW({
         try {
             parser.feed(input.data(), input.size());
-        } catch (const ResponseError& e) {
-            EXPECT_STREQ(e.what(), "Invalid characters in reason phrase");
+        } catch (const Express:: ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Response error: Invalid characters in reason phrase");
             throw;
         }
-    }, ResponseError);
+    }, Express::ResponseError);
 }
 
 TEST(response_parser_headers, throws_when_parsing_invalid_header) {
@@ -148,11 +149,11 @@ TEST(response_parser_headers, throws_when_parsing_invalid_header) {
     EXPECT_THROW({
         try {
             parser.feed(input.data(), input.size());
-        } catch (const ResponseError& e) {
-            EXPECT_STREQ(e.what(), "Failed to process invalid response header");
+        } catch (const Express:: ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Response error: Failed to process invalid response header");
             throw;
         }
-    }, ResponseError);
+    }, Express::ResponseError);
 }
 
 TEST(response_parser_headers, throws_when_parsing_invalid_header_name) {
@@ -248,11 +249,11 @@ TEST(response_parser_headers, throws_if_multiple_content_length_values) {
     EXPECT_THROW({
         try {
             parser.feed(input.data(), input.size());
-        } catch (const ResponseError& e) {
-            EXPECT_STREQ(e.what(), "Received multiple content length fields.");
+        } catch (const Express:: ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Response error: Received multiple content length fields");
             throw;
         }
-    }, ResponseError);
+    }, Express::ResponseError);
 }
 
 TEST(response_parser_headers, throws_if_content_length_is_invalid) {
@@ -266,11 +267,11 @@ TEST(response_parser_headers, throws_if_content_length_is_invalid) {
     EXPECT_THROW({
         try {
             parser.feed(input.data(), input.size());
-        } catch (const ResponseError& e) {
-            EXPECT_STREQ(e.what(), "Invalid content length value");
+        } catch (const Express:: ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Response error: Invalid content length value");
             throw;
         }
-    }, ResponseError);
+    }, Express::ResponseError);
 }
 
 TEST(response_parser_body_content_length, parses_body_with_content_length_correctly) {
@@ -331,11 +332,11 @@ TEST(response_parser_body_content_length, throws_when_fetching_incomplete_respon
     EXPECT_THROW({
         try {
             auto response = parser.response();
-        } catch (const ResponseError& e) {
-            EXPECT_STREQ(e.what(), "Incomplete data transfer.");
+        } catch (const Express:: ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Response error: Incomplete data transfer");
             throw;
         }
-    }, ResponseError);
+    }, Express::ResponseError);
 }
 
 TEST(response_parser_body_content_length, parses_body_without_content_length) {
@@ -449,11 +450,11 @@ TEST(response_parser_body_chunked, throws_error_when_parsing_invalid_chunked_dat
     EXPECT_THROW({
         try {
             parser.feed(input.data(), input.size());
-        } catch (const ResponseError& e) {
-            EXPECT_STREQ(e.what(), "Invalid chunk delimiter.");
+        } catch (const Express:: ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Response error: Invalid chunk delimiter");
             throw;
         }
-    }, ResponseError);
+    }, Express::ResponseError);
 }
 
 TEST(response_parser_body_chunked, chunked_transfer_encoding_overrides_content_length) {

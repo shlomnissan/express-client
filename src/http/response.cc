@@ -1,11 +1,13 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <algorithm>
-
 #include <express/response.h>
-#include <express/transformers.h>
+
+#include <algorithm>
+#include <express/error.h>
 #include <express/http_defs.h>
+#include <express/transformers.h>
+
 
 namespace Express::Http {
     using namespace std::string_literals;
@@ -13,7 +15,7 @@ namespace Express::Http {
 
     auto ResponseParser::response() const -> Response {
         if (knownBodyLength() && !done_reading_data_) {
-            throw ResponseError {"Incomplete data transfer."};
+            Error::runtime("Response error", "Incomplete data transfer");
         }
         return response_;
     }
@@ -23,14 +25,14 @@ namespace Express::Http {
         using namespace Validators;
         auto status = status_line;
         if (!status.starts_with("HTTP/"s)) {
-            throw ResponseError {"Malformed status line"};
+            Error::runtime("Response error", "Malformed status line");
         }
 
         // HTML version
         status = status.substr(status.find('/') + 1);
         auto version = status.substr(0, status.find(0x20));
         if (version != "1.0" && version != "1.1") {
-            throw ResponseError {"Unsupported HTML version (" + version + ")"};
+            Error::runtime("Response error", "Unsupported HTML version (" + version + ")");
         }
         status = status.substr(4);
 
@@ -38,14 +40,14 @@ namespace Express::Http {
         auto separator = status.find(0x20);
         auto status_code = status.substr(0, separator);
         if (separator != 3 || !is_digit_range(status_code)) {
-            throw ResponseError {"Invalid status code (" + status_code + ")"};
+            Error::runtime("Response error", "Invalid status code (" + status_code + ")");
         }
         response_.statusCode = std::stoi(status_code);
         
         // Reason phrase
         auto response_phrase = status.substr(separator + 1);
         if (!is_valid_char_range(response_phrase)) {
-            throw ResponseError {"Invalid characters in reason phrase"};
+            Error::runtime("Response error", "Invalid characters in reason phrase");
         }
         response_.statusText = status.substr(separator + 1);
     }
@@ -57,7 +59,7 @@ namespace Express::Http {
         for (std::string_view header : tokens) {
             auto separator = header.find(':');
             if (separator == std::string::npos) {
-                throw ResponseError {"Failed to process invalid response header"};
+                Error::runtime("Response error", "Failed to process invalid response header");
             }
 
             auto name = header.substr(0, separator);
@@ -71,7 +73,7 @@ namespace Express::Http {
                 // header fields having differing field-values, then the 
                 // message framing is invalid.
                 if (response_.headers.has("content-length"))
-                    throw ResponseError {"Received multiple content length fields."};
+                    Error::runtime("Response error", "Received multiple content length fields");
                 if (response_.headers.has("transfer-encoding")) {
                     continue;
                 }
@@ -121,7 +123,7 @@ namespace Express::Http {
         if (response_.headers.has("content-length")) {
             auto length = response_.headers.get("content-length");
             if (!is_digit_range(length)) {
-                throw ResponseError {"Invalid content length value"};
+                Error::runtime("Response error", "Invalid content length value");
             }
             content_length_ = std::stoul(length);
             response_.data.reserve(content_length_);
@@ -147,7 +149,7 @@ namespace Express::Http {
                     if (data_.size() < 2) break;
                     if (data_[0] != CRLF[0] || data_[1] != CRLF[1]) {
                         // Every chunk must end with crlf
-                        throw ResponseError {"Invalid chunk delimiter."};
+                        Error::runtime("Response error", "Invalid chunk delimiter");
                     }
                     data_.erase(cbegin(data_), cbegin(data_) + 2);
                     finished_reading_chunk = false;
@@ -161,7 +163,7 @@ namespace Express::Http {
 
                     auto chunk_size = std::string(cbegin(data_), iter);
                     if (chunk_size.empty()) {
-                        throw ResponseError {"Invalid chunk size."};
+                        Error::runtime("Response error", "Invalid chunk size");
                     }
                     bytes_to_read = std::stoul(chunk_size, nullptr, 16);
 
