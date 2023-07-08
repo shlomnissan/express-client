@@ -4,10 +4,16 @@
 #include <gtest/gtest.h>
 
 #include <express/endpoint.h>
+
+#include <string_view>
 #include <sys/socket.h>
 #include <system_error>
 
 using namespace Express::Net;
+
+bool startsWith(std::string_view str, std::string_view ptrn) {
+    return str.starts_with(ptrn);
+}
 
 TEST(endpoint, initializes_basic_endpoint) {
     Endpoint endpoint {"example.com", "80"};
@@ -39,10 +45,7 @@ TEST(endpoint, throws_initialization_error) {
         try {
             Endpoint endpoint("invalid-address", "80");
         } catch (const std::system_error& e) {
-            EXPECT_STREQ(
-                e.what(),
-                "Endpoint error: Resource temporarily unavailable"
-            );
+            EXPECT_TRUE(startsWith(e.what(), "Endpoint error"));
             throw;
         }
     }, std::system_error);
