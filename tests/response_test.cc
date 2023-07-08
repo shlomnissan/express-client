@@ -2,7 +2,7 @@
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
 #include <gtest/gtest.h>
-#include <express/response.h>
+#include <express/response_parser.h>
 
 #include <cstdint>
 #include <express/exception.h>

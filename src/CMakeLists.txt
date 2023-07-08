@@ -3,7 +3,7 @@ set(SOURCE_FILES
     "http/header.cc"
     "http/http_defs.cc"
     "http/request.cc"
-    "http/response.cc"
+    "http/response_parser.cc"
     "http/transformers.cc"
     "net/endpoint.cc"
     "net/socket_secure.cc"
