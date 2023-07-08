@@ -2,8 +2,9 @@
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
 #include <gtest/gtest.h>
-
 #include <express/url.h>
+
+#include <express/exception.h>
 
 using namespace Express::Net;
 
@@ -171,54 +172,54 @@ TEST(url, throws_if_the_url_is_empty) {
     EXPECT_THROW({
         try {
             URL url("");
-        } catch (const URLError& e) {
+        } catch (const Express::RequestError& e) {
             EXPECT_STREQ(
-                "Missing URL scheme. Use 'http://' or 'https://'.",
+                "URL error: Missing URL scheme. Use 'http://' or 'https://'",
                 e.what()
             );
             throw;
         }
-    }, URLError);
+    }, Express::RequestError);
 }
 
 TEST(url, throws_if_theres_no_scheme) {
     EXPECT_THROW({
         try {
             URL url("example.com");
-        } catch (const URLError& e) {
+        } catch (const Express::RequestError& e) {
             EXPECT_STREQ(
-                "Missing URL scheme. Use 'http://' or 'https://'.",
+                "URL error: Missing URL scheme. Use 'http://' or 'https://'",
                 e.what()
             );
             throw;
         }
-    }, URLError);
+    }, Express::RequestError);
 }
 
 TEST(url, throws_if_theres_an_invalid_scheme_delimiter) {
     EXPECT_THROW({
         try {
             URL url("http:/example.com");
-        } catch (const URLError& e) {
+        } catch (const Express::RequestError& e) {
             EXPECT_STREQ(
-                "Missing URL scheme. Use 'http://' or 'https://'.",
+                "URL error: Missing URL scheme. Use 'http://' or 'https://'",
                 e.what()
             );
             throw;
         }
-    }, URLError);
+    }, Express::RequestError);
 }
 
 TEST(url, throws_if_url_scheme_is_unsupported) {
     EXPECT_THROW({
         try {
             URL url("ftp://example.com");
-        } catch (const URLError& e) {
+        } catch (const Express::RequestError& e) {
             EXPECT_STREQ(
-                "Unsupported URL scheme. Use 'http://' or 'https://'.",
+                "URL error: Unsupported URL scheme. Use 'http://' or 'https://'",
                 e.what()
             );
             throw;
         }
-    }, URLError);
+    }, Express::RequestError);
 }

@@ -3,6 +3,8 @@
 
 #include <express/url.h>
 
+#include <express/error.h>
+
 namespace Express::Net {
     URL::URL(std::string_view url) : source_(url) {
         parseURL(source_);
@@ -11,16 +13,12 @@ namespace Express::Net {
     auto URL::parseURL(std::string_view url) -> void {
         auto idx = url.find("://");
         if (idx == std::string::npos) {
-            throw URLError {
-                "Missing URL scheme. Use 'http://' or 'https://'."
-            };
+            Error::logic("URL error", "Missing URL scheme. Use 'http://' or 'https://'");
         }
 
         scheme_ = url.substr(0, idx);
         if (scheme_ != "http" && scheme_ != "https") {
-            throw URLError {
-                "Unsupported URL scheme. Use 'http://' or 'https://'."
-            };
+            Error::logic("URL error", "Unsupported URL scheme. Use 'http://' or 'https://'");
         }
 
         port_ = (scheme_ == "http") ?
