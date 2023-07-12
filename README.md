@@ -1,8 +1,9 @@
 <h1 align="center">
    <b>
-        <img style="margin: 1rem 0" src="https://github-production-user-asset-6210df.s3.amazonaws.com/3165988/253027269-9e753a73-cafa-43cd-952a-21cad2650966.svg" /> 
+        <img style="margin: 1rem 0" src="https://github-production-user-asset-6210df.s3.amazonaws.com/3165988/253027928-4a160e7d-7a4b-46e4-a1e1-db10e96d83c1.svg" /> 
     </b>
 </h1>
+
 
 <p align="center">Promised-based HTTP client for modern C++</p>
 
