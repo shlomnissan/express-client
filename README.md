@@ -1,6 +1,6 @@
 <h1 align="center">
    <b>
-        <img src="https://user-images.githubusercontent.com/3165988/252059904-90120f3a-0d9e-42a4-8a50-69e2cd4a4a7b.svg" />
+        <img style="margin: 1rem 0" src="https://github-production-user-asset-6210df.s3.amazonaws.com/3165988/253027269-9e753a73-cafa-43cd-952a-21cad2650966.svg" /> 
     </b>
 </h1>
 
