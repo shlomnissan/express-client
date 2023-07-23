@@ -1,10 +1,13 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
+#include <express/request.h>
+
+#include <string>
+
+#include <express/error.h>
 #include <express/transformers.h>
 #include <express/version.h>
-#include <express/request.h>
-#include <string>
 
 namespace Express::Http {
     using namespace Net;
@@ -49,10 +52,8 @@ namespace Express::Http {
 
     auto Request::setContentTypeAndSize() -> void {
         if (!allowedData(config_.method)) {
-            throw RequestError {
-                "Request data can only be added "
-                "for PUT, POST, DELETE, and PATCH."
-            };
+            Error::logic("Request error", "Request data can only be added "
+                "for PUT, POST, DELETE, and PATCH.");
         }
 
         if (!config_.headers.has("content-type")) {
@@ -60,10 +61,8 @@ namespace Express::Http {
             if (!content_type_hint.empty()) {
                 config_.headers.add({"Content-Type", content_type_hint});
             } else {
-                throw RequestError {
-                    "Data was provided for this request, "
-                    "but the Content-Type header isn't set."
-                };
+                Error::logic("Request error", "Data was provided for this request, "
+                    "but the Content-Type header isn't set.");
             }
         }
 

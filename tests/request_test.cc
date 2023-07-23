@@ -240,14 +240,14 @@ TEST(request, throws_when_content_type_not_set_for_raw_string) {
                 .method = Method::Post,
                 .data = {"firstName=Fred&lastName=Flintstone"},
             });
-        } catch (const RequestError& e) {
+        } catch (const Express::RequestError& e) {
             EXPECT_STREQ(e.what(),
-                "Data was provided for this request, "
+                "Request error: Data was provided for this request, "
                 "but the Content-Type header isn't set."
             );
             throw;
         }
-    }, RequestError);
+    }, Express::RequestError);
 }
 
 TEST(request, throws_if_http_method_should_not_include_data) {
@@ -263,12 +263,12 @@ TEST(request, throws_if_http_method_should_not_include_data) {
                     {"lastName", "Flintstone"}
                 }},
             });
-        } catch (const RequestError& e) {
+        } catch (const Express::RequestError& e) {
             EXPECT_STREQ(e.what(),
-                "Request data can only be added "
+                "Request error: Request data can only be added "
                 "for PUT, POST, DELETE, and PATCH."
             );
             throw;
         }
-    }, RequestError);
+    }, Express::RequestError);
 }
