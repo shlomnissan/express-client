@@ -141,25 +141,45 @@ namespace Express::Http {
         using enum MessageBodyParsingMethod;
 
         if (done_reading_data_) return;
+
         if (body_parsing_method_ == Undetermined) { setMessageBodyLength(); }
 
         if (body_parsing_method_ == ChunkedTransfer) {
-            while (true) {
-                if (finished_reading_chunk) {
-                    if (data_.size() < 2) break;
-                    if (data_[0] != CRLF[0] || data_[1] != CRLF[1]) {
-                        // Every chunk must end with crlf
-                        Error::runtime("Response error", "Invalid chunk delimiter");
-                    }
-                    data_.erase(cbegin(data_), cbegin(data_) + 2);
-                    finished_reading_chunk = false;
-                }
+            for (;;) {
+                if (bytes_to_read > 0) {
+                    const auto to_read {std::min(bytes_to_read, data_.size())};
 
-                if (bytes_to_read == 0) {
+                    response_.data.insert(
+                        cend(response_.data),
+                        cbegin(data_),
+                        cbegin(data_) + to_read
+                    );
+
+                    data_.erase(cbegin(data_), cbegin(data_) + to_read);
+
+                    bytes_to_read -= to_read;
+                    if (bytes_to_read == 0) {
+                        finished_reading_chunk = true;
+                    } else if (data_.empty()) {
+                        break;
+                    }
+                } else {
+                    if (finished_reading_chunk) {
+                        if (data_.size() < 2) break;
+                        if (data_[0] != CRLF[0] || data_[1] != CRLF[1]) {
+                            // Every chunk must end with crlf
+                            Error::runtime("Response error", "Invalid chunk delimiter");
+                        }
+                        data_.erase(cbegin(data_), cbegin(data_) + 2);
+                        finished_reading_chunk = false;
+                    }
+
                     auto iter {std::search(
                         cbegin(data_), cend(data_),
                         cbegin(CRLF), cend(CRLF)
                     )};
+
+                    if (iter == data_.end()) break;
 
                     auto chunk_size = std::string(cbegin(data_), iter);
                     if (chunk_size.empty()) {
@@ -173,22 +193,6 @@ namespace Express::Http {
                         done_reading_data_ = true;
                         break;
                     }
-                } else {
-                    const auto to_read {std::min(bytes_to_read, data_.size())};
-                    response_.data.insert(
-                        cend(response_.data),
-                        cbegin(data_),
-                        cbegin(data_) + to_read
-                    );
-
-                    data_.erase(cbegin(data_), cbegin(data_) + to_read);
-
-                    bytes_to_read -= to_read;
-                    if (bytes_to_read == 0) {
-                        finished_reading_chunk = true;
-                    }
-
-                    if (data_.empty()) break;
                 }
             }
         }

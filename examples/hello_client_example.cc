@@ -7,10 +7,12 @@
 #include <express/client.h>
 
 int main() {
-    auto response = Express::Client::request({
-        .url = "http://example.com",
+    auto result = Express::Client::request({
+        .url = "http://www.example.com",
         .method = Express::Http::Method::Get,
-    }).get();
+    });
+
+    Express::Response response = result.get();
 
     std::cout << "Status: "
               << response.statusCode << " "
@@ -21,8 +23,10 @@ int main() {
         std::cout << header;
     }
 
-    std::string data {cbegin(response.data), cend(response.data)};
-    std::cout << '\n' << data << '\n';
+    if (response.data.size()) {
+        std::string data {cbegin(response.data), cend(response.data)};
+        std::cout << '\n' << data << '\n';
+    }
 
     return 0;
 }

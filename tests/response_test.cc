@@ -380,7 +380,7 @@ TEST(response_parser_body_chunked, parses_body_with_chunked_encoding_correctly) 
     EXPECT_EQ(data_to_str(response.data), "Mozilla Developer Network");
 }
 
- TEST(response_parser_body_chunked, parses_body_with_chunked_with_multiple_inputs) {
+TEST(response_parser_body_chunked, parses_body_with_chunked_with_multiple_inputs) {
     auto input_0 = str_to_data(
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/plain\r\n"
@@ -394,6 +394,9 @@ TEST(response_parser_body_chunked, parses_body_with_chunked_encoding_correctly) 
         "\r\n"
         "11\r\n"
         "Developer Network\r\n"
+    );
+
+    auto input_2 = str_to_data(
         "0\r\n"
         "\r\n"
     );
@@ -401,11 +404,12 @@ TEST(response_parser_body_chunked, parses_body_with_chunked_encoding_correctly) 
     ResponseParser parser;
     parser.feed(input_0.data(), input_0.size());
     parser.feed(input_1.data(), input_1.size());
+    parser.feed(input_2.data(), input_2.size());
     
     auto response = parser.response();
     EXPECT_EQ(data_to_str(response.data), "Mozilla Developer Network");
 
-    auto input_2 = str_to_data(
+    auto input_3 = str_to_data(
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/plain\r\n"
         "Transfer-Encoding: chunked\r\n"
@@ -414,7 +418,7 @@ TEST(response_parser_body_chunked, parses_body_with_chunked_encoding_correctly) 
         "Mozil"
     );
 
-    auto input_3 = str_to_data(
+    auto input_4 = str_to_data(
         "la \r\n"
         "11\r\n"
         "Developer Network\r\n"
@@ -422,12 +426,12 @@ TEST(response_parser_body_chunked, parses_body_with_chunked_encoding_correctly) 
         "\r\n"
     );
 
-    auto input_4 = str_to_data("la \r\n");
+    auto input_5 = str_to_data("la \r\n");
 
     ResponseParser another_parser;
-    another_parser.feed(input_2.data(), input_2.size());
     another_parser.feed(input_3.data(), input_3.size());
     another_parser.feed(input_4.data(), input_4.size());
+    another_parser.feed(input_5.data(), input_5.size());
 
     response = another_parser.response();
     EXPECT_EQ(data_to_str(response.data), "Mozilla Developer Network");

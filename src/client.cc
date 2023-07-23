@@ -36,7 +36,7 @@ namespace Express {
 
         std::array<uint8_t, BUFSIZ> buffer;
         ResponseParser parser;
-        while (true) {
+        for (;;) {
             auto size = socket->recv(buffer.data(), buffer.size(), timeout);
             if (size == 0 || parser.doneReadingData()) {
                 break; // disconnected
