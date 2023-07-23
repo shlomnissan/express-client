@@ -2,10 +2,13 @@
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
 #include <gtest/gtest.h>
+
 #include <iostream>
-#include <express/header.h>
 #include <sstream>
 #include <string>
+
+#include <express/exception.h>
+#include <express/header.h>
 
 using namespace Express::Http;
 
@@ -35,55 +38,55 @@ TEST(header, throws_if_header_name_is_empty) {
     EXPECT_THROW({
         try {
             Header header("", "value");
-        } catch (const HeaderError& e) {
-            EXPECT_STREQ("Invalid header name.", e.what());
+        } catch (const Express::ResponseError& e) {
+            EXPECT_STREQ("Header error: Invalid header name.", e.what());
             throw;
         }
-    }, HeaderError);
+    }, Express::ResponseError);
 }
 
 TEST(header, throws_if_header_name_contains_leading_whitespaces) {
     EXPECT_THROW({
         try {
             Header header("\t Host", "example.com");
-        } catch (const HeaderError& e) {
-            EXPECT_STREQ("Invalid header name.", e.what());
+        } catch (const Express::ResponseError& e) {
+            EXPECT_STREQ("Header error: Invalid header name.", e.what());
             throw;
         }
-    }, HeaderError);
+    }, Express::ResponseError);
 }
 
 TEST(header, throws_if_header_name_contains_trailing_whitespaces) {
     EXPECT_THROW({
         try {
             Header header("Host ", "example.com");
-        } catch (const HeaderError& e) {
-            EXPECT_STREQ("Invalid header name.", e.what());
+        } catch (const Express::ResponseError& e) {
+            EXPECT_STREQ("Header error: Invalid header name.", e.what());
             throw;
         }
-    }, HeaderError);
+    }, Express::ResponseError);
 }
 
 TEST(header, throws_if_the_header_name_contains_invalid_characters) {
     EXPECT_THROW({
         try {
             Header header("Invalid-Token(@", "value");
-        } catch (const HeaderError& e) {
-            EXPECT_STREQ("Invalid header name.", e.what());
+        } catch (const Express::ResponseError& e) {
+            EXPECT_STREQ("Header error: Invalid header name.", e.what());
             throw;
         }
-    }, HeaderError);
+    }, Express::ResponseError);
 }
 
 TEST(header, throws_if_the_header_value_contains_invalid_characters) {
     EXPECT_THROW({
         try {
             Header header("Host", "Invisible form feed character \f");
-        } catch (const HeaderError& e) {
-            EXPECT_STREQ("Invalid header value.", e.what());
+        } catch (const Express::ResponseError& e) {
+            EXPECT_STREQ("Header error: Invalid header value.", e.what());
             throw;
         }
-    }, HeaderError);
+    }, Express::ResponseError);
 }
 
 TEST(header_collection, initializes_an_object_with_initializer_list) {
@@ -160,11 +163,12 @@ TEST(header_Collection, removes_header_correctly) {
     EXPECT_THROW({
         try {
             headers.remove("date");
-        } catch (const HeaderError& e) {
-            EXPECT_STREQ(e.what(), "Attempting to remove a header that doesn't exist");
+        } catch (const Express::ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Header error: "
+                "Attempting to remove a header that doesn't exist.");
             throw;
         }
-    }, HeaderError);
+    }, Express::ResponseError);
 }
 
 TEST(header_collection, get_method_returns_the_correct_value) {
@@ -179,13 +183,12 @@ TEST(header_collection, get_method_returns_the_correct_value) {
     EXPECT_THROW({
         try {
             EXPECT_EQ(headers.get("Date"), "Wed, 15 Feb 2023 14:43:39 GMT"); 
-        } catch (const HeaderError& e) {
-            EXPECT_STREQ(e.what(),
-                "Attempting to access value for a header that doesn't exist."
-            );
+        } catch (const Express::ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Header error: "
+                "Attempting to access value for a header that doesn't exist.");
             throw;
         }
-    }, HeaderError);
+    }, Express::ResponseError);
 }
 
 TEST(header_collection, get_method_case_insensitive) {

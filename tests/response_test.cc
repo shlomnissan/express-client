@@ -167,11 +167,11 @@ TEST(response_parser_headers, throws_when_parsing_invalid_header_name) {
     EXPECT_THROW({
         try {
             parser.feed(input.data(), input.size());
-        } catch (const HeaderError& e) {
-            EXPECT_STREQ(e.what(), "Invalid header name.");
+        } catch (const Express::ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Header error: Invalid header name.");
             throw;
         }
-    }, HeaderError);
+    }, Express::ResponseError);
 }
 
 TEST(response_parser_headers, throws_when_parsing_invalid_header_value) {
@@ -185,11 +185,11 @@ TEST(response_parser_headers, throws_when_parsing_invalid_header_value) {
     EXPECT_THROW({
         try {
             parser.feed(input.data(), input.size());
-        } catch (const HeaderError& e) {
-            EXPECT_STREQ(e.what(), "Invalid header value.");
+        } catch (const Express::ResponseError& e) {
+            EXPECT_STREQ(e.what(), "Header error: Invalid header value.");
             throw;
         }
-    }, HeaderError);
+    }, Express::ResponseError);
 }
 
 TEST(response_parser_headers, handles_obsolete_line_folding) {

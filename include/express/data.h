@@ -36,8 +36,4 @@ namespace Express::Http {
         std::string data_;
         std::string content_type_hint_;
     };
-
-    struct DataError : public std::logic_error {
-        using std::logic_error::logic_error;
-    };
 }

@@ -1,9 +1,11 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <express/transformers.h>
 #include <express/header.h>
+
+#include <express/error.h>
 #include <express/http_defs.h>
+#include <express/transformers.h>
 #include <express/validators.h>
 
 namespace Express::Http {
@@ -14,16 +16,12 @@ namespace Express::Http {
         trim_trailing_whitespaces_in_place(value_);
         trim_leading_whitespaces_in_place(value_);
 
-        if (name_.empty()) {
-            throw HeaderError {"Invalid header name."};
-        }
-
-        if (!is_token_range(name)) {
-            throw HeaderError {"Invalid header name."};
+        if (name_.empty() || !is_token_range(name)) {
+            Error::runtime("Header error", "Invalid header name.");
         }
 
         if (!is_valid_char_range(value)) {
-            throw HeaderError {"Invalid header value."};
+            Error::runtime("Header error", "Invalid header value.");
         }
     }
 
@@ -57,7 +55,10 @@ namespace Express::Http {
         auto lowercase_name = str_to_lower(name);
         auto iterator = existing_headers_.find(lowercase_name);
         if (iterator == std::end(existing_headers_)) {
-            throw HeaderError {"Attempting to remove a header that doesn't exist"};
+            Error::runtime(
+                "Header error",
+                "Attempting to remove a header that doesn't exist."
+            );
         }
 
         auto idx = iterator->second;
@@ -77,7 +78,11 @@ namespace Express::Http {
         if (existing_headers_.find(lowercase_name) != std::end(existing_headers_)) {
             return headers_[existing_headers_[lowercase_name]].value();
         }
-        throw HeaderError {"Attempting to access value for a header that doesn't exist."};
+
+        Error::runtime(
+            "Header error",
+            "Attempting to access value for a header that doesn't exist."
+        );
     }
 
     auto operator<<(std::ostream& os, const Header& header) -> std::ostream& {

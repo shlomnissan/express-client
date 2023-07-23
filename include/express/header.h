@@ -48,8 +48,4 @@ namespace Express::Http {
         std::vector<Header> headers_;
         std::unordered_map<std::string, size_t> existing_headers_;
     };
-
-    struct HeaderError : public std::runtime_error {
-        using std::runtime_error::runtime_error;
-    };
 }
