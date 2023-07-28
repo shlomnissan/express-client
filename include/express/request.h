@@ -10,6 +10,7 @@
 
 #include <express/header.h>
 #include <express/http_defs.h>
+#include <express/method.h>
 #include <express/url.h>
 #include <express/data.h>
 #include <express/user_information.h>

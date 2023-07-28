@@ -5,8 +5,10 @@
 #include <gtest/gtest.h>
 #include <express/request.h>
 
+#include <express/method.h>
 #include <express/exception.h>
 
+using namespace Express;
 using namespace Express::Http;
 
 TEST(request, creates_valid_request_object) {

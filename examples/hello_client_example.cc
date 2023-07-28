@@ -9,7 +9,7 @@
 int main() {
     auto result = Express::Client::request({
         .url = "http://www.example.com",
-        .method = Express::Http::Method::Get,
+        .method = Express::Method::Get,
     });
 
     Express::Response response = result.get();

@@ -7,25 +7,6 @@
 #include <array>
 
 namespace Express::Http {
-#define HTTP_METHODS                                                                               \
-    METHOD(Options, "OPTIONS")                                                                     \
-    METHOD(Get, "GET")                                                                             \
-    METHOD(Head, "HEAD")                                                                           \
-    METHOD(Put, "PUT")                                                                             \
-    METHOD(Post, "POST")                                                                           \
-    METHOD(Patch, "PATCH")                                                                         \
-    METHOD(Delete, "DELETE")
-
-    enum class Method {
-#define METHOD(m, _) m,
-        HTTP_METHODS
-#undef METHOD
-    };
-
-    auto methodString(Method method);
-
-    auto operator<<(std::ostream& os, Method method) -> std::ostream&;
-
     static constexpr std::array<char, 2> CRLF {0xD, 0xA};
     static constexpr std::array<char, 4> HCRLF {0xD, 0xA, 0xD, 0xA};
 

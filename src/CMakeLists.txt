@@ -1,13 +1,13 @@
 set(SOURCE_FILES
     "http/data.cc"
     "http/header.cc"
-    "http/http_defs.cc"
     "http/request.cc"
     "http/response_parser.cc"
     "http/transformers.cc"
     "net/endpoint.cc"
     "net/socket.cc"
     "net/url.cc"
+    "method.cc"
     "client.cc"
     "error.cc"
 )

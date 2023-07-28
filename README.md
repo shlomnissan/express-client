@@ -94,7 +94,7 @@ auto main() -> int {
     // make a simple HTTP GET request to example.com
     auto result = Express::ExpressClient::request({
         .url = "http://example.com/",
-        .method = Express::Http::Method::Get,
+        .method = Express::Method::Get,
     });
 
     // request() returns a std::future. calling get will block until the
