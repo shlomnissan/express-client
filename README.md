@@ -124,7 +124,7 @@ auto main() -> int {
 Now you can compile and run the executable.
 <pre>
 # Compile main.cc and link the express client library
-/$ <strong>g++ main.cc -lexpress_client</strong>
+/$ <strong>g++ main.cc -lexpress_client -std=c++20</strong>
 
 # Run the executable
 /$ <strong>./a.out</strong>
