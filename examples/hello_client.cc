@@ -11,11 +11,25 @@ auto main() -> int {
 
     Express::Client client;
     
-    auto response = client.Request({
-        .url = "http://example.com"
+    auto result = client.Request({
+        .url = "http://example.com",
+        .method = Express::Method::Get,
     });
 
-    std::cout << response.get().data;
+    auto response = result.get();
+
+    std::cout << "Status: "
+        << response.status_code << " "
+        << response.status_text << "\n\n";
+
+    std::cout << "Headers: \n";
+    for (const auto& [_, header] : response.headers) {
+    std::cout << header.first << ": " << header.second << '\n';
+    }
+
+    if (!response.data.empty()) {
+        std::cout << '\n' << response.data;
+    }
 
     return 0;
 }
