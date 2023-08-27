@@ -5,7 +5,7 @@
 </h1>
 
 
-<p align="center">Promised-based HTTP client for modern C++</p>
+<p align="center">Promised-based HTTP client for modern C++ development</p>
 
 <div align="center">
 
