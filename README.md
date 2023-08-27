@@ -5,7 +5,7 @@
 </h1>
 
 
-<p align="center">Promised-based HTTP client for modern C++ development</p>
+<p align="center">Promised-based HTTP client for modern C++ development.</p>
 
 <div align="center">
 
@@ -228,7 +228,25 @@ Express::Method::Put
 
 #### Express::Headers
 
-TBC.
+`Express::Headers` is a collection type used to store headers for a request or retrieve headers from a response. It can be initialized by passing a vector of string pairs, or using an initializer list:
+
+```cpp
+Express::Headers headers {{
+  {"Header-Name", "Value"},
+  {"Header-Name", "Value"}
+}};
+```
+
+This collection object includes a couple of mutators (`Express::Headers::Add`, `Express::Headers::Remove`) and accessors (`Express::Headers::Contains`, `Express::Headers::Get`) to configure the object as part of an HTTP request and query the object as part of an HTTP response.
+
+```cpp
+auto Add(const std::string& name, std::string value) -> void;
+auto Remove(const std::string& name) -> void;
+
+[[nodiscard]] auto Contains(const std::string& name) const -> bool;
+[[nodiscard]] auto Get(const std::string& name) -> std::string;
+```
+The headers collection is a simple wrapper around an unordered map. However, it accounts for case-insensitive header names and provides basic validation for allowed characters in the header names and values.
 
 #### Express::UserAuth
 
