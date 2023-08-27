@@ -14,7 +14,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get -yq update
-          sudo apt-get install -yq cmake libssl-dev ninja-build python3-pip
+          sudo apt-get install -yq cmake ninja-build
           gcc --version
 
       - name: Configure
@@ -31,8 +31,8 @@ jobs:
       - name: Test 
         shell: bash
         run: |
-          pip3 install -r tests/mock_server/requirements.txt
-          nohup python3 tests/mock_server/server.py &
+          pip3 install -r tools/mock_server/requirements.txt
+          nohup python3 tools/mock_server/server.py &
           sleep 1
           cd build
           ctest -V 

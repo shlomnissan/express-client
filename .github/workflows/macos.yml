@@ -21,9 +21,7 @@ jobs:
         run: |
           cmake -B ${{github.workspace}}/build \
             -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-            -G "Ninja" \
-            -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl \
-            -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib
+            -G "Ninja"
 
       - name: Build
         shell: bash
@@ -32,8 +30,8 @@ jobs:
       - name: Test 
         shell: bash
         run: |
-            pip3 install -r tests/mock_server/requirements.txt
-            nohup python3 tests/mock_server/server.py &
-            sleep 1
-            cd build
-            ctest -V 
+          pip3 install -r tools/mock_server/requirements.txt
+          nohup python3 tools/mock_server/server.py &
+          sleep 1
+          cd build
+          ctest -V
