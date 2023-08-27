@@ -4,8 +4,8 @@
 #pragma once
 
 namespace Express::Version {
-    static constexpr int Major = @VERSION_MAJOR@;
-    static constexpr int Minor = @VERSION_MINOR@;
-    static constexpr int Patch = @VERSION_PATCH@;
-    static constexpr int Git = @VERSION_GIT_DATE@;
+    static constexpr int Major = @express_VERSION_MAJOR@;
+    static constexpr int Minor = @express_VERSION_MINOR@;
+    static constexpr int Patch = @express_VERSION_PATCH@;
+    static constexpr int Git = @express_VERSION_TWEAK@;
 }

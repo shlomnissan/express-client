@@ -3,13 +3,19 @@
 
 #pragma once
 
-#include <express/header.h>
+#include <cstdint>
+#include <string>
+#include <vector>
+
+#include "express_client_export.h"
+
+#include "express/headers.h"
 
 namespace Express {
-    struct Response {
-        int statusCode;
-        std::string statusText;
-        std::vector<uint8_t> data;
-        Http::HeaderCollection headers;
+    struct EXPRESS_CLIENT_EXPORT Response {
+        int status_code;
+        std::string status_text;
+        std::string data;
+        Headers headers;
     };
 }

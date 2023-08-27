@@ -1,24 +1,24 @@
 // Copyright 2023 Betamark Pty Ltd. All rights reserved.
 // Author: Shlomi Nissan (shlomi@betamark.com)
 
-#include <express/url.h>
+#include "url.h"
 
-#include <express/error.h>
+#include "client/error.h"
 
 namespace Express::Net {
-    URL::URL(std::string_view url) : source_(url) {
-        parseURL(source_);
+    Url::Url(std::string_view url) : source_(url) {
+        ParseURL(source_);
     }
 
-    auto URL::parseURL(std::string_view url) -> void {
+    auto Url::ParseURL(std::string_view url) -> void {
         auto idx = url.find("://");
         if (idx == std::string::npos) {
-            Error::logic("URL error", "Missing URL scheme. Use 'http://' or 'https://'");
+            Error::Logic("URL error", "Missing URL scheme. Use 'http://' or 'https://'");
         }
 
         scheme_ = url.substr(0, idx);
         if (scheme_ != "http" && scheme_ != "https") {
-            Error::logic("URL error", "Unsupported URL scheme. Use 'http://' or 'https://'");
+            Error::Logic("URL error", "Unsupported URL scheme. Use 'http://' or 'https://'");
         }
 
         port_ = (scheme_ == "http") ?
@@ -31,30 +31,26 @@ namespace Express::Net {
         });
 
         authority_ = std::string {authority_begin, authority_end};
-        processAuthority();
+        ProcessAuthority();
 
         path_ = std::string {authority_end, cend(url)};
-        processPath();
+        ProcessPath();
     }
 
-    auto URL::processAuthority() -> void {
+    auto Url::ProcessAuthority() -> void {
         host_ = authority_;
 
-        // User information
-        auto host_pos = authority_.find('@');
-        if (host_pos != std::string::npos) {
+        if (auto host_pos = authority_.find('@'); host_pos != std::string::npos) {
             auto user_info = authority_.substr(0, host_pos);
-            auto password_pos = user_info.find(':');
-            if (password_pos != std::string::npos) {
-                user_information_.username = user_info.substr(0, password_pos);
-                user_information_.password = user_info.substr(password_pos + 1);
+            if (auto pass_pos = user_info.find(':'); pass_pos != std::string::npos) {
+                user_ = user_info.substr(0, pass_pos);
+                password_ = user_info.substr(pass_pos + 1);
             } else {
-                user_information_.username = user_info;
+                user_ = user_info;
             }
             host_.erase(0, host_pos + 1);
         }
 
-        // Port
         auto port_pos = host_.find(':');
         if (port_pos != std::string::npos) {
             port_ = host_.substr(port_pos + 1);
@@ -62,19 +58,16 @@ namespace Express::Net {
         }
     }
 
-    auto URL::processPath() -> void {
+    auto Url::ProcessPath() -> void {
         if (path_.empty()) return;
         if (path_.starts_with("/")) {
             path_.erase(0, 1);
         }
 
-        // Skip fragment if needed
-        auto fragment_pos = path_.find('#');
-        if (fragment_pos != std::string::npos) {
-            path_.resize(fragment_pos);
+        if (auto frag_pos = path_.find('#'); frag_pos != std::string::npos) {
+            path_.resize(frag_pos);
         }
 
-        // Query params
         auto query_pos = path_.find('?');
         if (query_pos != std::string::npos) {
             query_ = path_.substr(query_pos + 1);

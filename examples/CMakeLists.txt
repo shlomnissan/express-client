@@ -1,11 +1,6 @@
-function(express_client_example example_name)
-    set(EXAMPLE_TARGET run_${example_name})
-    add_executable(${EXAMPLE_TARGET} ${example_name}.cc)
-    target_link_libraries(${EXAMPLE_TARGET} Express::Client)
+message(STATUS "🛠 Building examples")
+list(APPEND CMAKE_MESSAGE_INDENT "   -- ")
 
-    if(BUILD_SSL)
-        target_compile_definitions(${EXAMPLE_TARGET} PUBLIC BUILD_SSL)
-    endif()
-endfunction()
+add_executable(hello_client hello_client.cc)
 
-express_client_example(hello_client_example)
+target_link_libraries(hello_client Express::Client)

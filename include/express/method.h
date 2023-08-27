@@ -5,6 +5,8 @@
 
 #include <ostream>
 
+#include "express_client_export.h"
+
 namespace Express {
 #define HTTP_METHODS            \
     METHOD(Delete, "DELETE")    \
@@ -15,13 +17,13 @@ namespace Express {
     METHOD(Post, "POST")        \
     METHOD(Put, "PUT")
 
-    enum class Method {
+    enum class EXPRESS_CLIENT_EXPORT Method {
 #define METHOD(m, _) m,
         HTTP_METHODS
 #undef METHOD
     };
 
-    auto method_to_string(Method method);
+    auto MethodToString(Method method) -> const char *;
 
-    auto operator<<(std::ostream& os, Method method) -> std::ostream&;
+    EXPRESS_CLIENT_EXPORT std::ostream& operator<<(std::ostream& os, Method method);
 }

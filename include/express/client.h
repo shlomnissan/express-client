@@ -3,26 +3,16 @@
 
 #pragma once
 
-#include <future>
-#include <stdexcept>
-#include <memory>
+#include "express_client_export.h"
 
-#include <express/error.h>
-#include <express/socket.h>
-#include <express/request.h>
-#include <express/response_parser.h>
-#include <express/url.h>
+#include <future>
+
+#include "express/config.h"
+#include "express/response.h"
 
 namespace Express {
-    using namespace Net;
-    using namespace Http;
-
-    class Client {
+    class EXPRESS_CLIENT_EXPORT Client {
     public:
-        static auto request(const RequestConfig& config) -> std::future<Response>;
-
-    private:
-        static auto makeRequest(const RequestConfig& config) -> Response;
-        static auto getSocket(const URL& url) -> std::unique_ptr<Socket>; 
+        auto Request(const Config& config) const -> std::future<Response>;
     };
 }
