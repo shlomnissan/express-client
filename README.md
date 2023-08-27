@@ -21,13 +21,9 @@
    - [Platform Support](#platform-support)
    - [Installation](#installation)
    - [Example](#example)
-- Express Client API
-   - Request
-   - Types
-     - Express::Config
-     - Express::Method
-     - Express::Headers
-     - Express::UserAuth
+- [Express Client API](#express-client-api)
+   - [Request](#request)
+   - [Types](#types)
    - Response
    - Error Handling
 - [Licence](#licence)
@@ -141,13 +137,102 @@ Now you can compile and run the executable.
 /$ <strong>./a.out</strong>
 </pre>
 
-We include the `<express/client.h>` header file and link the executable with `libexpress_client`. If you have followed the installation steps, the header files and library should be available in your system's default search paths.
+- Note that all of the examples in this article are using [Designated Initializers](https://en.cppreference.com/w/cpp/language/aggregate_initialization), which is a feature introduced in C++20. This feature enables us to directly initialize members of a class type using their name.
+- We include the `<express/client.h>` header file and link the executable with `libexpress_client`. If you have followed the installation steps, the header files and library should be available in your system's default search paths.
 
 #### Troubleshooting
 - If you have followed the steps to install the library locally and are seeing the error message "error while loading shared libraries" when running the executable, you may need to update your local shared library cache by running the following command:
 <pre>
 /$ <strong>ldconfig</strong>
 </pre>
+
+## Express Client API
+
+### Request
+The Express Client interface has a single operation, which is making an HTTP request. Therefore, every interaction with the library begins by calling the `Request()` method on the client's object and passing it a configuration object.
+
+```cpp
+#include <express/client.h>
+
+namespace Express {
+  class Client {
+    auto Request(const Config& config) const -> std::future<Response>;
+  };
+}
+```
+- This method processes the request in the background without blocking execution. It returns a `std::future`, which lets you access the result of the asynchronous operation.
+- `std::future` provides several methods for querying, waiting for, or extracting a value. The most commonly used method is `std::future<T>::get()`, which waits until the future has a valid result and retrieves it. If the future does not have a result, this method will block the execution, waiting until the result becomes available.
+- Here is a code snippet from the example we showed earlier with clarifying comments:
+```cpp
+// Instantiate our HTTP client
+Express::Client client;
+
+// Send an asynchronous request to http://example.com/
+auto result = client.Request({
+  .url = "http://example.com/",
+  .method = Express::Method::Get,
+});
+
+// Get the response if it's available, otherwise wait until it's available
+auto response = result.get();
+```
+The following section will describe the different types provided by the Express Client. We will start with the configuration object that is used to make requests, which includes all the options that can be set when making an HTTP request.
+
+### Types
+
+#### Express::Config
+Every request requires a configuration object of type `Express::Config`. This is a simple data type with fields that lets you configure your HTTP request. We’ve shown two fields in the example above, `url` which is required, and `method`. The following table lists all available fields, their types, and a description.
+
+
+| Name | Type | Description |
+| ------------- | ------------- | ------------- |
+| **url**  | `std::string_view`  | A valid URL that includes the URL scheme. |
+| **method**  | `Express::Method`  | An HTTP method supported by Express. |
+| **headers**  | `Express::Headers`  | A collection of headers for the HTTP request. |
+| **data**  | `std::string_view`  | Data to include with the request. |
+| **auth**  | `Express::UserAuth`  | A username and password pair for authentication. |
+| **timeout**  | `std::chrono::milliseconds`  | A request timeout in milliseconds. |
+
+Before we delve into the nested types, let's take a look at an example of an HTTP request that uses all the fields in the configuration object:
+
+```cpp
+auto result = client.Request({
+  .url = "http://example.com/user",
+  .method = Express::Method::Post,
+  .headers = {{
+    {"Content-Type", "application/x-www-form-urlencoded"}
+  }},
+  .data = "age=22&email=myemail@hello.com",
+  .auth = {
+    .username = "aladdin",
+    .password = "opensesame",
+  },
+  .timeout = 15s
+});
+```
+Note that when using designated initializers, the initialization expression must have the same order of data members as in the class declaration. However, we are allowed to omit members.
+
+#### Express::Method
+
+`Express::Method` is an enum class used to specify the HTTP method within the request object. Express Client currently supports the following methods:
+
+```
+Express::Method::Delete
+Express::Method::Get
+Express::Method::Head
+Express::Method::Options
+Express::Method::Patch
+Express::Method::Post
+Express::Method::Put
+```
+
+#### Express::Headers
+
+TBC.
+
+#### Express::UserAuth
+
+TBC.
 
 ## Licence
 ```
