@@ -24,8 +24,8 @@
 - [Express Client API](#express-client-api)
    - [Request](#request)
    - [Types](#types)
-   - Response
-   - Error Handling
+   - [Response](#response)
+   - [Error Handling](#error-handling)
 - [Licence](#licence)
 
 ## Overview
@@ -233,6 +233,55 @@ TBC.
 #### Express::UserAuth
 
 TBC.
+
+### Response
+
+The type of value we receive from the request method's future is `Express::Response`. This is another simple data structure that mostly includes standard library types. The table below lists all available fields, their types, and default values.
+
+| Name | Type | Description |
+| ------------- | ------------- | ------------- |
+| **status_code**  | `int`  | An [HTTP response status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status). |
+| **status_text**  | `std::string`  | An HTTP status code text. |
+| **data**  | `std::string`  | A string that includes the body’s data. |
+| **headers**  | `Express::Headers`  | A collection of key/value headers from the HTTP response. |
+
+The only user-defined type in this data structure is `Express::Headers`, which was covered in the previous section. Here is an example that makes a simple request and prints the entire response using all the fields in the response object.
+
+```cpp
+auto result = client.Request({
+  .url = "http://example.com",
+  .method = Express::Method::Get,
+});
+
+Express::Response response = result.get();
+
+std::cout << "Status: "
+  << response.status_code << " "
+  << response.status_text << "\n\n";
+
+std::cout << "Headers: \n";
+for (const auto& [_, header] : response.headers) {
+  std::cout << header.first << ": " << header.second << '\n';
+}
+
+if (!response.data.empty()) {
+  std::cout << '\n' << response.data;
+}
+```
+_This code snippet was taken from the `hello_client.cc` example_.
+
+### Error Handling
+
+Express Client uses exceptions as its primary error handling mechanism. Your application will need to handle three types of exceptions:
+
+| Exception Type | Description |
+| ------------- | ------------- |
+| `std::system_error` | A standard library exception that indicates a low-level system error, typically in the networking APIs. This error can occur in cases of resource limitations, permission issues, or underlying network issues, such as when the destination is unreachable.|
+| `Express::RequestError` | A library exception that indicates a configuration error preventing the library from making a request. This exception is derived from `std::logic_error`, and can occur in cases such as a bad URL format, invalid header values, or bad data formatting.|
+| `Express::ResponseError` | A library exception that indicates an unexpected runtime error that happened after the library made a request to the server. This exception is derived from `std::runtime_error`, and can occur in cases such as failure to connect to the server, timeout,  unexpected server responses, and more. |
+
+- The library exceptions are defined in `<express/exception.h>`.
+- The three exceptions all include error messages that provide information about the source of the error and the issues that caused the exception to be thrown.
 
 ## Licence
 ```
