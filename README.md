@@ -17,12 +17,20 @@
 ## Table of Contents
 - [Overview](#overview)
 - [Features](#features)
-- [Getting started](#getting-started)
+- [Getting Started](#getting-started)
    - [Platform Support](#platform-support)
    - [Installation](#installation)
    - [Example](#example)
- - Express Client API
- - [Licence](#licence)
+- Express Client API
+   - Request
+   - Types
+     - Express::Config
+     - Express::Method
+     - Express::Headers
+     - Express::UserAuth
+   - Response
+   - Error Handling
+- [Licence](#licence)
 
 ## Overview
 Express is a promise-based HTTP client for modern C++ development. It currently targets C++20 with no dependencies other than the standard library. The project aims to provide a modern interface for making HTTP requests in C++ applications.
