@@ -131,3 +131,9 @@ Now you can compile and run the executable.
 </pre>
 
 We include the `<express/client.h>` header file and link the executable with `libexpress_client`. If you have followed the installation steps, the header files and library should be available in your system's default search paths.
+
+#### Troubleshooting
+- If you have followed the steps to install the library locally and are seeing the error message "error while loading shared libraries" when running the executable, you may need to update your local shared library cache by running the following command:
+<pre>
+/$ <strong>ldconfig</strong>
+</pre>
