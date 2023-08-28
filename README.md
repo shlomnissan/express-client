@@ -9,8 +9,8 @@
 
 <div align="center">
 
-[![Ubuntu](https://github.com/shlomnissan/express-client-rev/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/shlomnissan/express-client-rev/actions/workflows/ubuntu.yml)
-[![MacOS](https://github.com/shlomnissan/express-client-rev/actions/workflows/macos.yml/badge.svg)](https://github.com/shlomnissan/express-client-rev/actions/workflows/macos.yml)
+[![Ubuntu](https://github.com/shlomnissan/express-client/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/ubuntu.yml)
+[![MacOS](https://github.com/shlomnissan/express-client/actions/workflows/macos.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/macos.yml)
 
 </div>
 
