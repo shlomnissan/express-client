@@ -250,8 +250,15 @@ The headers collection is a simple wrapper around an unordered map. However, it 
 
 #### Express::UserAuth
 
-TBC.
+`Express::UserAuth` is a simple aggregate type used for HTTP authentication. It can be initialized with designated initializers as shown below:
 
+```cpp
+Express::UserAuth user_auth {
+  .username = "aladdin",
+  .password = "opensesame"
+};
+```
+This user-defined type is part of the request object. If the username or password are set, the request builder will add an Authorization header with this information encoded in base64, following the specification for Basic HTTP Authentication ([RFC 7617](https://datatracker.ietf.org/doc/html/rfc76170)).
 ### Response
 
 The type of value we receive from the request method's future is `Express::Response`. This is another simple data structure that mostly includes standard library types. The table below lists all available fields, their types, and default values.
