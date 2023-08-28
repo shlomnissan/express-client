@@ -29,7 +29,7 @@
 - [Licence](#licence)
 
 ## Overview
-Express is a promise-based HTTP client for modern C++ development. It currently targets C++20 with no dependencies other than the standard library. The project aims to provide a modern interface for making HTTP requests in C++ applications.
+Express Client is a promise-based HTTP client for modern C++ development. It currently targets C++20 with no dependencies other than the standard library. The project aims to provide a modern interface for making HTTP requests in C++ applications.
 
 ## Features
 - A simple interface.
