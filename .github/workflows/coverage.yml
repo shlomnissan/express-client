@@ -15,6 +15,7 @@ jobs:
         run: |
           sudo apt-get -yq update
           sudo apt-get install -yq cmake
+          pip3 install gcovr
           gcc --version
 
       - name: Configure
@@ -30,7 +31,6 @@ jobs:
       - name: Run Test
         shell: bash
         run: |
-          pip3 install gcovr
           pip3 install -r tools/mock_server/requirements.txt
           nohup python3 tools/mock_server/server.py &
           sleep 1
