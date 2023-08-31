@@ -32,6 +32,7 @@ jobs:
         shell: bash
         run: |
           pip3 install -r tools/mock_server/requirements.txt
+          pip3 install gcovr
           nohup python3 tools/mock_server/server.py &
           sleep 1
           cd build
