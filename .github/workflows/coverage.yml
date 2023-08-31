@@ -1,9 +1,9 @@
-name: Ubuntu
+name: Code Coverage 
 
 on: [push]
 
 env:
-  BUILD_TYPE: Release
+  BUILD_TYPE: Debug 
 
 jobs:
   build:
@@ -14,7 +14,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get -yq update
-          sudo apt-get install -yq cmake ninja-build
+          sudo apt-get install -yq cmake lcov
           gcc --version
 
       - name: Configure
@@ -22,13 +22,13 @@ jobs:
         run: |
           cmake -B ${{github.workspace}}/build \
             -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-            -G "Ninja"
+            -DCODE_COVERAGE=1
 
       - name: Build
         shell: bash
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-      - name: Test 
+      - name: Run Test
         shell: bash
         run: |
           pip3 install -r tools/mock_server/requirements.txt
@@ -36,3 +36,14 @@ jobs:
           sleep 1
           cd build
           ctest -V
+
+      - name: Generage Code Coverage Report
+        shell: bash
+        run: cmake --build ${{github.workspace}}/build --target test_coverage
+
+      - name: Upload Report to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          files: ${{github.workspace}}/build/test_coverage.info
+          fail_ci_if_error: true
+          functionalities: fix

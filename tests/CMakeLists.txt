@@ -37,3 +37,10 @@ foreach(TEST IN LISTS TEST_SOURCES)
     target_link_libraries(${TEST_TARGET} PRIVATE gtest_main Express::Client)
     add_test(${NAME_NO_EXT} ${TEST_TARGET})
 endforeach()
+
+if (CODE_COVERAGE)
+    setup_target_for_coverage_lcov(
+        NAME test_coverage 
+        EXECUTABLE ctest
+    )
+endif()
