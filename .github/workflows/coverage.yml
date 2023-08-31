@@ -14,15 +14,14 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get -yq update
-          sudo apt-get install -yq cmake ninja-build
+          sudo apt-get install -yq cmake
           gcc --version
 
       - name: Configure
         shell: bash
         run: |
           cmake -B ${{github.workspace}}/build \
-            -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-            -G "Unix Makfiles"
+            -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
         shell: bash
