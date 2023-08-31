@@ -14,6 +14,12 @@
 
 </div>
 
+<div align="center">
+
+[![codecov](https://codecov.io/gh/shlomnissan/express-client/graph/badge.svg?token=0RH2V39J2S)](https://codecov.io/gh/shlomnissan/express-client)
+
+</div>
+
 ## Table of Contents
 - [Overview](#overview)
 - [Features](#features)
