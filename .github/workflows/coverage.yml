@@ -1,9 +1,9 @@
-name: Ubuntu
+name: Code Coverage 
 
 on: [push]
 
 env:
-  BUILD_TYPE: Release
+  BUILD_TYPE: Debug 
 
 jobs:
   build:
@@ -22,17 +22,29 @@ jobs:
         run: |
           cmake -B ${{github.workspace}}/build \
             -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-            -G "Ninja"
+            -G "Unix Makfiles"
 
       - name: Build
         shell: bash
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-      - name: Test 
+      - name: Run Test
         shell: bash
         run: |
+          pip3 install gcovr
           pip3 install -r tools/mock_server/requirements.txt
           nohup python3 tools/mock_server/server.py &
           sleep 1
           cd build
           ctest -V
+
+      - name: Generage Code Coverage Report
+        shell: bash
+        run: cmake --build ${{github.workspace}}/build --target ctest_coverage
+
+      - name: Upload Report to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          files: ${{github.workspace}}/build/ctest_coverage.xml
+          fail_ci_if_error: true
+          functionalities: fix
