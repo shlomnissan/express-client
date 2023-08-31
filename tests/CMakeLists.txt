@@ -39,10 +39,11 @@ foreach(TEST IN LISTS TEST_SOURCES)
 endforeach()
 
 if (CODE_COVERAGE)
-    setup_target_for_coverage_gcovr_xml(
+    setup_target_for_coverage_lcov(
         NAME ctest_coverage 
         EXECUTABLE ctest
         EXCLUDE
+            "${PROJECT_SOURCE_DIR}/tests/"
             "${PROJECT_SOURCE_DIR}/examples/"
             "${PROJECT_SOURCE_DIR}/build/_deps/"
             "/usr/"

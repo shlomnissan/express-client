@@ -14,8 +14,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get -yq update
-          sudo apt-get install -yq cmake
-          pip3 install gcovr
+          sudo apt-get install -yq cmake lcov
           gcc --version
 
       - name: Configure
@@ -45,6 +44,6 @@ jobs:
       - name: Upload Report to Codecov
         uses: codecov/codecov-action@v2
         with:
-          files: ${{github.workspace}}/build/ctest_coverage.xml
+          files: ${{github.workspace}}/build/ctest_coverage.info
           fail_ci_if_error: true
           functionalities: fix
