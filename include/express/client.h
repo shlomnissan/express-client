@@ -3,10 +3,9 @@
 
 #pragma once
 
-#include "express_client_export.h"
-
 #include <future>
 
+#include "express_client_export.h"
 #include "express/config.h"
 #include "express/response.h"
 

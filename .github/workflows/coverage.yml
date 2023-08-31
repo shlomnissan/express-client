@@ -39,11 +39,11 @@ jobs:
 
       - name: Generage Code Coverage Report
         shell: bash
-        run: cmake --build ${{github.workspace}}/build --target ctest_coverage
+        run: cmake --build ${{github.workspace}}/build --target test_coverage
 
       - name: Upload Report to Codecov
         uses: codecov/codecov-action@v2
         with:
-          files: ${{github.workspace}}/build/ctest_coverage.info
+          files: ${{github.workspace}}/build/test_coverage.info
           fail_ci_if_error: true
           functionalities: fix

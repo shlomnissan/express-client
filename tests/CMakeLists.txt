@@ -40,7 +40,7 @@ endforeach()
 
 if (CODE_COVERAGE)
     setup_target_for_coverage_lcov(
-        NAME ctest_coverage 
+        NAME test_coverage 
         EXECUTABLE ctest
     )
 endif()
