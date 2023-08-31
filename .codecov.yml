@@ -1,4 +1,4 @@
 ignore:
-  - "examples/**/*"
+  - "examples/*"
   - "tests/**/*"
   - "build/_deps/**/*"
