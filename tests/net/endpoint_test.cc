@@ -10,7 +10,7 @@
 #include <netinet/in.h>
 
 TEST(Endpoint, InitializesWithDomain) {
-    Express::Net::Endpoint endpoint {"example.com", "80"};
+    Express::Net::Endpoint endpoint {"hey.com", "80"};
 
     EXPECT_EQ(endpoint.family(), AF_INET);
     EXPECT_EQ(endpoint.socket_type(), SOCK_STREAM);

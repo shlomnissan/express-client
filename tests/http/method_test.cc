@@ -9,13 +9,13 @@
 #include <gtest/gtest.h>
 
 TEST(Method, ConvertsToString) {
-    EXPECT_EQ(Express::MethodToString(Express::Method::Delete), "DELETE");
-    EXPECT_EQ(Express::MethodToString(Express::Method::Get), "GET");
-    EXPECT_EQ(Express::MethodToString(Express::Method::Head), "HEAD");
-    EXPECT_EQ(Express::MethodToString(Express::Method::Options), "OPTIONS");
-    EXPECT_EQ(Express::MethodToString(Express::Method::Patch), "PATCH");
-    EXPECT_EQ(Express::MethodToString(Express::Method::Post), "POST");
-    EXPECT_EQ(Express::MethodToString(Express::Method::Put), "PUT");
+    EXPECT_STREQ(Express::MethodToString(Express::Method::Delete), "DELETE");
+    EXPECT_STREQ(Express::MethodToString(Express::Method::Get), "GET");
+    EXPECT_STREQ(Express::MethodToString(Express::Method::Head), "HEAD");
+    EXPECT_STREQ(Express::MethodToString(Express::Method::Options), "OPTIONS");
+    EXPECT_STREQ(Express::MethodToString(Express::Method::Patch), "PATCH");
+    EXPECT_STREQ(Express::MethodToString(Express::Method::Post), "POST");
+    EXPECT_STREQ(Express::MethodToString(Express::Method::Put), "PUT");
 }
 
 TEST(Method, SendToStream) {

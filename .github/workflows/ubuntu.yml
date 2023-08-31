@@ -35,4 +35,15 @@ jobs:
           nohup python3 tools/mock_server/server.py &
           sleep 1
           cd build
-          ctest -V 
+          ctest -V
+
+      - name: Generage Code Coverage Report
+        shell: bash
+        run: cmake --build ${{github.workspace}}/build --target ctest_coverage
+
+      - name: Upload Report to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          files: ${{github.workspace}}/build/ctest_coverage.xml
+          fail_ci_if_error: true
+          functionalities: fix

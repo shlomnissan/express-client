@@ -37,3 +37,15 @@ foreach(TEST IN LISTS TEST_SOURCES)
     target_link_libraries(${TEST_TARGET} PRIVATE gtest_main Express::Client)
     add_test(${NAME_NO_EXT} ${TEST_TARGET})
 endforeach()
+
+if (CODE_COVERAGE)
+    setup_target_for_coverage_gcovr_xml(
+        NAME ctest_coverage 
+        EXECUTABLE ctest
+        EXCLUDE
+            "${PROJECT_SOURCE_DIR}/tests/"
+            "${PROJECT_SOURCE_DIR}/examples/"
+            "${PROJECT_SOURCE_DIR}/build/_deps/"
+            "/usr/"
+    )
+endif()
