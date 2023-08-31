@@ -13,7 +13,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 option(BUILD_TESTS "build tests" ON)
 option(BUILD_EXAMPLES "build examples" ON)
-option(CODE_COVERAGE "code coverage enabled" ON)
+option(CODE_COVERAGE "code coverage enabled" OFF)
 
 if (CODE_COVERAGE)
     include(CodeCoverage)

@@ -43,7 +43,6 @@ if (CODE_COVERAGE)
         NAME ctest_coverage 
         EXECUTABLE ctest
         EXCLUDE
-            "${PROJECT_SOURCE_DIR}/tests/"
             "${PROJECT_SOURCE_DIR}/examples/"
             "${PROJECT_SOURCE_DIR}/build/_deps/"
             "/usr/"

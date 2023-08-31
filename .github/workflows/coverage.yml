@@ -22,7 +22,8 @@ jobs:
         shell: bash
         run: |
           cmake -B ${{github.workspace}}/build \
-            -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+            -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+            -DCODE_COVERAGE=1
 
       - name: Build
         shell: bash
