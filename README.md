@@ -11,6 +11,7 @@
 
 [![Ubuntu](https://github.com/shlomnissan/express-client/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/ubuntu.yml)
 [![MacOS](https://github.com/shlomnissan/express-client/actions/workflows/macos.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/macos.yml)
+[![Windows](https://github.com/shlomnissan/express-client/actions/workflows/windows.yml/badge.svg)](https://github.com/shlomnissan/express-client/actions/workflows/windows.yml)
 
 </div>
 
@@ -53,11 +54,14 @@ Express Client is a promise-based HTTP client for modern C++ development. It cur
 ## Getting Started
 
 ### Platform Support
-For now, Express Client only supports Unix-based operating systems, but support for Windows is coming soon. The project is currently being tested on the following operating systems and compilers:
+
+Express Client supports both Windows and Unix-based operating systems. It is currently being tested on the following operating systems and compilers:
 
 ![Ubuntu](https://raw.githubusercontent.com/EgoistDeveloper/operating-system-logos/master/src/16x16/UBT.png) Ubuntu 22.04 and GCC 11.3.0
 
 ![macOS](https://raw.githubusercontent.com/EgoistDeveloper/operating-system-logos/master/src/16x16/MAC.png) macOS 12 and Clang 14.0.0
+
+![Windows](https://raw.githubusercontent.com/EgoistDeveloper/operating-system-logos/master/src/16x16/WIN.png) Windows 10 and MSVC 19.36
 
 ### Installation
 Express Client uses [CMake](https://cmake.org/) as its default build system. There are multiple ways to import a CMake project into an existing codebase, but it is highly recommended to import the library using CMake Install following the steps below. This ensures that symbol visibility is maintained, which makes versioning and future updates more reliable.
