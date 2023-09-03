@@ -41,7 +41,7 @@ namespace Express::Http {
         auto DataReaderFactory() -> std::unique_ptr<DataReader>;
 
         [[nodiscard]] auto Split(string_view headers) const -> vector<string>;
-        [[nodiscard]] auto IsObsoleteLineFolding(std::string_view str) const -> bool;
-        [[nodiscard]] auto IsDelimiter(std::string_view str) const -> bool;
+        [[nodiscard]] auto IsObsoleteLineFolding(const std::string& str) const -> bool;
+        [[nodiscard]] auto IsDelimiter(const std::string& str) const -> bool;
     };
 }

@@ -73,14 +73,14 @@ namespace Express::Http {
         return output;
     }
 
-    auto ResponseParser::IsObsoleteLineFolding(std::string_view str) const -> bool {
+    auto ResponseParser::IsObsoleteLineFolding(const std::string& str) const -> bool {
         if (str.size() < 3) return false;
         return Validators::IsWhiteSpace(str[2]) &&
                str[1] == 0xA &&
                str[0] == 0xD;
     }
 
-    auto ResponseParser::IsDelimiter(std::string_view str) const -> bool {
+    auto ResponseParser::IsDelimiter(const std::string& str) const -> bool {
         if (str.size() < 2) return false;
         return str[0] == 0xD && str[1] == 0xA;
     }
