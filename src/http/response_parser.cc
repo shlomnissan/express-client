@@ -54,14 +54,15 @@ namespace Express::Http {
         std::string line;
         auto iter = headers.begin();
         while (iter != headers.end()) {
-            if (IsObsoleteLineFolding({iter, 3})) {
+            auto len = headers.end() - iter;
+            if (len >= 3 && IsObsoleteLineFolding({iter, iter + 3})) {
                 // A user agent that receives an obs-fold in a response
                 // message that is not within a message/http container MUST
                 // replace each received obs-fold with one or more SP octets
                 // prior to interpreting the field value.
                 line += ' ';
                 iter += 3;
-            } else if (IsDelimiter({iter, 2})) {
+            } else if (len >= 2 && IsDelimiter({iter, iter + 2})) {
                 output.emplace_back(std::move(line));
                 line.clear();
                 iter += 2;

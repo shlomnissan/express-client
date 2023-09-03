@@ -6,7 +6,11 @@
 #include <memory>
 #include <string_view>
 
-#include <netdb.h>
+#if defined(_WIN32)
+    #include "net/winsock.h"
+#else
+    #include <netdb.h>
+#endif
 
 namespace Express::Net {
     struct addrinfo_deleter {

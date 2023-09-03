@@ -11,9 +11,19 @@
 
 #include "client/timeout.h"
 
+#if defined(_WIN32)
+    #include "net/winsock.h"
+#endif
+
+class Socket: public ::testing::Test {
+#if defined(_WIN32)
+    Express::Net::WinSock winsock;
+#endif
+};
+
 using namespace std::chrono_literals;
 
-TEST(Socket, SendsAndReceivesData) {
+TEST_F(Socket, SendsAndReceivesData) {
     Express::Net::Socket socket {{"example.com", "80"}};
 
     Express::Timeout timeout {0s};

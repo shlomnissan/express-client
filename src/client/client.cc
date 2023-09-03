@@ -12,9 +12,17 @@
 #include "net/socket.h"
 #include "net/url.h"
 
+#if defined(_WIN32)
+    #include "net/winsock.h"
+#endif
+
 namespace Express {
     auto Client::Request(const Config& config) const -> std::future<Response> {
         return std::async(std::launch::async, [config](){
+            #if defined(_WIN32)
+                Net::WinSock winsock;
+            #endif
+
             const Timeout timeout {config.timeout};
             const Net::Url url {config.url};
             const Net::Socket socket {{url.host(), url.port()}};

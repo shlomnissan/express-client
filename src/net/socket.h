@@ -7,6 +7,11 @@
 #include "net/endpoint.h"
 
 namespace Express::Net {
+    #ifndef _WIN32
+        using SOCKET = int;
+        constexpr auto INVALID_SOCKET = -1;
+    #endif
+
     enum class EventType {kToRead, kToWrite};
 
     class Socket {
@@ -29,7 +34,7 @@ namespace Express::Net {
 
     private:
         Endpoint ep_;
-        int sock_ = -1;
+        SOCKET sock_ = INVALID_SOCKET;
 
         auto MakeNonBlocking() const -> void;
         auto GetPendingError() const -> int;

@@ -4,5 +4,8 @@
         "request": "launch"
     },
     "cmake.generator": "Unix Makefiles",
-    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json"
+    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "files.associations": {
+        "xstring": "cpp"
+    }
 }
