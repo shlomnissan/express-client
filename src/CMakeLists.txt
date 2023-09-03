@@ -29,7 +29,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         "net/winsock.h"
         "net/socket_windows.cc"
     )
-elseif()
+else()
     list(APPEND SOURCE_FILES
         "net/socket_unix.cc"
     )
