@@ -1,0 +1,35 @@
+name: Windows
+
+on: [push]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: choco install cmake
+
+      - name: Configure
+        shell: bash
+        run: |
+          mkdir build
+          cmake -B . \
+            -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+            -G "Visual Studio 17 2022"
+
+      - name: Build
+        shell: bash
+        run: cmake --build . --config ${{env.BUILD_TYPE}}
+
+      - name: Test 
+        shell: bash
+        run: |
+          pip3 install -r tools/mock_server/requirements.txt
+          nohup python3 tools/mock_server/server.py &
+          sleep 1
+          ctest -V

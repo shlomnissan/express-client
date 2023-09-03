@@ -17,13 +17,23 @@ set(SOURCE_FILES
     "http/validators.h"
     "net/endpoint.cc"
     "net/endpoint.h"
-    "net/socket.cc"
     "net/socket.h"
     "net/url.cc"
     "net/url.h"
     "utils/string_transformers.cc"
     "utils/string_transformers.h"
 )
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    list(APPEND SOURCE_FILES 
+        "net/winsock.h"
+        "net/socket_windows.cc"
+    )
+else()
+    list(APPEND SOURCE_FILES
+        "net/socket_unix.cc"
+    )
+endif()
 
 set(PUBLIC_HEADERS
     "${CMAKE_CURRENT_BINARY_DIR}/express_client_export.h"
@@ -71,7 +81,7 @@ configure_file(
 
 target_compile_options(${TARGET_NAME} PRIVATE
     $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic -Werror>
-    $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+    $<$<CXX_COMPILER_ID:MSVC>:/W4>
 )
 
 include(GenerateExportHeader)
